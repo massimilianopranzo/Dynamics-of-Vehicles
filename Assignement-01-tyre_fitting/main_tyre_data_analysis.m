@@ -11,6 +11,7 @@ set(groot, 'defaultLegendInterpreter','latex');
 set(0,'DefaultFigureWindowStyle','docked');
 set(0,'defaultAxesFontSize',  16)
 set(0,'DefaultLegendFontSize',16)
+font_size_title = 20; % font size for the titles
 
 addpath('tyre_lib\')
 
@@ -61,7 +62,7 @@ smpl_range = cut_start:cut_end;
 % fprintf('completed!\n')
 %% Plot raw data
 
-figure
+fig_loaded_data = figure('Color','w');
 tiledlayout(3,2)
 
 ax_list(1) = nexttile; y_range = [min(min(-FZ),0) round(max(-FZ)*1.1)];
@@ -72,6 +73,7 @@ plot([cut_end cut_end],y_range,'--r')
 title('Vertical force')
 xlabel('Samples [-]')
 ylabel('[N]')
+grid on
 
 ax_list(2) = nexttile; y_range = [min(min(IA),0) round(max(IA)*1.1)];
 plot(IA)
@@ -81,6 +83,7 @@ plot([cut_end cut_end],y_range,'--r')
 title('Camber angle')
 xlabel('Samples [-]')
 ylabel('[deg]')
+grid on
 
 ax_list(3) = nexttile; y_range = [min(min(SA),0) round(max(SA)*1.1)];
 plot(SA)
@@ -90,6 +93,7 @@ plot([cut_end cut_end],y_range,'--r')
 title('Side slip')
 xlabel('Samples [-]')
 ylabel('[deg]')
+grid on
 
 ax_list(4) = nexttile; y_range = [min(min(SL),0) round(max(SL)*1.1)];
 plot(SL)
@@ -99,6 +103,7 @@ plot([cut_end cut_end],y_range,'--r')
 title('Longitudinal slip')
 xlabel('Samples [-]')
 ylabel('[-]')
+grid on
 
 ax_list(5) = nexttile; y_range = [min(min(P),0) round(max(P)*1.1)];
 plot(P)
@@ -108,6 +113,7 @@ plot([cut_end cut_end],y_range,'--r')
 title('Tyre pressure')
 xlabel('Samples [-]')
 ylabel('[psi]')
+grid on
 
 ax_list(6) = nexttile;  y_range = [min(min(TSTC),0) round(max(TSTC)*1.1)];
 plot(TSTC,'DisplayName','Center')
@@ -120,9 +126,12 @@ plot([cut_end cut_end],y_range,'--r')
 title('Tyre temperatures')
 xlabel('Samples [-]')
 ylabel('[degC]')
+grid on
 
 linkaxes(ax_list,'x')
 
+sgtitle('Imported data', 'interpreter', 'latex', 'FontSize', font_size_title)
+export_fig(fig_loaded_data,'images/fig_loaded_data.svg')
 
 %plot(SA,FY)
 
@@ -189,9 +198,9 @@ SA_0     = tyre_data( idx.SA_0, : );
 SA_3neg  = tyre_data( idx.SA_3neg, : );
 SA_6neg  = tyre_data( idx.SA_6neg, : );
 
-figure()
+fig_selected = figure('Color','w')
 tiledlayout(3,1)
-
+sgtitle('Selected values','fontsize',font_size_title, 'interpreter','latex') 
 ax_list(1) = nexttile;
 plot(tyre_data.IA*to_deg)
 hold on
@@ -204,6 +213,7 @@ plot(vec_samples(idx.GAMMA_5),GAMMA_5.IA*to_deg,'.');
 title('Camber angle')
 xlabel('Samples [-]')
 ylabel('[deg]')
+grid on
 
 ax_list(2) = nexttile;
 plot(tyre_data.FZ)
@@ -216,7 +226,7 @@ plot(vec_samples(idx.FZ_1120),FZ_1120.FZ,'.');
 title('Vertical force')
 xlabel('Samples [-]')
 ylabel('[N]')
-
+grid on
 
 ax_list(3) = nexttile;
 plot(tyre_data.SA*to_deg)
@@ -227,8 +237,9 @@ plot(vec_samples(idx.SA_6neg),SA_6neg.SA*to_deg,'.');
 title('Slide slip')
 xlabel('Samples [-]')
 ylabel('[rad]')
+grid on
 
-
+export_fig(fig_selected, 'images/fig_selected.svg');
 
 
 %% Intersect tables to obtain specific sub-datasets
