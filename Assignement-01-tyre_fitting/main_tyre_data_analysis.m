@@ -12,52 +12,57 @@ set(0,'DefaultFigureWindowStyle','docked');
 set(0,'defaultAxesFontSize',  16)
 set(0,'DefaultLegendFontSize',16)
 
-addpath('tyre_lib/')
+addpath('tyre_lib\')
 
 
 to_rad = pi/180;
 to_deg = 180/pi;
 %% Select tyre dataset
 %dataset path
-data_set_path = 'TTC_dataset/';
+data_set_path = 'dataset/';
 % dataset selection and loading
 
-%data_set = 'B1464run23'; % pure lateral forces
-data_set = 'B1464run30';  % braking/traction (pure log. force) + combined
+data_set = 'Goodyear_B1464run58';  
+
+% Hoosier	18.0x6.0-10
 
 % tyre geometric data:
-% Hoosier	18.0x6.0-10
-% 18 diameter in inches
-% 6.0 section width in inches
+% Goodyear D2704 20.0x7.0-13
+% 20 diameter in inches
+% 7.0 section width in inches
 % tread width in inches
-diameter = 18*2.56; %
+diameter = 20*2.56; % [cm]
 Fz0 = 220;   % [N] nominal load is given
 R0  = diameter/2/100; % [m] get from nominal load R0 (m) *** TO BE CHANGED ***
 
 
-fprintf('Loading dataset ...')
-switch data_set
-  case 'B1464run23'
-  load ([data_set_path, 'B1464run23.mat']); % pure lateral
-  cut_start = 27760;
-  cut_end   = 54500;
-  case 'B1464run30'
-  load ([data_set_path, 'B1464run30.mat']); % pure longitudinal
-  cut_start = 19028;
-  cut_end   = 37643;
-  otherwise 
-  error('Not found dataset: `%s`\n', data_set) ;
+% fprintf('Loading dataset ...')
+% switch data_set
+%   case 'B1464run23'
+%   load ([data_set_path, 'B1464run23.mat']); % pure lateral
+%   cut_start = 27760;
+%   cut_end   = 54500;
+%   case 'B1464run30'
+%   load ([data_set_path, 'B1464run30.mat']); % pure longitudinal
+%   cut_start = 19028;
+%   cut_end   = 37643;
+%   otherwise 
+%   error('Not found dataset: `%s`\n', data_set) ;
   
-end
+% end
 
-% select dataset portion
+load ([data_set_path, 'Goodyear_B1464run58.mat']); % pure lateral
+
+% % select dataset portion
+% smpl_range = cut_start:cut_end;
+cut_start = 1;
+cut_end = length(FX);
 smpl_range = cut_start:cut_end;
-
-fprintf('completed!\n')
+% fprintf('completed!\n')
 %% Plot raw data
 
 figure
-tiledlayout(6,1)
+tiledlayout(3,2)
 
 ax_list(1) = nexttile; y_range = [min(min(-FZ),0) round(max(-FZ)*1.1)];
 plot(-FZ)
@@ -128,15 +133,15 @@ linkaxes(ax_list,'x')
 vec_samples = 1:1:length(smpl_range);
 tyre_data = table(); % create empty table
 % store raw data in table
-tyre_data.SL =  SL(smpl_range);
-tyre_data.SA =  SA(smpl_range)*to_rad;
-tyre_data.FZ = -FZ(smpl_range);  % 0.453592  lb/kg
-tyre_data.FX =  FX(smpl_range);
-tyre_data.FY =  FY(smpl_range);
-tyre_data.MZ =  MZ(smpl_range);
-tyre_data.IA =  IA(smpl_range)*to_rad;
+tyre_data.SL =  SL(smpl_range);             % Longitudinal slip
+tyre_data.SA =  SA(smpl_range)*to_rad;      % Side slip angle
+tyre_data.FZ = -FZ(smpl_range);             % Vertical force                    % 0.453592  lb/kg
+tyre_data.FX =  FX(smpl_range);             % Longitudinal force
+tyre_data.FY =  FY(smpl_range);             % Lateral force
+tyre_data.MZ =  MZ(smpl_range);             % Self aligning moment
+tyre_data.IA =  IA(smpl_range)*to_rad;      % Camber angle
 
-% Extract points at constant inclination angle
+% Extract points at constant inclination angle (camber angle)
 GAMMA_tol = 0.05*to_rad;
 idx.GAMMA_0 = 0.0*to_rad-GAMMA_tol < tyre_data.IA & tyre_data.IA < 0.0*to_rad+GAMMA_tol;
 idx.GAMMA_1 = 1.0*to_rad-GAMMA_tol < tyre_data.IA & tyre_data.IA < 1.0*to_rad+GAMMA_tol;
@@ -144,6 +149,7 @@ idx.GAMMA_2 = 2.0*to_rad-GAMMA_tol < tyre_data.IA & tyre_data.IA < 2.0*to_rad+GA
 idx.GAMMA_3 = 3.0*to_rad-GAMMA_tol < tyre_data.IA & tyre_data.IA < 3.0*to_rad+GAMMA_tol;
 idx.GAMMA_4 = 4.0*to_rad-GAMMA_tol < tyre_data.IA & tyre_data.IA < 4.0*to_rad+GAMMA_tol;
 idx.GAMMA_5 = 5.0*to_rad-GAMMA_tol < tyre_data.IA & tyre_data.IA < 5.0*to_rad+GAMMA_tol;
+
 GAMMA_0  = tyre_data( idx.GAMMA_0, : );
 GAMMA_1  = tyre_data( idx.GAMMA_1, : );
 GAMMA_2  = tyre_data( idx.GAMMA_2, : );
@@ -257,7 +263,7 @@ FZ0 = mean(TData0.FZ);
 zeros_vec = zeros(size(TData0.SL));
 ones_vec  = ones(size(TData0.SL));
 
-FX0_guess = MF96_FX0_vec(TData0.SL,zeros_vec , zeros_vec, tyre_coeffs.FZ0*ones_vec, tyre_coeffs);
+FX0_guess = MF96_FX0_vec(TData0.SL, zeros_vec , zeros_vec, tyre_coeffs.FZ0*ones_vec, tyre_coeffs);
 
 % check guess 
 figure()
@@ -280,17 +286,18 @@ P0 = [  1,   2,   1,  0,   0,   1,   0];
 % 1< pCx1 < 2 
 % 0< pEx1 < 1 
 %    [pCx1 pDx1 pEx1 pEx4  pHx1  pKx1  pVx1 
-lb = [1,   0.1,   0,   0,  -10,    0,   -10];
-ub = [2,    4,   1,   1,   10,   100,  10];
+lb = [1,   0.1,   0,   0,  -10,    0,   -10]; % lower bound
+ub = [2,    4,   1,   1,   10,   100,  10];   % upper bound
 
 
 KAPPA_vec = TData0.SL;
 FX_vec    = TData0.FX;
 
 % check guess
-SL_vec = -0.3:0.001:0.3;
-FX0_fz_nom_vec = MF96_FX0_vec(SL_vec,zeros(size(SL_vec)) , zeros(size(SL_vec)), ...
-                              FZ0.*ones(size(SL_vec)),tyre_coeffs);
+SL_vec = -0.3:0.001:0.3; % longitudinal slip to be used in the plot for cj=heck the interpolation outside the input data range
+% FX0_fz_nom_vec = MF96_FX0_vec(SL_vec,zeros(size(SL_vec)) , zeros(size(SL_vec)), ...
+%                               FZ0.*ones(size(SL_vec)),tyre_coeffs);
+
 % 
 % figure
 % plot(KAPPA_vec,FX_vec,'.')
@@ -302,7 +309,7 @@ FX0_fz_nom_vec = MF96_FX0_vec(SL_vec,zeros(size(SL_vec)) , zeros(size(SL_vec)), 
 % LSM_pure_Fx returns the residual, so minimize the residual varying X. It
 % is an unconstrained minimization problem 
 
-[P_fz_nom,fval,exitflag] = fmincon(@(P)resid_pure_Fx(P,FX_vec, KAPPA_vec,0,FZ0, tyre_coeffs),...
+[P_fz_nom,fval,exitflag] = fmincon(@(P)resid_pure_Fx(P, FX_vec, KAPPA_vec, 0, FZ0, tyre_coeffs),...
                                P0,[],[],[],[],lb,ub);
 
 % Update tyre data with new optimal values                             
