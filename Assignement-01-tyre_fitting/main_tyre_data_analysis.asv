@@ -176,6 +176,8 @@ plot_stiffness;
 %--------------------------------------------------------------------------
 % extract data with variable load
 [TDataGamma, ~] = intersect_table_data(SA_0, FZ_220);
+[TDataGammaFZ700, ~] = intersect_table_data(SA_0, FZ_700);
+TDataGammaallFZ = SA_0;
 
 % Fit the coeffs { pDx3}
 
@@ -194,8 +196,20 @@ GAMMA_vec = TDataGamma.IA;
 FX_vec    = TDataGamma.FX;
 FZ_vec    = TDataGamma.FZ;
 
+KAPPA_vecFZ700 = TDataGammaFZ700.SL;
+GAMMA_vecFZ700 = TDataGammaFZ700.IA; 
+FX_vecFZ700    = TDataGammaFZ700.FX;
+FZ_vecFZ700    = TDataGammaFZ700.FZ;
+
+KAPPA_vecallFZ = TDataGammaallFZ.SL;
+GAMMA_vecallFZ = TDataGammaallFZ.IA; 
+FX_vecallFZ    = TDataGammaallFZ.FX;
+FZ_vecallFZ    = TDataGammaallFZ.FZ;
+
 fig_camber_FX = figure('Color', 'w');
 plot(KAPPA_vec,FX_vec, '.', 'DisplayName', '$F_{z}=220 [N]$');
+hold on
+plot(KAPPA_vecFZ700,FX_vecFZ700, '.', 'DisplayName', '$F_{z}=700 [N]$');
 grid on
 xlabel('$\gamma$ [rad]')
 ylabel('$F_X$ [N]')
@@ -211,13 +225,21 @@ export_fig(fig_camber_FX, 'images\fig_camber_FX.svg')
 % Change tyre data with new optimal values
 tyre_coeffs.pDx3 = P_varGamma(1); % 1
 
+[P_varGammaallFZ,fvalallFZ,exitflag] = fmincon(@(P)resid_pure_Fx_varGamma(P,FX_vec, KAPPA_vecallFZ, GAMMA_vecallFZ, FZ_vecallFZ, tyre_coeffs),...
+                               P0,[],[],[],[],lb,ub);
+
+% Change tyre data with new optimal values
+% tyre_coeffs.pDx3 = P_varGamma(1); % 1
+tyre_coeffs.pDx3 = P_varGammaallFZ(1); % 1
+
 %%
 FX0_varGamma_vec = MF96_FX0_vec(KAPPA_vec, zeros_vec, GAMMA_vec, tyre_coeffs.FZ0*ones_vec, tyre_coeffs);
+FX0_varGamma_vecFZ700 = MF96_FX0_vec(KAPPA_vecFZ700, zeros_vec, GAMMA_vec, mean(FZ_700.FZ)*ones_vec, tyre_coeffs);
 
-data_label = ["Fitted data FZ=220 [N]"];
-x_fit = repmat(KAPPA_vec, 1, 2);
-y_fit = [FX0_varGamma_vec];
-plot_fitted_data(TDataGamma.SL, TDataGamma.FX, x_fit, y_fit, '$\kappa$ [-]', '$F_{X}$ [N]', data_label, 'fig_fit_variable_camber_FX', 'Fitting with variable camber', line_width, font_size_title)
+data_label = ["Fitted data FZ=220 [N]", "Fitted data FZ=700 [N]"];
+x_fit = repmat(KAPPA_vec(1:1561), 1, 2);
+y_fit = [FX0_varGamma_vec(1:1561) FX0_varGamma_vecFZ700];
+plot_fitted_data(SA_0.SL, SA_0.FX, x_fit, y_fit, '$\kappa$ [-]', '$F_{X}$ [N]', data_label, 'fig_fit_variable_camber_FX', 'Fitting with variable camber', line_width, font_size_title)
 
 
 %% Calculate the residuals with the optimal solution found above
