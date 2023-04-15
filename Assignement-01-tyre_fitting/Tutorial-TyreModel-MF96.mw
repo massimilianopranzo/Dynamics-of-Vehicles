@@ -334,6 +334,10 @@ LMR = 1
 end:</Text-field>
 </Input>
 </Group>
+<Group hide-input="false" labelreference="L240942" drawlabel="true" applyint="true" applyrational="true" applyexponent="false">
+<Output><Text-field style="2D Output" layout="Maple Output"><Equation executable="false" style="2D Output" display="LUklbXJvd0c2Iy9JK21vZHVsZW5hbWVHNiJJLFR5cGVzZXR0aW5nR0koX3N5c2xpYkdGJzYmLUkjbWlHRiQ2JVEnbXlfYWJzRicvJSdpdGFsaWNHUSV0cnVlRicvJSxtYXRodmFyaWFudEdRJ2l0YWxpY0YnLUkjbW9HRiQ2LVEwJkFwcGx5RnVuY3Rpb247RicvRjNRJ25vcm1hbEYnLyUmZmVuY2VHUSZmYWxzZUYnLyUqc2VwYXJhdG9yR0Y9LyUpc3RyZXRjaHlHRj0vJSpzeW1tZXRyaWNHRj0vJShsYXJnZW9wR0Y9LyUubW92YWJsZWxpbWl0c0dGPS8lJ2FjY2VudEdGPS8lJ2xzcGFjZUdRJjAuMGVtRicvJSdyc3BhY2VHRkwtSShtZmVuY2VkR0YkNiQtRiM2Ji1JI21uR0YkNiRRKyZ1bWludXMwOzFGJ0Y5LyUrZm9yZWdyb3VuZEdRKFswLDAsMF1GJy8lKXJlYWRvbmx5R0Y9RjlGOUY5">LUknbXlfYWJzRzYiNiMhIiI=</Equation></Text-field>
+</Output>
+</Group>
 </Section>
 <Section collapsed="false" isCollapsible="true" drawButton="true" MultipleChoiceAnswerIndex="-1" MultipleChoiceRandomizeChoices="false" TrueFalseAnswerIndex="-1" EssayAnswerRows="5" EssayAnswerColumns="60"><Title><Text-field style="Heading 1" layout="Heading 1">Model coefficients</Text-field></Title>
 <Group labelreference="L19728" drawlabel="true" applyint="true" applyrational="true" applyexponent="false">
@@ -480,7 +484,7 @@ MF96_FY0_pars,MF96_FY0_lambda_pars := extract_lambda_pars(MF96_FY0_pars):
 </Output>
 </Group>
 </Section>
-<Section collapsed="false" isCollapsible="true" drawButton="true" MultipleChoiceAnswerIndex="-1" MultipleChoiceRandomizeChoices="false" TrueFalseAnswerIndex="-1" EssayAnswerRows="5" EssayAnswerColumns="60"><Title><Text-field style="Heading 2" layout="Heading 2">Pure aligning moment Mz</Text-field></Title>
+<Section collapsed="true" isCollapsible="true" drawButton="true" MultipleChoiceAnswerIndex="-1" MultipleChoiceRandomizeChoices="false" TrueFalseAnswerIndex="-1" EssayAnswerRows="5" EssayAnswerColumns="60"><Title><Text-field style="Heading 2" layout="Heading 2">Pure aligning moment Mz</Text-field></Title>
 <Group labelreference="L19827" drawlabel="true" applyint="true" applyrational="true" applyexponent="false">
 <Input><Text-field style="Text" layout="Normal">Pure longitudinal force coefficients:
 </Text-field>
@@ -546,7 +550,7 @@ MF96_MZ0_pars,MF96_MZ0_lambda_pars := extract_lambda_pars(MF96_MZ0_pars):
 </Output>
 </Group>
 </Section>
-<Section collapsed="false" isCollapsible="true" drawButton="true" MultipleChoiceAnswerIndex="-1" MultipleChoiceRandomizeChoices="false" TrueFalseAnswerIndex="-1" EssayAnswerRows="5" EssayAnswerColumns="60"><Title><Text-field style="Heading 2" layout="Heading 2">Combined longitudinal and lateral forces</Text-field></Title>
+<Section collapsed="true" isCollapsible="true" drawButton="true" MultipleChoiceAnswerIndex="-1" MultipleChoiceRandomizeChoices="false" TrueFalseAnswerIndex="-1" EssayAnswerRows="5" EssayAnswerColumns="60"><Title><Text-field style="Heading 2" layout="Heading 2">Combined longitudinal and lateral forces</Text-field></Title>
 <Group labelreference="L19832" drawlabel="true" applyint="true" applyrational="true" applyexponent="false">
 <Input><Text-field style="Text" layout="Normal">Pure longitudinal force coefficients:
 </Text-field>
@@ -617,7 +621,7 @@ MF96_FXFYCOMB_pars,MF96_FXFYCOMB_lambda_pars := extract_lambda_pars(MF96_FXFYCOM
 </Group>
 </Section>
 </Section>
-<Section collapsed="false" isCollapsible="true" drawButton="true" MultipleChoiceAnswerIndex="-1" MultipleChoiceRandomizeChoices="false" TrueFalseAnswerIndex="-1" EssayAnswerRows="5" EssayAnswerColumns="60"><Title><Text-field style="Heading 1" layout="Heading 1">Magic Formula</Text-field></Title><Presentation-Block>
+<Section collapsed="true" isCollapsible="true" drawButton="true" MultipleChoiceAnswerIndex="-1" MultipleChoiceRandomizeChoices="false" TrueFalseAnswerIndex="-1" EssayAnswerRows="5" EssayAnswerColumns="60"><Title><Text-field style="Heading 1" layout="Heading 1">Magic Formula</Text-field></Title><Presentation-Block>
 <Group view="code" labelreference="L19890" drawlabel="true" applyint="true" applyrational="true" applyexponent="false">
 <Input><Text-field style="Text" layout="Normal">Generic Magic formula to compute pure longitudinal and laterale forces and the combined forces.</Text-field>
 </Input>
@@ -661,7 +665,7 @@ codegen[makeproc](MF_stiffnes_fnc(x,B,C,D,E,SV),[x,B,C,D,E,SV]);</Text-field>
 </Output>
 </Group></Presentation-Block>
 </Section>
-<Section collapsed="false" isCollapsible="true" drawButton="true" MultipleChoiceAnswerIndex="-1" MultipleChoiceRandomizeChoices="false" TrueFalseAnswerIndex="-1" EssayAnswerRows="5" EssayAnswerColumns="60"><Title><Text-field style="Heading 1" layout="Heading 1">to be completed</Text-field></Title>
+<Section collapsed="true" isCollapsible="true" drawButton="true" MultipleChoiceAnswerIndex="-1" MultipleChoiceRandomizeChoices="false" TrueFalseAnswerIndex="-1" EssayAnswerRows="5" EssayAnswerColumns="60"><Title><Text-field style="Heading 1" layout="Heading 1">to be completed</Text-field></Title>
 <Group hide-input="false" labelreference="L240939" drawlabel="true" applyint="true" applyrational="true" applyexponent="false">
 <Input><Text-field prompt="&gt; " style="Maple Input" layout="Normal">codegen[makeproc](subs( TIR_DATA, MF96_FX0_coeffs_eqns),parameters = [kappa,phi,Fz]);
 
@@ -693,7 +697,7 @@ codegen[joinprocs]([%%,%]);
 </Group>
 </Section>
 <Section collapsed="false" isCollapsible="true" drawButton="true" MultipleChoiceAnswerIndex="-1" MultipleChoiceRandomizeChoices="false" TrueFalseAnswerIndex="-1" EssayAnswerRows="5" EssayAnswerColumns="60"><Title><Text-field style="Heading 1" layout="Heading 1">Matlab code generation</Text-field></Title>
-<Section collapsed="false" isCollapsible="true" drawButton="true" MultipleChoiceAnswerIndex="-1" MultipleChoiceRandomizeChoices="false" TrueFalseAnswerIndex="-1" EssayAnswerRows="5" EssayAnswerColumns="60"><Title><Text-field style="Heading 2" layout="Heading 2">Auxiliary procedure to generate Matlab code</Text-field></Title>
+<Section collapsed="true" isCollapsible="true" drawButton="true" MultipleChoiceAnswerIndex="-1" MultipleChoiceRandomizeChoices="false" TrueFalseAnswerIndex="-1" EssayAnswerRows="5" EssayAnswerColumns="60"><Title><Text-field style="Heading 2" layout="Heading 2">Auxiliary procedure to generate Matlab code</Text-field></Title>
 <Group labelreference="L19856" drawlabel="true" applyint="true" applyrational="true" applyexponent="false">
 <Input><Text-field style="Text" layout="Normal">Procedure to convert a list of symbols into a list of strings</Text-field>
 </Input>
@@ -774,7 +778,7 @@ end proc:</Text-field>
 </Input>
 </Group>
 </Section>
-<Section collapsed="false" isCollapsible="true" drawButton="true" MultipleChoiceAnswerIndex="-1" MultipleChoiceRandomizeChoices="false" TrueFalseAnswerIndex="-1" EssayAnswerRows="5" EssayAnswerColumns="60"><Title><Text-field style="Heading 2" layout="Heading 2">Tyre data structure</Text-field></Title>
+<Section collapsed="true" isCollapsible="true" drawButton="true" MultipleChoiceAnswerIndex="-1" MultipleChoiceRandomizeChoices="false" TrueFalseAnswerIndex="-1" EssayAnswerRows="5" EssayAnswerColumns="60"><Title><Text-field style="Heading 2" layout="Heading 2">Tyre data structure</Text-field></Title>
 <Group hide-input="false" labelreference="L240940" drawlabel="true" applyint="true" applyrational="true" applyexponent="false">
 <Input><Text-field prompt="&gt; " style="Maple Input" layout="Normal">MF96_FX0_lambda_pars;</Text-field>
 </Input>
@@ -1006,7 +1010,7 @@ done!
 </Text-field>
 </Output>
 </Group>
-<Section collapsed="false" isCollapsible="true" drawButton="true" MultipleChoiceAnswerIndex="-1" MultipleChoiceRandomizeChoices="false" TrueFalseAnswerIndex="-1" EssayAnswerRows="5" EssayAnswerColumns="60"><Title><Text-field style="Heading 2" layout="Heading 2">Pure longitudinal force</Text-field></Title>
+<Section collapsed="true" isCollapsible="true" drawButton="true" MultipleChoiceAnswerIndex="-1" MultipleChoiceRandomizeChoices="false" TrueFalseAnswerIndex="-1" EssayAnswerRows="5" EssayAnswerColumns="60"><Title><Text-field style="Heading 2" layout="Heading 2">Pure longitudinal force</Text-field></Title>
 <Group labelreference="L19871" drawlabel="true" applyint="true" applyrational="true" applyexponent="false">
 <Input><Text-field style="Heading 3" layout="Heading 3">Pure Longitudinal force coefficients</Text-field>
 </Input>
@@ -1161,7 +1165,7 @@ header_code:= cat(op(%%),op(%));
 print_procedure(&quot;Coefficients for Magic Formula pure lateral force&quot;,
                 &quot;MF96_FY0_coeffs&quot;,
                 [kappa,alpha,phi,Fz, tyre_data],
-                [kappa__y, By, Cy, Dy, Ey, SVy],
+                [alpha__y, By, Cy, Dy, Ey, SVy],
                 header_code,
                 code,
                 outfile= true
@@ -1174,7 +1178,7 @@ print_procedure(&quot;Coefficients for Magic Formula pure lateral force&quot;,
 <Output><Text-field style="2D Output" layout="Maple Output"><Equation executable="false" style="2D Output" display="LUklbXJvd0c2Iy9JK21vZHVsZW5hbWVHNiJJLFR5cGVzZXR0aW5nR0koX3N5c2xpYkdGJzYmLUkjbWlHRiQ2JVEsaGVhZGVyX2NvZGVGJy8lJ2l0YWxpY0dRJXRydWVGJy8lLG1hdGh2YXJpYW50R1EnaXRhbGljRictSSNtb0dGJDYtUSkmQXNzaWduO0YnL0YzUSdub3JtYWxGJy8lJmZlbmNlR1EmZmFsc2VGJy8lKnNlcGFyYXRvckdGPS8lKXN0cmV0Y2h5R0Y9LyUqc3ltbWV0cmljR0Y9LyUobGFyZ2VvcEdGPS8lLm1vdmFibGVsaW1pdHNHRj0vJSdhY2NlbnRHRj0vJSdsc3BhY2VHUSwwLjI3Nzc3NzhlbUYnLyUncnNwYWNlR0ZMLUkjbXNHRiQ2I1FgZm5GWjB+fn5+fn5+fn5+fn5+PX50eXJlX2RhdGEuRlowO3wrRnowMX5+fn5+fn5+fn5+fj1+dHlyZV9kYXRhLkZ6MDE7fCtwQ3kxfn5+fn5+fn5+fn5+PX50eXJlX2RhdGEucEN5MTt8K3BEeTF+fn5+fn5+fn5+fn49fnR5cmVfZGF0YS5wRHkxO3wrcER5Mn5+fn5+fn5+fn5+fj1+dHlyZV9kYXRhLnBEeTI7fCtwRHkzfn5+fn5+fn5+fn5+PX50eXJlX2RhdGEucER5Mzt8K3BFeTF+fn5+fn5+fn5+fn49fnR5cmVfZGF0YS5wRXkxO3wrcEV5Mn5+fn5+fn5+fn5+fj1+dHlyZV9kYXRhLnBFeTI7fCtwRXkzfn5+fn5+fn5+fn5+PX50eXJlX2RhdGEucEV5Mzt8K3BFeTR+fn5+fn5+fn5+fn49fnR5cmVfZGF0YS5wRXk0O3wrcEh5MX5+fn5+fn5+fn5+fj1+dHlyZV9kYXRhLnBIeTE7fCtwSHkyfn5+fn5+fn5+fn5+PX50eXJlX2RhdGEucEh5Mjt8K3BIeTN+fn5+fn5+fn5+fn49fnR5cmVfZGF0YS5wSHkzO3wrcEt5MX5+fn5+fn5+fn5+fj1+dHlyZV9kYXRhLnBLeTE7fCtwS3kyfn5+fn5+fn5+fn5+PX50eXJlX2RhdGEucEt5Mjt8K3BLeTN+fn5+fn5+fn5+fn49fnR5cmVfZGF0YS5wS3kzO3wrcFZ5MX5+fn5+fn5+fn5+fj1+dHlyZV9kYXRhLnBWeTE7fCtwVnkyfn5+fn5+fn5+fn5+PX50eXJlX2RhdGEucFZ5Mjt8K3BWeTN+fn5+fn5+fn5+fn49fnR5cmVfZGF0YS5wVnkzO3wrcFZ5NH5+fn5+fn5+fn5+fj1+dHlyZV9kYXRhLnBWeTQ7fCtMQ1l+fn5+fn5+fn5+fn5+PX50eXJlX2RhdGEuTENZO3wrTEVZfn5+fn5+fn5+fn5+fj1+dHlyZV9kYXRhLkxFWTt8K0xGWjB+fn5+fn5+fn5+fn49fnR5cmVfZGF0YS5MRlowO3wrTEdBTU1BWX5+fn5+fn5+fj1+dHlyZV9kYXRhLkxHQU1NQVk7fCtMSFl+fn5+fn5+fn5+fn5+PX50eXJlX2RhdGEuTEhZO3wrTEtBfn5+fn5+fn5+fn5+fj1+dHlyZV9kYXRhLkxLQTt8K0xNVVl+fn5+fn5+fn5+fn49fnR5cmVfZGF0YS5MTVVZO3wrTFZZfn5+fn5+fn5+fn5+fj1+dHlyZV9kYXRhLkxWWTt8K0YnRjk=">LV9JLFR5cGVzZXR0aW5nRzYkJSpwcm90ZWN0ZWRHSShfc3lzbGliRzYiSSxtcHJpbnRzbGFzaEdGKDYkNyM+SSxoZWFkZXJfY29kZUdGKFFgZm5GWjB+fn5+fn5+fn5+fn5+PX50eXJlX2RhdGEuRlowO3wrRnowMX5+fn5+fn5+fn5+fj1+dHlyZV9kYXRhLkZ6MDE7fCtwQ3kxfn5+fn5+fn5+fn5+PX50eXJlX2RhdGEucEN5MTt8K3BEeTF+fn5+fn5+fn5+fn49fnR5cmVfZGF0YS5wRHkxO3wrcER5Mn5+fn5+fn5+fn5+fj1+dHlyZV9kYXRhLnBEeTI7fCtwRHkzfn5+fn5+fn5+fn5+PX50eXJlX2RhdGEucER5Mzt8K3BFeTF+fn5+fn5+fn5+fn49fnR5cmVfZGF0YS5wRXkxO3wrcEV5Mn5+fn5+fn5+fn5+fj1+dHlyZV9kYXRhLnBFeTI7fCtwRXkzfn5+fn5+fn5+fn5+PX50eXJlX2RhdGEucEV5Mzt8K3BFeTR+fn5+fn5+fn5+fn49fnR5cmVfZGF0YS5wRXk0O3wrcEh5MX5+fn5+fn5+fn5+fj1+dHlyZV9kYXRhLnBIeTE7fCtwSHkyfn5+fn5+fn5+fn5+PX50eXJlX2RhdGEucEh5Mjt8K3BIeTN+fn5+fn5+fn5+fn49fnR5cmVfZGF0YS5wSHkzO3wrcEt5MX5+fn5+fn5+fn5+fj1+dHlyZV9kYXRhLnBLeTE7fCtwS3kyfn5+fn5+fn5+fn5+PX50eXJlX2RhdGEucEt5Mjt8K3BLeTN+fn5+fn5+fn5+fn49fnR5cmVfZGF0YS5wS3kzO3wrcFZ5MX5+fn5+fn5+fn5+fj1+dHlyZV9kYXRhLnBWeTE7fCtwVnkyfn5+fn5+fn5+fn5+PX50eXJlX2RhdGEucFZ5Mjt8K3BWeTN+fn5+fn5+fn5+fn49fnR5cmVfZGF0YS5wVnkzO3wrcFZ5NH5+fn5+fn5+fn5+fj1+dHlyZV9kYXRhLnBWeTQ7fCtMQ1l+fn5+fn5+fn5+fn5+PX50eXJlX2RhdGEuTENZO3wrTEVZfn5+fn5+fn5+fn5+fj1+dHlyZV9kYXRhLkxFWTt8K0xGWjB+fn5+fn5+fn5+fn49fnR5cmVfZGF0YS5MRlowO3wrTEdBTU1BWX5+fn5+fn5+fj1+dHlyZV9kYXRhLkxHQU1NQVk7fCtMSFl+fn5+fn5+fn5+fn5+PX50eXJlX2RhdGEuTEhZO3wrTEtBfn5+fn5+fn5+fn5+fj1+dHlyZV9kYXRhLkxLQTt8K0xNVVl+fn5+fn5+fn5+fn49fnR5cmVfZGF0YS5MTVVZO3wrTFZZfn5+fn5+fn5+fn5+fj1+dHlyZV9kYXRhLkxWWTt8K0YoNyNGLg==</Equation></Text-field>
 </Output>
 <Output><Text-field style="Line Printed Output" layout="Line Printed Output">% Coefficients for Magic Formula pure lateral force
-function [kappa__y, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(kappa, alpha, phi, Fz, tyre_data)
+function [alpha__y, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(kappa, alpha, phi, Fz, tyre_data)
 
  % precode
 
@@ -1239,10 +1243,10 @@ done!
 </Input>
 </Group>
 <Group hide-input="false" labelreference="L19897" drawlabel="true" applyint="true" applyrational="true" applyexponent="false">
-<Input><Text-field prompt="&gt; " style="Maple Input" layout="Normal">tmp      := magic_formula(kappa__y,By,Cy,Dy,Ey,SVy);
+<Input><Text-field prompt="&gt; " style="Maple Input" layout="Normal">tmp      := magic_formula(alpha__y,By,Cy,Dy,Ey,SVy);
 code     := CodeGeneration[Matlab](tmp, resultname='fy0', optimize = false,output=string);
 
-header_code:= &quot;[kappa__y, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(kappa, alpha, phi, Fz, tyre_data);&quot;;
+header_code:= &quot;[alpha__y, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(kappa, alpha, phi, Fz, tyre_data);&quot;;
 
 print_procedure(&quot;Pure longitudinal force FY0&quot;,
                 &quot;MF96_FY0&quot;,
@@ -1253,13 +1257,34 @@ print_procedure(&quot;Pure longitudinal force FY0&quot;,
                 outfile= true
 );</Text-field>
 </Input>
-<Output><Text-field style="2D Output" layout="Maple Output"><Equation executable="false" style="2D Output" display="LUklbXJvd0c2Iy9JK21vZHVsZW5hbWVHNiJJLFR5cGVzZXR0aW5nR0koX3N5c2xpYkdGJzYoLUkjbWlHRiQ2JVEkdG1wRicvJSdpdGFsaWNHUSV0cnVlRicvJSxtYXRodmFyaWFudEdRJ2l0YWxpY0YnLUkjbW9HRiQ2LVEpJkFzc2lnbjtGJy9GM1Enbm9ybWFsRicvJSZmZW5jZUdRJmZhbHNlRicvJSpzZXBhcmF0b3JHRj0vJSlzdHJldGNoeUdGPS8lKnN5bW1ldHJpY0dGPS8lKGxhcmdlb3BHRj0vJS5tb3ZhYmxlbGltaXRzR0Y9LyUnYWNjZW50R0Y9LyUnbHNwYWNlR1EsMC4yNzc3Nzc4ZW1GJy8lJ3JzcGFjZUdGTC1GLDYlUS5tYWdpY19mb3JtdWxhRidGL0YyLUY2Ni1RMCZBcHBseUZ1bmN0aW9uO0YnRjlGO0Y+RkBGQkZERkZGSC9GS1EmMC4wZW1GJy9GTkZWLUkobWZlbmNlZEdGJDYkLUYjNjAtSSVtc3ViR0YkNiYtRiw2JVEnJiM5NTQ7RicvRjBGPUY5LUYsNiVRInlGJ0YvRjIvJS9zdWJzY3JpcHRzaGlmdEdRIjBGJy9JK21zZW1hbnRpY3NHRiRRJ2F0b21pY0YnLUY2Ni1RIixGJ0Y5RjsvRj9GMUZARkJGREZGRkhGVS9GTlEsMC4zMzMzMzMzZW1GJy1GLDYlUSNCeUYnRi9GMkZnby1GLDYlUSNDeUYnRi9GMkZnby1GLDYlUSNEeUYnRi9GMkZnby1GLDYlUSNFeUYnRi9GMkZnby1GLDYlUSRTVnlGJ0YvRjIvJStmb3JlZ3JvdW5kR1EoWzAsMCwwXUYnLyUpcmVhZG9ubHlHRj1GOUY5Rjk=">LV9JLFR5cGVzZXR0aW5nRzYkJSpwcm90ZWN0ZWRHSShfc3lzbGliRzYiSSxtcHJpbnRzbGFzaEdGKDYkNyM+SSR0bXBHRigtSS5tYWdpY19mb3JtdWxhR0YoNihJKWthcHBhX195R0YoSSNCeUdGKEkjQ3lHRihJI0R5R0YoSSNFeUdGKEkkU1Z5R0YoNyNGLg==</Equation></Text-field>
+<Output><Text-field style="2D Output" layout="Maple Output"><Equation executable="false" style="2D Output" display="LUklbXJvd0c2Iy9JK21vZHVsZW5hbWVHNiJJLFR5cGVzZXR0aW5nR0koX3N5c2xpYkdGJzYoLUkjbWlHRiQ2JVEkdG1wRicvJSdpdGFsaWNHUSV0cnVlRicvJSxtYXRodmFyaWFudEdRJ2l0YWxpY0YnLUkjbW9HRiQ2LVEpJkFzc2lnbjtGJy9GM1Enbm9ybWFsRicvJSZmZW5jZUdRJmZhbHNlRicvJSpzZXBhcmF0b3JHRj0vJSlzdHJldGNoeUdGPS8lKnN5bW1ldHJpY0dGPS8lKGxhcmdlb3BHRj0vJS5tb3ZhYmxlbGltaXRzR0Y9LyUnYWNjZW50R0Y9LyUnbHNwYWNlR1EsMC4yNzc3Nzc4ZW1GJy8lJ3JzcGFjZUdGTC1GLDYlUS5tYWdpY19mb3JtdWxhRidGL0YyLUY2Ni1RMCZBcHBseUZ1bmN0aW9uO0YnRjlGO0Y+RkBGQkZERkZGSC9GS1EmMC4wZW1GJy9GTkZWLUkobWZlbmNlZEdGJDYkLUYjNjAtSSVtc3ViR0YkNiYtRiw2JVEnJiM5NDU7RicvRjBGPUY5LUYsNiVRInlGJ0YvRjIvJS9zdWJzY3JpcHRzaGlmdEdRIjBGJy9JK21zZW1hbnRpY3NHRiRRJ2F0b21pY0YnLUY2Ni1RIixGJ0Y5RjsvRj9GMUZARkJGREZGRkhGVS9GTlEsMC4zMzMzMzMzZW1GJy1GLDYlUSNCeUYnRi9GMkZnby1GLDYlUSNDeUYnRi9GMkZnby1GLDYlUSNEeUYnRi9GMkZnby1GLDYlUSNFeUYnRi9GMkZnby1GLDYlUSRTVnlGJ0YvRjIvJStmb3JlZ3JvdW5kR1EoWzAsMCwwXUYnLyUpcmVhZG9ubHlHRj1GOUY5Rjk=">LV9JLFR5cGVzZXR0aW5nRzYkJSpwcm90ZWN0ZWRHSShfc3lzbGliRzYiSSxtcHJpbnRzbGFzaEdGKDYkNyM+SSR0bXBHRigtSS5tYWdpY19mb3JtdWxhR0YoNihJKWFscGhhX195R0YoSSNCeUdGKEkjQ3lHRihJI0R5R0YoSSNFeUdGKEkkU1Z5R0YoNyNGLg==</Equation></Text-field>
 </Output>
 <Output><Text-field style="HyperlinkWarning" layout="HyperlinkWarning"><Hyperlink linktarget="http://www.maplesoft.com/support/help/errors/view.aspx?path=Warning,%20the%20function%20names%20%7Bmagic_formula%7D%20are%20not%20recognized%20in%20the%20target%20language" hyperlink="true"><Font style="HyperlinkWarning">Warning, the function names {magic_formula} are not recognized in the target language</Font></Hyperlink></Text-field>
 </Output>
-<Output><Text-field style="2D Output" layout="Maple Output"><Equation executable="false" style="2D Output" display="LUklbXJvd0c2Iy9JK21vZHVsZW5hbWVHNiJJLFR5cGVzZXR0aW5nR0koX3N5c2xpYkdGJzYmLUkjbWlHRiQ2JVElY29kZUYnLyUnaXRhbGljR1EldHJ1ZUYnLyUsbWF0aHZhcmlhbnRHUSdpdGFsaWNGJy1JI21vR0YkNi1RKSZBc3NpZ247RicvRjNRJ25vcm1hbEYnLyUmZmVuY2VHUSZmYWxzZUYnLyUqc2VwYXJhdG9yR0Y9LyUpc3RyZXRjaHlHRj0vJSpzeW1tZXRyaWNHRj0vJShsYXJnZW9wR0Y9LyUubW92YWJsZWxpbWl0c0dGPS8lJ2FjY2VudEdGPS8lJ2xzcGFjZUdRLDAuMjc3Nzc3OGVtRicvJSdyc3BhY2VHRkwtSSNtc0dGJDYjUVVmeTB+PX5tYWdpY19mb3JtdWxhKGthcHBhX195LH5CeSx+Q3ksfkR5LH5FeSx+U1Z5KTt8K0YnRjk=">LV9JLFR5cGVzZXR0aW5nRzYkJSpwcm90ZWN0ZWRHSShfc3lzbGliRzYiSSxtcHJpbnRzbGFzaEdGKDYkNyM+SSVjb2RlR0YoUVVmeTB+PX5tYWdpY19mb3JtdWxhKGthcHBhX195LH5CeSx+Q3ksfkR5LH5FeSx+U1Z5KTt8K0YoNyNGLg==</Equation></Text-field>
+<Output><Text-field style="2D Output" layout="Maple Output"><Equation executable="false" style="2D Output" display="LUklbXJvd0c2Iy9JK21vZHVsZW5hbWVHNiJJLFR5cGVzZXR0aW5nR0koX3N5c2xpYkdGJzYmLUkjbWlHRiQ2JVElY29kZUYnLyUnaXRhbGljR1EldHJ1ZUYnLyUsbWF0aHZhcmlhbnRHUSdpdGFsaWNGJy1JI21vR0YkNi1RKSZBc3NpZ247RicvRjNRJ25vcm1hbEYnLyUmZmVuY2VHUSZmYWxzZUYnLyUqc2VwYXJhdG9yR0Y9LyUpc3RyZXRjaHlHRj0vJSpzeW1tZXRyaWNHRj0vJShsYXJnZW9wR0Y9LyUubW92YWJsZWxpbWl0c0dGPS8lJ2FjY2VudEdGPS8lJ2xzcGFjZUdRLDAuMjc3Nzc3OGVtRicvJSdyc3BhY2VHRkwtSSNtc0dGJDYjUVVmeTB+PX5tYWdpY19mb3JtdWxhKGFscGhhX195LH5CeSx+Q3ksfkR5LH5FeSx+U1Z5KTt8K0YnRjk=">LV9JLFR5cGVzZXR0aW5nRzYkJSpwcm90ZWN0ZWRHSShfc3lzbGliRzYiSSxtcHJpbnRzbGFzaEdGKDYkNyM+SSVjb2RlR0YoUVVmeTB+PX5tYWdpY19mb3JtdWxhKGFscGhhX195LH5CeSx+Q3ksfkR5LH5FeSx+U1Z5KTt8K0YoNyNGLg==</Equation></Text-field>
 </Output>
-<Output><Text-field style="2D Output" layout="Maple Output"><Equation executable="false" style="2D Output" display="LUklbXJvd0c2Iy9JK21vZHVsZW5hbWVHNiJJLFR5cGVzZXR0aW5nR0koX3N5c2xpYkdGJzYmLUkjbWlHRiQ2JVEsaGVhZGVyX2NvZGVGJy8lJ2l0YWxpY0dRJXRydWVGJy8lLG1hdGh2YXJpYW50R1EnaXRhbGljRictSSNtb0dGJDYtUSkmQXNzaWduO0YnL0YzUSdub3JtYWxGJy8lJmZlbmNlR1EmZmFsc2VGJy8lKnNlcGFyYXRvckdGPS8lKXN0cmV0Y2h5R0Y9LyUqc3ltbWV0cmljR0Y9LyUobGFyZ2VvcEdGPS8lLm1vdmFibGVsaW1pdHNHRj0vJSdhY2NlbnRHRj0vJSdsc3BhY2VHUSwwLjI3Nzc3NzhlbUYnLyUncnNwYWNlR0ZMLUkjbXNHRiQ2I1FfcFtrYXBwYV9feSx+QnksfkN5LH5EeSx+RXksflNWeV1+PX5NRjk2X0ZZMF9jb2VmZnMoa2FwcGEsfmFscGhhLH5waGksfkZ6LH50eXJlX2RhdGEpO0YnRjk=">LV9JLFR5cGVzZXR0aW5nRzYkJSpwcm90ZWN0ZWRHSShfc3lzbGliRzYiSSxtcHJpbnRzbGFzaEdGKDYkNyM+SSxoZWFkZXJfY29kZUdGKFFfcFtrYXBwYV9feSx+QnksfkN5LH5EeSx+RXksflNWeV1+PX5NRjk2X0ZZMF9jb2VmZnMoa2FwcGEsfmFscGhhLH5waGksfkZ6LH50eXJlX2RhdGEpO0YoNyNGLg==</Equation></Text-field>
+<Output><Text-field style="2D Output" layout="Maple Output"><Equation executable="false" style="2D Output" display="LUklbXJvd0c2Iy9JK21vZHVsZW5hbWVHNiJJLFR5cGVzZXR0aW5nR0koX3N5c2xpYkdGJzYmLUkjbWlHRiQ2JVEsaGVhZGVyX2NvZGVGJy8lJ2l0YWxpY0dRJXRydWVGJy8lLG1hdGh2YXJpYW50R1EnaXRhbGljRictSSNtb0dGJDYtUSkmQXNzaWduO0YnL0YzUSdub3JtYWxGJy8lJmZlbmNlR1EmZmFsc2VGJy8lKnNlcGFyYXRvckdGPS8lKXN0cmV0Y2h5R0Y9LyUqc3ltbWV0cmljR0Y9LyUobGFyZ2VvcEdGPS8lLm1vdmFibGVsaW1pdHNHRj0vJSdhY2NlbnRHRj0vJSdsc3BhY2VHUSwwLjI3Nzc3NzhlbUYnLyUncnNwYWNlR0ZMLUkjbXNHRiQ2I1FfcFthbHBoYV9feSx+QnksfkN5LH5EeSx+RXksflNWeV1+PX5NRjk2X0ZZMF9jb2VmZnMoa2FwcGEsfmFscGhhLH5waGksfkZ6LH50eXJlX2RhdGEpO0YnRjk=">LV9JLFR5cGVzZXR0aW5nRzYkJSpwcm90ZWN0ZWRHSShfc3lzbGliRzYiSSxtcHJpbnRzbGFzaEdGKDYkNyM+SSxoZWFkZXJfY29kZUdGKFFfcFthbHBoYV9feSx+QnksfkN5LH5EeSx+RXksflNWeV1+PX5NRjk2X0ZZMF9jb2VmZnMoa2FwcGEsfmFscGhhLH5waGksfkZ6LH50eXJlX2RhdGEpO0YoNyNGLg==</Equation></Text-field>
+</Output>
+<Output><Text-field style="Line Printed Output" layout="Line Printed Output">% Pure longitudinal force FY0
+function [fy0] = MF96_FY0(kappa, alpha, phi, Fz, tyre_data)
+
+ % precode
+
+  [alpha__y, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(kappa, alpha, phi, Fz, tyre_data);
+
+ % main code
+
+  fy0 = magic_formula(alpha__y, By, Cy, Dy, Ey, SVy);
+  
+ end
+
+</Text-field>
+</Output>
+<Output><Text-field style="2D Output" layout="Maple Output"><Equation executable="false" style="2D Output" display="LUkjbXNHNiMvSSttb2R1bGVuYW1lRzYiSSxUeXBlc2V0dGluZ0dJKF9zeXNsaWJHRic2I1E2Li90eXJlX2xpYi9NRjk2X0ZZMC5tRic=">UTYuL3R5cmVfbGliL01GOTZfRlkwLm02Ig==</Equation></Text-field>
+</Output>
+<Output><Text-field style="Line Printed Output" layout="Line Printed Output">Writing output file: ./tyre_lib/MF96_FY0.m
+done!
+</Text-field>
 </Output>
 </Group>
 </Section>
