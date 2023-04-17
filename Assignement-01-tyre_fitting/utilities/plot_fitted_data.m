@@ -17,6 +17,6 @@ function [] = plot_fitted_data(x_raw, y_raw, x_fit, y_fit, label_x, label_y, dat
 	title(plot_title, 'interpreter','latex', 'FontSize', font_size_title)
 	
 	fig_name = ['images\', name, '.svg'];
-	export_fig(fig, fig_name)
+% 	export_fig(fig, fig_name)
 	
 end

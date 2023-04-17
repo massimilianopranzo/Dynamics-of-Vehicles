@@ -1,6 +1,6 @@
 % Coefficients for Magic Formula pure longitudinal force
 function [kappa__x, Bx, Cx, Dx, Ex, SVx] = MF96_FX0_coeffs(kappa, alpha, phi, Fz, tyre_data)
-% alpha has not to be used
+
  % precode
 
   FZ0             = tyre_data.FZ0;

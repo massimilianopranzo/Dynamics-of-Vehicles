@@ -1,4 +1,4 @@
-function ty_data = initialise_ty_data(R0, Fz0)
+function ty_data = initialise_tyre_data(R0, Fz0)
 
 
 % Tyre structure data initialization
@@ -21,21 +21,21 @@ ty_data.pKx3            = 0; % pKx3
 ty_data.pVx1            = 0; % pVx1
 ty_data.pVx2            = 0; % pVx2
 ty_data.Fz01            = 0; % Fz01
-ty_data.pCy1            = 1.5; % pCy1 % It was 0
-ty_data.pDy1            = 2.35; % pDy1 % It was 0
+ty_data.pCy1            = 1.9; % pCy1 % It was 0
+ty_data.pDy1            = 0.16; % pDy1 % It was 0
 ty_data.pDy2            = 0; % pDy2
 ty_data.pDy3            = 0; % pDy3
 ty_data.pEy1            = 0; % pEy1
 ty_data.pEy2            = 0; % pEy2
 ty_data.pEy3            = 0; % pEy3
 ty_data.pEy4            = 0; % pEy4
-ty_data.pHy1            = 0; % pHy1
+ty_data.pHy1            = 0.02; % pHy1
 ty_data.pHy2            = 0; % pHy2
 ty_data.pHy3            = 0; % pHy3
-ty_data.pKy1            = -30; % pKy1 % It was 0
-ty_data.pKy2            = 0; % pKy2
+ty_data.pKy1            = -6; % pKy1 % It was 0
+ty_data.pKy2            = 1; % pKy2
 ty_data.pKy3            = 0; % pKy3
-ty_data.pVy1            = 0; % pVy1
+ty_data.pVy1            = -0.01; % pVy1
 ty_data.pVy2            = 0; % pVy2
 ty_data.pVy3            = 0; % pVy3
 ty_data.pVy4            = 0; % pVy4
