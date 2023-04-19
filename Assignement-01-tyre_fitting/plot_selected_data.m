@@ -5,7 +5,7 @@ function plot_selected_data(tab, font_size_title)
   linestyle = 'none';
   marker    = '*';
   
-  fig_selected_data = figure('Name','Selected-data', 'Color','w')
+  fig_selected_data = figure('Name','Selected-data', 'Color','w');
   % Plot selected data
    tiledlayout(3,2);
 

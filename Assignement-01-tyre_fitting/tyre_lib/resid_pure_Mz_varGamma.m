@@ -1,4 +1,4 @@
-function res = resid_pure_Mz_varGamma(P,MZ,ALPHA,GAMMA,FZ,tyre_data)
+function res = resid_pure_Mz_varGamma(P, MZ, ALPHA, GAMMA, FZ, tyre_data)
 
     % ----------------------------------------------------------------------
     %% Compute the residuals - least squares approach - to fit the Mz curve 
