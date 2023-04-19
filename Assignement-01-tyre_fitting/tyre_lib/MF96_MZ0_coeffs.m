@@ -5,6 +5,10 @@ function [alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr] = MF96_MZ0_coeffs(alpha, p
 
   FZ0             = tyre_data.FZ0;
   R0              = tyre_data.R0;
+  pCy1            = tyre_data.pCy1;
+  pDy1            = tyre_data.pDy1;
+  pDy2            = tyre_data.pDy2;
+  pDy3            = tyre_data.pDy3;
   pHy1            = tyre_data.pHy1;
   pHy2            = tyre_data.pHy2;
   pHy3            = tyre_data.pHy3;
@@ -61,11 +65,15 @@ function [alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr] = MF96_MZ0_coeffs(alpha, p
   SHt = qHz1 + qHz2 * dfz + (dfz * qHz4 + qHz3) * gamma__z;
   alpha__t = alpha + SHt;
   alpha__r = alpha + SHf;
+  mu_y = (dfz * pDy2 + pDy1) * (-pDy3 * gamma__z ^ 2 + 1);
+  Cy = pCy1;
+  Dy = mu_y * Fz;
+  By = Kya / Cy / Dy;
   Bt = (dfz ^ 2 * qBz3 + dfz * qBz2 + qBz1) * (1 + qBz4 * gamma__z + qBz5 * my_abs(gamma__z)) * LKY / LMUY;
   Ct = qCz1;
   Dt = Fz * (dfz * qDz2 + qDz1) * (qDz4 * gamma__z ^ 2 + qDz3 * gamma__z + 1) * R0 / FZ0 * LT;
   Et = (dfz ^ 2 * qEz3 + dfz * qEz2 + qEz1) * (0.1e1 + (qEz5 * gamma__z + qEz4) * atan((Bt * Ct * alpha__t)));
-  Br = qBz9 * LKY / LMUY + qBz10 * By * Cy;
+  Br = (qBz9 * LKY / LMUY) + qBz10 * By * Cy;
   Dr = Fz * (qDz6 + qDz7 * dfz + (dfz * qDz9 + qDz8) * gamma__z) * R0 * LMUY * LMR;
   
  end

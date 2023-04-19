@@ -1,4 +1,4 @@
-function res = resid_pure_Mz_varGamma(P, MZ, ALPHA, GAMMA, FZ, tyre_data)
+function res = resid_pure_Mz_varGamma(P, MZ, ALPHA, GAMMA, FZ, FY_vec, tyre_data)
 
     % ----------------------------------------------------------------------
     %% Compute the residuals - least squares approach - to fit the Mz curve 
@@ -19,7 +19,7 @@ function res = resid_pure_Mz_varGamma(P, MZ, ALPHA, GAMMA, FZ, tyre_data)
     % Longitudinal Force (Pure Longitudinal Slip) Equations
     res = 0;
     for i=1:length(ALPHA)
-       mz0  = MF96_MZ0(ALPHA(i), GAMMA(i), FZ, tmp_tyre_data);
+       mz0  = MF96_MZ0(ALPHA(i), GAMMA(i), FZ, FY_vec(i), tmp_tyre_data);
        res = res+(mz0-MZ(i))^2;
     end
     
