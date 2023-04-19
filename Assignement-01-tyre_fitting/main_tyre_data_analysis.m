@@ -1,6 +1,17 @@
 %% FITTING TYRE DATA WITH MAGIC FORMULA 96
 
+%% Initialisation
+clc
+clearvars 
+close all 
+
 addpath('utilities\')
+
+% Choice of the dataset
+data_set_path = 'dataset/';
+data_set = 'Goodyear_B1464run58';  
+struct_name = 'Goodyear_B1464';  
+
 initialization
 
 %% Syntax functions
@@ -11,7 +22,7 @@ initialization
 
 
 %% Load raw data  
-load ([data_set_path, 'Goodyear_B1464run58.mat']); % pure lateral
+load ([data_set_path, data_set]); % pure lateral
 
 % select dataset portion
 cut_start = 1;
@@ -35,8 +46,8 @@ plot_selected_data(TData0, font_size_title);
 %%-------------------------------------------------------------------------
 % FITTING WITH GUESS VALUES and nominal vertical load
 %--------------------------------------------------------------------------
-if exist(['tyre_' data_set,'.mat'], 'file')
-  load(['tyre_' data_set,'.mat']);
+if exist(['tyre_' struct_name,'.mat'], 'file')
+  load(['tyre_' struct_name,'.mat']);
 else
   tyre_coeffs = initialise_tyre_data(R0, Fz0);
 end
@@ -247,8 +258,7 @@ fprintf('Kx      = %6.3f\n',Bx*Cx*Dx/tyre_coeffs.FZ0);
 
 
 %% Save tyre data structure to mat file
-%
-save(['tyre_' data_set,'.mat'],'tyre_coeffs');
+save(['tyre_' struct_name,'.mat'],'tyre_coeffs');
 
 
 

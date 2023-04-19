@@ -1,11 +1,4 @@
-%% Initialisation
-clc
-clearvars 
-close all 
 
-% Choice of the dataset
-data_set_path = 'dataset/';
-data_set = 'Goodyear_B1464run58';  
 % tyre geometric data:
 % Goodyear D2704 20.0x7.0-13
 % 20 diameter in inches
@@ -33,4 +26,9 @@ addpath('tyre_lib\')
 
 to_rad = pi/180;
 to_deg = 180/pi;
+
+colors_vect = [[0 0.4470 0.7410]; [0.8500 0.3250 0.0980]; ...
+               [0.9290 0.6940 0.1250]; [0.4940 0.1840 0.5560]; ...
+               [0.4660 0.6740 0.1880]; [0.3010 0.7450 0.9330]; ...
+               [0.6350 0.0780 0.1840]];
 
