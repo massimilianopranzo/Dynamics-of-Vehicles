@@ -35,7 +35,12 @@ plot_selected_data(TData0, font_size_title);
 %%-------------------------------------------------------------------------
 % FITTING WITH GUESS VALUES and nominal vertical load
 %--------------------------------------------------------------------------
-tyre_coeffs = initialise_tyre_data(R0, Fz0);
+if exist(['tyre_' data_set,'.mat'], 'file')
+  load(['tyre_' data_set,'.mat']);
+else
+  tyre_coeffs = initialise_tyre_data(R0, Fz0);
+end
+
 FZ0 = mean(TData0.FZ);
 zeros_vec = zeros(size(TData0.SL));
 ones_vec  = ones(size(TData0.SL));

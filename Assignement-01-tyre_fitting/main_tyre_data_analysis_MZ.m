@@ -45,59 +45,64 @@ end
 FZ0 = mean(TData0.FZ);
 zeros_vec = zeros(size(TData0.SL));
 ones_vec  = ones(size(TData0.SL));
-FY0_guess = MF96_FY0_vec(zeros_vec ,TData0.SL, zeros_vec, tyre_coeffs.FZ0 * ones_vec, tyre_coeffs); 
+MZ0_guess = MF96_MZ0_vec(TData0.SL, zeros_vec, tyre_coeffs.FZ0 * ones_vec, tyre_coeffs); 
 label = "Fitted data";
 % figure 4
-plot_fitted_data(TData0.SL, TData0.FY, TData0.SL, FY0_guess, '$\alpha [deg]$', '$F_{Y0}$ [N]', label, 'fig_fit_guess_FY', 'Fitting with initial guess', line_width, font_size_title)
+plot_fitted_data(TData0.SL, TData0.MZ, TData0.SL, MZ0_guess, '$\alpha [deg]$', '$M_{Z0}$ [N]', label, 'fig_fit_guess_MZ', 'Fitting with initial guess', line_width, font_size_title)
 
 
 %% ------------------------------------------------------------------------
 % FITTING WITH NOMINAL LOAD Fz=Fz_nom= 220N and camber=0  alpha = 0 VX= 10
 %--------------------------------------------------------------------------
 % Guess values for parameters to be optimised
-%    [pCy1 pDy1 pEy1  pHy1  pKy1  pVy1]
-P0 = [  1,   2,   1,     0,   1,   0]; 
+%    [qHz1, qBz1, qCz1, qDz1, qDz2, qDz3, qDz4, qEz1, qEz4, qBz9, qBz10, qDz6]
+P0 = [   1,    1,    1,    1,    1,    1,    1,    1,    1,    1,     1,    1]; 
 
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised
-%    [pCy1 pDy1 pEy1  pHy1  pKy1  pVy1] 
-lb = [1,  0.1,   0,   -10,  -50,   -10]; % lower bound
-ub = [2,    4,   1,    10,   50,    10]; % upper bound
+%    [qHz1, qBz1, qCz1, qDz1, qDz2, qDz3, qDz4, qEz1, qEz4, qBz9, qBz10, qDz6]
+lb = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; % lower bound
+ub = [10, 10, 10 , 10, 10, 10, 10, 10, 10, 10, 10, 10,10 ]; % upper bound
 % lb = [];
 % ub = [];
 
 ALPHA_vec = TData0.SL;  % slip angle?
-FY_vec    = TData0.FY;  % longitudianl force
+MZ_vec    = TData0.MZ;  % aligning moment
 
 % check guess
 SL_vec = -0.3:0.001:0.3; % longitudinal slip to be used in the plot for check the interpolation outside the input data range
 
-% resid_pure_Fy returns the residual, so minimize the residual varying Y. 
+% resid_pure_Mz returns the residual, so minimize the residual varying Y. 
 % It is an unconstrained minimization problem 
-[P_fz_nom,fval,exitflag] = fmincon(@(P)resid_pure_Fy(P, FY_vec, ALPHA_vec, 0, FZ0, tyre_coeffs),...
+[P_fz_nom, fval, exitflag] = fmincon(@(P)resid_pure_Mz(P, MZ_vec, ALPHA_vec, 0, FZ0, tyre_coeffs),...
                                P0,[],[],[],[],lb,ub);
 
-% Update tyre data with new optimal values                             
-tyre_coeffs.pCy1 = P_fz_nom(1) ; % 1
-tyre_coeffs.pDy1 = P_fz_nom(2) ;  
-tyre_coeffs.pEy1 = P_fz_nom(3) ;
-tyre_coeffs.pHy1 = P_fz_nom(4) ; 
-tyre_coeffs.pKy1 = P_fz_nom(5) ;
-tyre_coeffs.pVy1 = P_fz_nom(6) ;
+% Update tyre data with new optimal values                   
+tyre_coeffs.qHz1  = P_fz_nom(1); 
+tyre_coeffs.qBz1  = P_fz_nom(2);
+tyre_coeffs.qCz1  = P_fz_nom(3);
+tyre_coeffs.qDz1  = P_fz_nom(4);
+tyre_coeffs.qDz2  = P_fz_nom(5);
+tyre_coeffs.qDz3  = P_fz_nom(6);
+tyre_coeffs.qDz4  = P_fz_nom(7);
+tyre_coeffs.qEz1  = P_fz_nom(8);
+tyre_coeffs.qEz4  = P_fz_nom(9);
+tyre_coeffs.qBz9  = P_fz_nom(10);
+tyre_coeffs.qBz10 = P_fz_nom(11);
+tyre_coeffs.qDz6  = P_fz_nom(12);
 
-FY0_fz_nom_vec = MF96_FY0_vec(zeros(size(SL_vec)), SL_vec, zeros(size(SL_vec)), ...
-                              FZ0.*ones(size(SL_vec)),tyre_coeffs);
+MZ0_fz_nom_vec = MF96_MZ0_vec(SL_vec, zeros(size(SL_vec)), FZ0.*ones(size(SL_vec)),tyre_coeffs);
         
 data_label = "Fitted data"; 
 % figure 5          
-plot_fitted_data(TData0.SL, TData0.FY, SL_vec', FY0_fz_nom_vec', '$\alpha [-]$', '$F_{x0}$ [N]', data_label, 'fig_fit_pure_conditions_FY', 'Fitting in pure conditions', line_width, font_size_title)
+plot_fitted_data(TData0.SL, TData0.MZ, SL_vec', MZ0_fz_nom_vec', '$\alpha [-]$', '$M_{z0}$ [N]', data_label, 'fig_fit_pure_conditions_MZ', 'Fitting in pure conditions', line_width, font_size_title)
 
 
 %% ------------------------------------------------------------------------
 % FIT COEFFICIENTS WITH VARIABLE LOAD
 %--------------------------------------------------------------------------
 % extract data with variable load
-[TDataDFz, ~] = intersect_table_data(SA_0, GAMMA_0);
+[TDataDFz, ~] = intersect_table_data(SL_0, GAMMA_0);
 
 % Fit the coeffs {pCx1, pDx1, pEx1, pEx4, pKx1, pHx1, pVx1}
 %FZ0 = mean(TData0.FZ);
@@ -106,21 +111,20 @@ zeros_vec = zeros(size(TDataDFz.SL));
 ones_vec  = ones(size(TDataDFz.SL));
 
 % Guess values for parameters to be optimised
-%    [   pDy2     pEy2   pHy2    pKy2   pVy2    pEy3]
+%    [  qHz2 qHz3 qHz4 qBz2 qBz3 qEz2 qEz3 qDz7 qDz8 qDz9]
 %% WORK HERE
-P0 = [  -0.25,   -0.25,     0,     -1,     0,   0.88].*0; 
-P0 = [-0.0000   -0.2018    0.0004    4.3470   -0.0071    8.9982];
+P0 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised
 % 1< pCx1 < 2 
 % 0< pEx1 < 1 
 %    [   pDy2     pEy2   pHy2    pKy2   pVy2    pEy3]
 %% WORK HERE
-lb = [-5 -5 -5 -5 -5 5];
-ub = [2 0 5 5 5 50];
+lb = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+ub = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10];
 
 ALPHA_vec = TDataDFz.SL;
-FY_vec    = TDataDFz.FY;
+MZ_vec    = TDataDFz.MZ;
 FZ_vec    = TDataDFz.FZ;
 
 % check guess
@@ -130,44 +134,55 @@ SL_vec = -0.3:0.001:0.3;
 
 % LSM_pure_Fx returns the residual, so minimize the residual varying X. It
 % is an unconstrained minimization problem 
-[P_dfz,fval,exitflag] = fmincon(@(P)resid_pure_Fy_varFz(P,FY_vec, ALPHA_vec, 0, FZ_vec, tyre_coeffs),...
+[P_dfz,fval,exitflag] = fmincon(@(P)resid_pure_Mz_varFz(P, MZ_vec, ALPHA_vec, 0, FZ_vec, tyre_coeffs),...
                                P0,[],[],[],[],lb,ub);
 
 disp(exitflag)
-% Change tyre data with new optimal values                             
-tyre_coeffs.pDy2 = P_dfz(1); % 1
-tyre_coeffs.pEy2 = P_dfz(2);  
-tyre_coeffs.pHy2 = P_dfz(3);
-tyre_coeffs.pKy2 = P_dfz(4); 
-tyre_coeffs.pVy2 = P_dfz(5);
-tyre_coeffs.pEy3 = P_dfz(6); 
+% Change tyre data with new optimal values          
+tyre_coeffs.qHz2 = P_dfz(1); 
+tyre_coeffs.qHz3 = P_dfz(2); 
+tyre_coeffs.qHz4 = P_dfz(3); 
+tyre_coeffs.qBz2 = P_dfz(4);
+tyre_coeffs.qBz3 = P_dfz(5);
+tyre_coeffs.qEz2 = P_dfz(6);
+tyre_coeffs.qEz3 = P_dfz(7);
+tyre_coeffs.qDz7 = P_dfz(8);
+tyre_coeffs.qDz8 = P_dfz(9);
+tyre_coeffs.qDz9 = P_dfz(10);
 
-res_FY0_dfz_vec = resid_pure_Fy_varFz(P_dfz, FY_vec, SL_vec, 0, FZ_vec, tyre_coeffs);
+
+res_MZ0_dfz_vec = resid_pure_Mz_varFz(P_dfz, MZ_vec, SL_vec, 0, FZ_vec, tyre_coeffs);
 
 tmp_zeros = zeros(size(SL_vec));
 tmp_ones = ones(size(SL_vec));
 
-FY0_fz_var_vec1 = MF96_FY0_vec(tmp_zeros, SL_vec, tmp_zeros, mean(FZ_220.FZ)*tmp_ones,tyre_coeffs);
-FY0_fz_var_vec2 = MF96_FY0_vec(tmp_zeros, SL_vec, tmp_zeros, mean(FZ_700.FZ)*tmp_ones,tyre_coeffs);
-FY0_fz_var_vec3 = MF96_FY0_vec(tmp_zeros, SL_vec, tmp_zeros, mean(FZ_900.FZ)*tmp_ones,tyre_coeffs);
-FY0_fz_var_vec4 = MF96_FY0_vec(tmp_zeros, SL_vec, tmp_zeros, mean(FZ_1120.FZ)*tmp_ones,tyre_coeffs);
+
+MZ0_fz_var_vec1 = MF96_MZ0_vec(SL_vec, tmp_zeros, mean(FZ_220.FZ)*tmp_ones,tyre_coeffs);
+MZ0_fz_var_vec2 = MF96_MZ0_vec(SL_vec, tmp_zeros, mean(FZ_700.FZ)*tmp_ones,tyre_coeffs);
+MZ0_fz_var_vec3 = MF96_MZ0_vec(SL_vec, tmp_zeros, mean(FZ_900.FZ)*tmp_ones,tyre_coeffs);
+MZ0_fz_var_vec4 = MF96_MZ0_vec(SL_vec, tmp_zeros, mean(FZ_1120.FZ)*tmp_ones,tyre_coeffs);
 
 x_fit = repmat(SL_vec', 1, 4);
-y_fit = [FY0_fz_var_vec1', FY0_fz_var_vec2', FY0_fz_var_vec3', FY0_fz_var_vec4'];
+y_fit = [MZ0_fz_var_vec1', MZ0_fz_var_vec2', MZ0_fz_var_vec3', MZ0_fz_var_vec4'];
 data_label = string(4);
 data_label = ["220 [N]", "700 [N]", "900 [N]", "1120 [N]"];
 %figure 6
-plot_fitted_data(TDataDFz.SL, TDataDFz.FY, x_fit, y_fit, '$\alpha$ [-]', '$F_{Y}$ [N]', data_label,'fig_fit_variable_load_FY', 'Fitting with variable load', line_width, font_size_title)
+plot_fitted_data(TDataDFz.SL, TDataDFz.MZ, x_fit, y_fit, '$\alpha$ [-]', '$M_{Z}$ [N]', data_label,'fig_fit_variable_load_MZ', 'Fitting with variable load', line_width, font_size_title)
 
+%% ARRIVED HERE
 
+%% Stiffness
+% alpha__t = 
+% alpha__r = 
+% alpha, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, Fy
 [alpha__y, By, Cy, Dy, Ey, SVy] =MF96_FY0_coeffs(0, 0, 0, mean(FZ_220.FZ), tyre_coeffs);
-Calfa_vec1_0 = magic_formula_stiffness(alpha__y, By, Cy, Dy, Ey, SVy);
+Calfa_vec1_0 = magic_formula_stiffness_MZ(alpha, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, Fy);
 [alpha__y, By, Cy, Dy, Ey, SVy] =MF96_FY0_coeffs(0, 0, 0, mean(FZ_700.FZ), tyre_coeffs);
-Calfa_vec2_0 = magic_formula_stiffness(alpha__y, By, Cy, Dy, Ey, SVy);
+Calfa_vec2_0 = magic_formula_stiffness_MZ(alpha, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, Fy);
 [alpha__y, By, Cy, Dy, Ey, SVy] =MF96_FY0_coeffs(0, 0, 0, mean(FZ_900.FZ), tyre_coeffs);
-Calfa_vec3_0 = magic_formula_stiffness(alpha__y, By, Cy, Dy, Ey, SVy);
+Calfa_vec3_0 = magic_formula_stiffness_MZ(alpha, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, Fy);
 [alpha__y, By, Cy, Dy, Ey, SVy] =MF96_FY0_coeffs(0, 0, 0, mean(FZ_1120.FZ), tyre_coeffs);
-Calfa_vec4_0 = magic_formula_stiffness(alpha__y, By, Cy, Dy, Ey, SVy);
+Calfa_vec4_0 = magic_formula_stiffness_MZ(alpha, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, Fy);
 
 Calfa_vec1 = MF96_CorneringStiffness(tmp_zeros, SL_vec,tmp_zeros, mean(FZ_220.FZ)*tmp_ones,tyre_coeffs);
 Calfa_vec2 = MF96_CorneringStiffness(tmp_zeros, SL_vec,tmp_zeros, mean(FZ_700.FZ)*tmp_ones,tyre_coeffs);
