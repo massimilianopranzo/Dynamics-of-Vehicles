@@ -41,11 +41,13 @@ idx.FZ_440  = 440-FZ_tol < tyre_data.FZ & tyre_data.FZ < 440+FZ_tol;
 idx.FZ_700  = 700-FZ_tol < tyre_data.FZ & tyre_data.FZ < 700+FZ_tol;
 idx.FZ_900  = 900-FZ_tol < tyre_data.FZ & tyre_data.FZ < 900+FZ_tol;
 idx.FZ_1120 = 1120-FZ_tol < tyre_data.FZ & tyre_data.FZ < 1120+FZ_tol;
+idx.FZ_1550 = 1550-FZ_tol < tyre_data.FZ & tyre_data.FZ < 1550+FZ_tol;
 FZ_220  = tyre_data( idx.FZ_220, : );
 FZ_440  = tyre_data( idx.FZ_440, : );
 FZ_700  = tyre_data( idx.FZ_700, : );
 FZ_900  = tyre_data( idx.FZ_900, : );
 FZ_1120 = tyre_data( idx.FZ_1120, : );
+FZ_1550 = tyre_data( idx.FZ_1550, : );
 
 % The slip angle is varied continuously between -4 and +12° and then
 % between -12° and +4° for the pure slip case

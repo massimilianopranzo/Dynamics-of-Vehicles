@@ -38,7 +38,7 @@ plot(vec_samples(idx.SA_3neg),SA_3neg.SA*to_deg,'.');
 plot(vec_samples(idx.SA_6neg),SA_6neg.SA*to_deg,'.');
 title('Slide slip')
 xlabel('Samples [-]')
-ylabel('[rad]')
+ylabel('[deg]')
 grid on
 
 export_fig(fig_sorted, 'images/fig_sorted.png');
