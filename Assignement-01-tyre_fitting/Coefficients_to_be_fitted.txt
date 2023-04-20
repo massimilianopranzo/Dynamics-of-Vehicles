@@ -1,0 +1,29 @@
+LONGITUDINAL
+1) pure conditions   				: pHx1, pCx1, pDx1, pKx1, pEx1, pEx4, pVx1 (7)
+2) change dFz		 				: pHx2, pDx2, pKx2, pKx3, pEx2, pEx3, pVx2 (7)
+3) variable gamma					: pDx3 									   (1)
+4) change dFz and gamma				: none 									   (0)
+
+lateral
+1) pure conditions					: pHy1, pCy1, pDy1, pKy1, pKy2, pEy1, pEy3, pVy1 (8)
+2) change dFz						: pHy2, pDy2, pEy2, pVy2 						 (4)
+3) variable gamma					: pHy3, pDy3, pKy3, pEy4, pVy3 					 (5)
+4) variable gamma and change dFz	: pVy4 									         (1)
+
+SELF ALIGNING MOMENT
+1) pure conditions					: qHz1, qBz1, qCz1, qDz1, qEz1, qEz4, qBz9, qBz10, qDz6 (9)
+2) change dFz						: qHz2, qBz2, qBz3, qDz2, qEz2, qEz3, qDz7 		 		(7)
+3) varaible gamma					: qHz3, qBz4, qBz5, qDz3, qDz4, qEz5, qDz8 		 		(7)
+4) variable gamma and change dFz	: qHz4, qDz9 									 		(2)
+
+COMBINED LONGITUDINAL
+1) pure conditions   				: rHx1, rBx1, rCx1 (3)
+2) change dFz		 				: none             (0)
+3) variable gamma					: none 		   	   (0)
+4) change dFz and gamma				: none		       (0)
+
+COMBINED LATERAL
+1) pure conditions					: rVy1, rVy4, rVy5, rVy6, rHy1, rBy1, rBy2, rBy3, rCy1 (9)
+2) change dFz             			: rVy2 												   (1)
+3) cahange gamma					: rVy3 												   (1)
+4) change dFz and gamma				: none 												   (0)

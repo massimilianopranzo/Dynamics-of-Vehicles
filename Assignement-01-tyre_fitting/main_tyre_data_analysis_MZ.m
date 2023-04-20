@@ -9,8 +9,9 @@ addpath('utilities\')
 
 % Choice of the dataset
 data_set_path = 'dataset/';
-data_set = 'Goodyear_B1464run58'; 
-struct_name = 'Goodyear_B1464';   
+data_set = 'Goodyear_B1464run13';
+struct_name = 'Goodyear_B1464';  
+load_type = 'self_aligning'; 
 
 initialization
 
@@ -30,19 +31,19 @@ cut_end = length(MZ);
 smpl_range = cut_start:cut_end;
 
 % figure 1
-% plots_raw_data;
+plots_raw_data;
 
 %% Sort data
 sorting_data;
 
 % figure 2
-% plot_sorted_data;
+plot_sorted_data;
 
 %% Intersect tables to obtain specific sub-datasets and plot them
 [TData0, ~] = intersect_table_data(GAMMA_0, FZ_220 );
 
 % figure 3
-% plot_selected_data(TData0, font_size_title);
+ plot_selected_data(TData0, font_size_title);
 
 %%-------------------------------------------------------------------------
 % FITTING WITH GUESS VALUES and nominal vertical load
@@ -71,8 +72,8 @@ plot_fitted_data(TData0.SA, TData0.MZ, TData0.SA, MZ0_guess, '$\alpha [deg]$', '
 % FITTING WITH NOMINAL LOAD Fz=Fz_nom= 220N and camber=0  alpha = 0 VX= 10
 %--------------------------------------------------------------------------
 % Guess values for parameters to be optimised
-%    [qHz1, qBz1, qCz1, qDz1, qDz2, qDz3, qDz4, qEz1, qEz4, qBz9, qBz10, qDz6]
-P0 = [   1,    1,    1,    1,    1,    1,    1,    1,    1,    1,     1,    1]; 
+%    [qHz1, qBz1, qCz1, qDz1, qDz2, qEz1, qEz4, qBz9, qBz10, qDz6]
+P0 = [   1,    1,    1,    1,    1,    1,    1,    1,     1,    1]; 
 
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised
@@ -261,7 +262,7 @@ xlabel('$\alpha$')
 ylabel('$M_{Z}$ [N]')
 title('Fitting with variable camber $F_{Z}$ = 220[N]', 'FontSize',font_size_title)
 grid on
-export_fig(fig_fit_variable_camber_MZ, 'images\fig_fit_variable_camber_MZ.svg');
+export_fig(fig_fit_variable_camber_MZ, 'images\fig_fit_variable_camber_MZ.png');
 
 % fig_camber_MZ = figure('Color', 'w');
 % plot(ALPHA_vec, MZ_vec, '.', 'DisplayName', '$F_{z}=220 [N]$');
@@ -270,7 +271,7 @@ export_fig(fig_fit_variable_camber_MZ, 'images\fig_fit_variable_camber_MZ.svg');
 % ylabel('$M_Z$ [N]')
 % title('Self aligning moment as function of camber angle')
 % legend('Location', 'best')
-% export_fig(fig_camber_MZ, 'images\fig_camber_MZ.svg')
+% export_fig(fig_camber_MZ, 'images\fig_camber_MZ.png')
 
 % LSM_pure_Fx returns the residual, so minimize the residual varying X. It
 % is an unconstrained minimization problem 

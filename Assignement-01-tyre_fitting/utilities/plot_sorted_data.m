@@ -41,4 +41,4 @@ xlabel('Samples [-]')
 ylabel('[rad]')
 grid on
 
-export_fig(fig_sorted, 'images/fig_sorted.svg');
+export_fig(fig_sorted, 'images/fig_sorted.png');

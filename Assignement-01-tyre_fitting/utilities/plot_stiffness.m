@@ -26,4 +26,4 @@ grid on
 title('Longitudinal cornering stiffness TO CHECK')
 
 sgtitle('Cornering stiffness', 'interpreter', 'latex', 'FontSize', font_size_title)
-export_fig(fig_stiffness_FX, 'images\fig_stiffness_FX.svg')
+export_fig(fig_stiffness_FX, 'images\fig_stiffness_FX.png')

@@ -70,4 +70,4 @@ grid on
 linkaxes(ax_list,'x')
 
 sgtitle('Loaded data', 'interpreter', 'latex', 'FontSize', font_size_title)
-export_fig(fig_loaded_data,'images/fig_loaded_data.svg')
+export_fig(fig_loaded_data,'images/fig_loaded_data.png')

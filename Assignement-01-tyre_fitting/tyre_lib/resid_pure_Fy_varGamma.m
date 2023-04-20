@@ -17,7 +17,6 @@ function res = resid_pure_Fy_varGamma(P,FY,ALPHA,GAMMA,FZ,tyre_data)
     tmp_tyre_data.pHy3 = P(3); 
     tmp_tyre_data.pKy3 = P(4); 
     tmp_tyre_data.pVy3 = P(5); 
-    tmp_tyre_data.pVy4 = P(6); 
         
     % Longitudinal Force (Pure Longitudinal Slip) Equations
     res = 0;

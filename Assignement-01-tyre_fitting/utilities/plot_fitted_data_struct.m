@@ -1,0 +1,23 @@
+function [] = plot_fitted_data_struct(x_raw, y_raw, x_fit, y_fit, label_x, label_y, data_label, name, plot_title, line_width, font_size_title, colors_vector)
+
+	if ismatrix(data_label) == 0;
+		error('Data label must be a vector')
+		return;
+	end
+	fig = figure('Color','w');
+	hold on
+  for i = 1:length(data_label)
+		plot(x_raw{i}, y_raw{i},'.', 'DisplayName','Raw data', 'LineWidth', line_width)
+		plot(x_fit{i}, y_fit{i},'-', 'DisplayName', data_label(i), 'LineWidth', line_width, 'Color', colors_vector(i,:))
+  end
+	hold off
+	grid on
+	legend('Location', 'best')
+	xlabel(label_x)
+	ylabel(label_y)
+	title(plot_title, 'interpreter','latex', 'FontSize', font_size_title)
+	
+	fig_name = ['images\', name, '.png'];
+	export_fig(fig, fig_name)
+	
+end

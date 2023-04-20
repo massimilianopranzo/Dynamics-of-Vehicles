@@ -12,6 +12,7 @@ addpath('utilities\')
 data_set_path = 'dataset/';
 data_set = 'Goodyear_B1464run13.mat';
 struct_name = 'Goodyear_B1464';  
+load_type = 'lateral';
 
 initialization
 
@@ -38,6 +39,9 @@ sorting_data;
 
 % figure 2
 plot_sorted_data;
+
+%% Sort data
+sorting_data_ascending;
 
 %% Intersect tables to obtain specific sub-datasets and plot them
 [TData0, ~] = intersect_table_data(GAMMA_0, FZ_220 );
@@ -67,14 +71,14 @@ plot_fitted_data(TData0.SA, TData0.FY, TData0.SA, FY0_guess, '$\alpha [deg]$', '
 % FITTING WITH NOMINAL LOAD Fz=Fz_nom= 220N and camber=0  alpha = 0 VX= 10
 %--------------------------------------------------------------------------
 % Guess values for parameters to be optimised
-%    [pCy1 pDy1 pEy1  pHy1  pKy1  pVy1]
-P0 = [  1,   2,   1,     0,   1,   0]; 
+%    [pCy1 pDy1 pEy1  pHy1  pKy1  pKy2, pVy1, pEy3]
+P0 = [  1,   2,   1,     0,   1,     0,  0, 0]; 
 
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised
-%    [pCy1 pDy1 pEy1  pHy1  pKy1  pVy1] 
-lb = [1,  0.1,   0,   -10,  -50,   -10]; % lower bound
-ub = [2,    4,   1,    10,   50,    10]; % upper bound
+%    [pCy1 pDy1 pEy1  pHy1  pKy1  pKy2, pVy1, pEy3]
+lb = [1,  0.1,   0,   -10,  -50,   -10,  -10, -10]; % lower bound
+ub = [2,    4,   1,    10,   50,    10,   10, 10]; % upper bound
 % lb = [];
 % ub = [];
 
@@ -95,7 +99,9 @@ tyre_coeffs.pDy1 = P_fz_nom(2) ;
 tyre_coeffs.pEy1 = P_fz_nom(3) ;
 tyre_coeffs.pHy1 = P_fz_nom(4) ; 
 tyre_coeffs.pKy1 = P_fz_nom(5) ;
-tyre_coeffs.pVy1 = P_fz_nom(6) ;
+tyre_coeffs.pKy2 = P_fz_nom(6) ;
+tyre_coeffs.pVy1 = P_fz_nom(7) ;
+tyre_coeffs.pEy3 = P_fz_nom(8) ;
 
 FY0_fz_nom_vec = MF96_FY0_vec(zeros(size(SA_vec)), SA_vec, zeros(size(SA_vec)), ...
                               FZ0.*ones(size(SA_vec)),tyre_coeffs);
@@ -118,18 +124,15 @@ zeros_vec = zeros(size(TDataDFz.SA));
 ones_vec  = ones(size(TDataDFz.SA));
 
 % Guess values for parameters to be optimised
-%    [   pDy2     pEy2   pHy2    pKy2   pVy2    pEy3]
+%    [   pDy2     pEy2   pHy2     pVy2    ]
 %% WORK HERE
-P0 = [  -0.25,   -0.25,     0,     -1,     0,   0.88].*0; 
-P0 = [-0.0000   -0.2018    0.0004    4.3470   -0.0071    8.9982];
+P0 = [  -0.25,   -0.25,     0,     -1,    ].*0; 
+P0 = [-0.0000   -0.2018    0.0004    4.3470    ];
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised
-% 1< pCx1 < 2 
-% 0< pEx1 < 1 
-%    [   pDy2     pEy2   pHy2    pKy2   pVy2    pEy3]
-%% WORK HERE
-lb = [-5 -5 -5 -5 -5 5];
-ub = [2 0 5 5 5 50];
+%    [   pDy2     pEy2   pHy2     pVy2  ]
+lb = [-5 -5 -5 -5];
+ub = [2 0 5 5];
 
 ALPHA_vec = TDataDFz.SA;
 FY_vec    = TDataDFz.FY;
@@ -148,9 +151,7 @@ disp(exitflag)
 tyre_coeffs.pDy2 = P_dfz(1); % 1
 tyre_coeffs.pEy2 = P_dfz(2);  
 tyre_coeffs.pHy2 = P_dfz(3);
-tyre_coeffs.pKy2 = P_dfz(4); 
-tyre_coeffs.pVy2 = P_dfz(5);
-tyre_coeffs.pEy3 = P_dfz(6); 
+tyre_coeffs.pVy2 = P_dfz(4);
 
 res_FY0_dfz_vec = resid_pure_Fy_varFz(P_dfz, FY_vec, SA_vec, 0, FZ_vec, tyre_coeffs);
 
@@ -196,8 +197,8 @@ plot_stiffness_FY;
 % Fit the coeffs { pDy3 pEy4 pHy3 pKy3 pVy3 pVy4}
 
 % Guess values for parameters to be optimised
-%    [pDy3  pEy4     pHy3    pKy3   pVy3     pVy4 ]
-P0 = [5.16  -4.2     -0.03   1.3    -2.92    -2.81]; 
+%    [pDy3  pEy4     pHy3    pKy3   pVy3    ]
+P0 = [5.16  -4.2     -0.03   1.3    -2.92    ]; 
 
 % NOTE: many local minima => limits on parameters are fundamentals
 lb = [];
@@ -218,7 +219,7 @@ xlabel('$\gamma$ [rad]')
 ylabel('$F_Y$ [N]')
 title('Lateral force as function of camber angle')
 legend('Location', 'best')
-export_fig(fig_camber_FY, 'images\fig_camber_FY.svg')
+export_fig(fig_camber_FY, 'images\fig_camber_FY.png')
 
 % LSM_pure_Fx returns the residual, so minimize the residual varying X. It
 % is an unconstrained minimization problem 
@@ -231,7 +232,6 @@ tyre_coeffs.pEy4 = P_varGamma(2);
 tyre_coeffs.pHy3 = P_varGamma(3); 
 tyre_coeffs.pKy3 = P_varGamma(4); 
 tyre_coeffs.pVy3 = P_varGamma(5); 
-tyre_coeffs.pVy4 = P_varGamma(6);
 
 
 FY0_varGamma_vec = MF96_FY0_vec(zeros_vec, ALPHA_vec, GAMMA_vec, tyre_coeffs.FZ0*ones_vec, tyre_coeffs);
@@ -255,31 +255,63 @@ FY0_Gamma2 = MF96_FY0_vec(zeros_vec, TDataGamma2.SA, TDataGamma2.IA, tyre_coeffs
 FY0_Gamma3 = MF96_FY0_vec(zeros_vec, TDataGamma3.SA, TDataGamma3.IA, tyre_coeffs.FZ0*ones_vec, tyre_coeffs);
 FY0_Gamma4 = MF96_FY0_vec(zeros_vec, TDataGamma4.SA, TDataGamma4.IA, tyre_coeffs.FZ0*ones_vec, tyre_coeffs);
 
-fig_fit_variable_camber_FY = figure('Color', 'w');
-hold on
-plot(TDataGamma0.SA, TDataGamma0.FY, '.', 'Color', colors_vect(1, :), 'HandleVisibility', 'off');
-plot(TDataGamma0.SA, FY0_Gamma0, '-', 'Color', colors_vect(1, :) , 'LineWidth', line_width, 'DisplayName', '$\gamma = 0 [deg]$' );
+plot_y = cell(5,1);
+plot_x = cell(5,1);
+plot_fit = cell(5,1);
+plot_x = {TDataGamma0.SA, TDataGamma1.SA, TDataGamma2.SA, TDataGamma3.SA, TDataGamma4.SA};
+plot_y = {TDataGamma0.FY, TDataGamma1.FY, TDataGamma2.FY, TDataGamma3.FY, TDataGamma4.FY};
+plot_fit = {FY0_Gamma0, FY0_Gamma1, FY0_Gamma2, FY0_Gamma3, FY0_Gamma4};
+plot_label = ["$\gamma = 0 [deg]$", "$\gamma = 1 [deg]$", "$\gamma = 2 [deg]$", "$\gamma = 3 [deg]$", "$\gamma = 4 [deg]$"];
 
-plot(TDataGamma1.SA, TDataGamma1.FY, '.', 'Color', colors_vect(2, :), 'HandleVisibility', 'off');
-plot(TDataGamma1.SA, FY0_Gamma1, '-', 'Color', colors_vect(2, :), 'LineWidth', line_width , 'DisplayName', '$\gamma = 1 [deg]$');
+plot_fitted_data_struct(plot_x, plot_y, plot_x, plot_fit, ...
+  '$\alpha$ [-]', '$F_{Y}$ [N]', plot_label, 'fig_fit_variable_camber_FY', ...
+  'Fitting with variable camber', line_width, font_size_title, colors_vect);
 
-plot(TDataGamma2.SA, TDataGamma2.FY, '.', 'Color', colors_vect(3, :), 'HandleVisibility', 'off');
-plot(TDataGamma2.SA, FY0_Gamma2, '-', 'Color', colors_vect(3, :) , 'LineWidth', line_width,  'DisplayName', '$\gamma = 2 [deg]$' );
+% fig_fit_variable_camber_FY = figure('Color', 'w');
+% hold on
+% plot(TDataGamma0.SA, TDataGamma0.FY, '.', 'Color', colors_vect(1, :), 'HandleVisibility', 'off');
+% plot(TDataGamma0.SA, FY0_Gamma0, '-', 'Color', colors_vect(1, :) , 'LineWidth', line_width, 'DisplayName', '$\gamma = 0 [deg]$' );
 
-plot(TDataGamma3.SA, TDataGamma3.FY, '.', 'Color', colors_vect(4, :), 'HandleVisibility', 'off');
-plot(TDataGamma3.SA, FY0_Gamma3, '-', 'Color', colors_vect(4, :), 'LineWidth', line_width, 'DisplayName', '$\gamma = 3 [deg]$' );
+% plot(TDataGamma1.SA, TDataGamma1.FY, '.', 'Color', colors_vect(2, :), 'HandleVisibility', 'off');
+% plot(TDataGamma1.SA, FY0_Gamma1, '-', 'Color', colors_vect(2, :), 'LineWidth', line_width , 'DisplayName', '$\gamma = 1 [deg]$');
 
-plot(TDataGamma4.SA, TDataGamma4.FY, '.', 'Color', colors_vect(5, :), 'HandleVisibility', 'off');
-plot(TDataGamma4.SA, FY0_Gamma4, '-', 'Color', colors_vect(5, :)  , 'LineWidth', line_width, 'DisplayName', '$\gamma = 4 [deg]$' );
-hold off
-legend('location', 'northeast')
-xlabel('$\alpha$')
-ylabel('$F_{Y}$ [N]')
-title('Fitting with variable camber $F_{Z}$ = 220[N]', 'FontSize',font_size_title)
-grid on
-export_fig(fig_fit_variable_camber_FY, 'images\fig_fit_variable_camber_FY.svg');
+% plot(TDataGamma2.SA, TDataGamma2.FY, '.', 'Color', colors_vect(3, :), 'HandleVisibility', 'off');
+% plot(TDataGamma2.SA, FY0_Gamma2, '-', 'Color', colors_vect(3, :) , 'LineWidth', line_width,  'DisplayName', '$\gamma = 2 [deg]$' );
 
+% plot(TDataGamma3.SA, TDataGamma3.FY, '.', 'Color', colors_vect(4, :), 'HandleVisibility', 'off');
+% plot(TDataGamma3.SA, FY0_Gamma3, '-', 'Color', colors_vect(4, :), 'LineWidth', line_width, 'DisplayName', '$\gamma = 3 [deg]$' );
 
+% plot(TDataGamma4.SA, TDataGamma4.FY, '.', 'Color', colors_vect(5, :), 'HandleVisibility', 'off');
+% plot(TDataGamma4.SA, FY0_Gamma4, '-', 'Color', colors_vect(5, :)  , 'LineWidth', line_width, 'DisplayName', '$\gamma = 4 [deg]$' );
+% hold off
+% legend('location', 'northeast')
+% xlabel('$\alpha$')
+% ylabel('$F_{Y}$ [N]')
+% title('Fitting with variable camber $F_{Z}$ = 220[N]', 'FontSize',font_size_title)
+% grid on
+% export_fig(fig_fit_variable_camber_FY, 'images\fig_fit_variable_camber_FY.png');
+
+%% TO DO: FIT WITH GAMMA AND FZ
+% minimize P = [pVy4]
+P0 = [1]; % initial guess
+lb = [-100]; % lower bound
+ub = [10]; % upper bound
+
+% Pass all the structure
+zeros_vec = zeros(size(tyre_data.SA));
+ones_vec  = ones(size(tyre_data.SA));
+
+ALPHA_vec = tyre_data.SA;
+GAMMA_vec = tyre_data.IA; 
+FY_vec    = tyre_data.FY;
+FZ_vec    = tyre_data.FZ;
+
+% Minimization with both gamma and Fz
+[P_varGammavarFz,fval,exitflag] = fmincon(@(P)resid_pure_Fy_varGamma_varFz(P,FY_vec, ALPHA_vec, GAMMA_vec, FZ_vec, tyre_coeffs),...
+                               P0,[],[],[],[],lb,ub);
+
+% Change tyre data with new optimal values
+tyre_coeffs.pVy4 = P_varGammavarFz(1); 
 
 
 %% Calculate the residuals with the optimal solution found above

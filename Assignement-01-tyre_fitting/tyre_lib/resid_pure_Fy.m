@@ -16,7 +16,9 @@ function res = resid_pure_Fy(P,FY,ALPHA,GAMMA,FZ,tyre_data)
     tmp_tyre_data.pEy1 = P(3);
     tmp_tyre_data.pHy1 = P(4);
     tmp_tyre_data.pKy1 = P(5);
-    tmp_tyre_data.pVy1 = P(6);
+    tmp_tyre_data.pKy2 = P(6);
+    tmp_tyre_data.pVy1 = P(7);
+    tmp_tyre_data.pEy3 = P(8);
     
    %dfz = (Z - Fz0)./Fz0 ;
     

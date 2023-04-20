@@ -11,6 +11,7 @@ addpath('utilities\')
 data_set_path = 'dataset/';
 data_set = 'Goodyear_B1464run58';  
 struct_name = 'Goodyear_B1464';  
+load_type = 'longitudinal';
 
 initialization
 
@@ -121,10 +122,8 @@ ones_vec  = ones(size(TDataDFz.SL));
 P0 = [  0,   0,   0,  0,   0,   0,   0]; 
 
 % NOTE: many local minima => limits on parameters are fundamentals
-% Limits for parameters to be optimised
-% 1< pCx1 < 2 
-% 0< pEx1 < 1 
-%    [pCx1 pDx1 pEx1 pEx4  pHx1  pKx1  pVx1 
+% Limits for parameters to be optimised 
+%    [pDx2 pEx2 pEx3 pHx2  pKx2  pKx3  pVx2] 
 lb = [];
 ub = [];
 
@@ -217,7 +216,7 @@ xlabel('$\gamma$ [rad]')
 ylabel('$F_X$ [N]')
 title('Longitudianl force as function of camber angle')
 legend('Location', 'best')
-export_fig(fig_camber_FX, 'images\fig_camber_FX.svg')
+export_fig(fig_camber_FX, 'images\fig_camber_FX.png')
 
 % LSM_pure_Fx returns the residual, so minimize the residual varying X. It
 % is an unconstrained minimization problem 

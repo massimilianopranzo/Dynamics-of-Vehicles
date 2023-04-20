@@ -76,5 +76,5 @@ function plot_selected_data(tab, font_size_title)
 
 
   sgtitle('Selected data', 'Interpreter', 'latex', 'FontSize', font_size_title);
-  export_fig(fig_selected_data, 'images\fig_selected_data.svg')
+  export_fig(fig_selected_data, 'images\fig_selected_data.png')
 end
