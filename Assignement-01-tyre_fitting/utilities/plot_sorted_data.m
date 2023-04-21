@@ -1,7 +1,13 @@
 %% PLOT SORTED DATA
 
 fig_sorted = figure('Color','w');
-tiledlayout(3,1)
+
+if strcmp(load_type, 'longitudinal')
+  tiledlayout(3,1)
+else
+  tiledlayout(2,1)
+end
+
 sgtitle('Sorted data','fontsize', font_size_title, 'interpreter','latex') 
 ax_list(1) = nexttile;
 plot(tyre_data.IA*to_deg)
@@ -25,20 +31,24 @@ plot(vec_samples(idx.FZ_440),FZ_440.FZ,'.');
 plot(vec_samples(idx.FZ_700),FZ_700.FZ,'.');
 plot(vec_samples(idx.FZ_900),FZ_900.FZ,'.');
 plot(vec_samples(idx.FZ_1120),FZ_1120.FZ,'.');
+plot(vec_samples(idx.FZ_1550),FZ_1550.FZ,'.');
 title('Vertical force')
 xlabel('Samples [-]')
 ylabel('[N]')
 grid on
 
-ax_list(3) = nexttile;
-plot(tyre_data.SA*to_deg)
-hold on
-plot(vec_samples(idx.SA_0),   SA_0.SA*to_deg,'.');
-plot(vec_samples(idx.SA_3neg),SA_3neg.SA*to_deg,'.');
-plot(vec_samples(idx.SA_6neg),SA_6neg.SA*to_deg,'.');
-title('Slide slip')
-xlabel('Samples [-]')
-ylabel('[deg]')
-grid on
+if strcmp(load_type, 'longitudinal')
+  
+  ax_list(3) = nexttile;
+  plot(tyre_data.SA*to_deg)
+  hold on
+  plot(vec_samples(idx.SA_0),   SA_0.SA*to_deg,'.');
+  plot(vec_samples(idx.SA_3neg),SA_3neg.SA*to_deg,'.');
+  plot(vec_samples(idx.SA_6neg),SA_6neg.SA*to_deg,'.');
+  title('Slide slip')
+  xlabel('Samples [-]')
+  ylabel('[deg]')
+  grid on
+end
 
 export_fig(fig_sorted, 'images/fig_sorted.png');

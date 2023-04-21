@@ -5,6 +5,11 @@ vec_samples = 1:1:length(smpl_range);
 tyre_data = table(); % create empty table
 % store raw data in table
 tyre_data.SL =  SL(smpl_range);             % Longitudinal slip
+% if strcmp(load_type, 'lateral') == 1 || strcmp(load_type, 'self_aligning') ==1
+%   tyre_data.SA =  tan(SA(smpl_range));      % Side slip angle
+% else
+%   tyre_data.SA =  SA(smpl_range)*to_rad;      % Side slip angle
+% end
 tyre_data.SA =  SA(smpl_range)*to_rad;      % Side slip angle
 tyre_data.FZ = -FZ(smpl_range);             % Vertical force                    % 0.453592  lb/kg
 tyre_data.FX =  FX(smpl_range);             % Longitudinal force

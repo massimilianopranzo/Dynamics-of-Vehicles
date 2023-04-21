@@ -18,7 +18,7 @@ function res = resid_pure_Fy_varFz(P,FY,ALPHA,GAMMA,FZ,tyre_data)
     tmp_tyre_data.pVy2 = P(4);
     
    %dfz = (Z - Fz0)./Fz0 ;
-    
+
     % Lateral Force (Pure Lateral Slip) Equations
     res = 0;
     for i=1:length(ALPHA)

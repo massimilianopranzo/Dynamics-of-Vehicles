@@ -9,7 +9,7 @@ addpath('utilities\')
 
 % Choice of the dataset
 data_set_path = 'dataset/';
-data_set = 'Goodyear_B1464run58';  
+data_set = 'Goodyear_B1464run13.mat';
 struct_name = 'Goodyear_B1464';  
 load_type = 'longitudinal';
 

@@ -9,6 +9,7 @@ function [mz0_vec] = MF96_MZ0_vec(alpha_vec, phi_vec, Fz_vec, Fy_vec, tyre_data)
 
    	% precode
    	[alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr] = MF96_MZ0_coeffs(alpha_vec(i), phi_vec(i), Fz_vec(i), tyre_data);
+
    	% main code
    	[mz0_vec(i)] = magic_formula_MZ(alpha_vec(i), alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, Fy_vec(i));
 

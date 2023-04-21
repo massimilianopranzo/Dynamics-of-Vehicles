@@ -12,15 +12,12 @@ function res = resid_pure_Mz_varFz(P,MZ,ALPHA,GAMMA,FZ,FY,tyre_data)
     tmp_tyre_data = tyre_data;
     
     tmp_tyre_data.qHz2 = P(1); 
-    tmp_tyre_data.qHz3 = P(2); 
-    tmp_tyre_data.qHz4 = P(3); 
-    tmp_tyre_data.qBz2 = P(4);
-    tmp_tyre_data.qBz3 = P(5);
-    tmp_tyre_data.qEz2 = P(6);
-    tmp_tyre_data.qEz3 = P(7);
-    tmp_tyre_data.qDz7 = P(8);
-    tmp_tyre_data.qDz8 = P(9);
-    tmp_tyre_data.qDz9 = P(10);
+    tmp_tyre_data.qBz2 = P(2); 
+    tmp_tyre_data.qBz3 = P(3); 
+    tmp_tyre_data.qDz2 = P(4); 
+    tmp_tyre_data.qEz2 = P(5); 
+    tmp_tyre_data.qEz3 = P(6); 
+    tmp_tyre_data.qDz7 = P(7); 
     
    %dfz = (Z - Fz0)./Fz0 ;
     

@@ -74,10 +74,8 @@ P0 = [  1,   2,   1,     0,   1,     0,  0, 0];
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised
 %    [pCy1 pDy1 pEy1  pHy1  pKy1  pKy2, pVy1, pEy3]
-lb = [1,  0.1,   0,   -10,  -50,   -10,  -10, -10]; % lower bound
-ub = [2,    4,   1,    10,   50,    10,   10, 10]; % upper bound
-% lb = [];
-% ub = [];
+lb = [1,  0.1,   -1,   -10,  -4,   -10,  -10, -12]; % lower bound
+ub = [2,    4,   1,    10,   100,    10,   10, 10]; % upper bound
 
 ALPHA_vec = TData0.SA;  % side slip angle
 FY_vec    = TData0.FY;  % lateral force
@@ -89,7 +87,9 @@ SA_vec = -0.3:0.001:0.3; % lateral slip to be used in the plot for check the int
 % It is an unconstrained minimization problem 
 [P_fz_nom, fval, exitflag] = fmincon(@(P)resid_pure_Fy(P, FY_vec, ALPHA_vec, 0, FZ0, tyre_coeffs),...
                                P0,[],[],[],[],lb,ub);
-
+P_fz_nom
+fval    
+%%
 % Update tyre data with new optimal values                             
 tyre_coeffs.pCy1 = P_fz_nom(1) ; % 1
 tyre_coeffs.pDy1 = P_fz_nom(2) ;  
@@ -102,7 +102,7 @@ tyre_coeffs.pEy3 = P_fz_nom(8) ;
 
 FY0_fz_nom_vec = MF96_FY0_vec(zeros(size(SA_vec)), SA_vec, zeros(size(SA_vec)), ...
                               FZ0.*ones(size(SA_vec)),tyre_coeffs);
-        
+       
 data_label = "Fitted data"; 
 % figure 5          
 plot_fitted_data(TData0.SA, TData0.FY, SA_vec', FY0_fz_nom_vec', '$\alpha [-]$', '$F_{y0}$ [N]', data_label, 'fig_fit_pure_conditions_FY', 'Fitting in pure conditions', line_width, font_size_title)
@@ -113,6 +113,7 @@ res_Fy0 = resid_pure_Fy(P_fz_nom, FY_vec, ALPHA_vec, 0, FZ0, tyre_coeffs);
 %--------------------------------------------------------------------------
 % extract data with variable load
 [TDataDFz, ~] = GAMMA_0; %intersect_table_data(GAMMA_0);
+TDataDFz([9808:9930], :) = [];
 
 % Fit the coeffs {pCx1, pDx1, pEx1, pEx4, pKx1, pHx1, pVx1}
 %FZ0 = mean(TData0.FZ);
@@ -123,13 +124,12 @@ ones_vec  = ones(size(TDataDFz.SA));
 % Guess values for parameters to be optimised
 %    [   pDy2     pEy2   pHy2     pVy2    ]
 %% WORK HERE
-P0 = [  -0.25,   -0.25,     0,     -1,    ].*0; 
-P0 = [-0.0000   -0.2018    0.0004    4.3470    ];
+P0 = [0.27 -15 1 -0.05];
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised
 %    [   pDy2     pEy2   pHy2     pVy2  ]
-lb = [-5 -5 -5 -5];
-ub = [2 0 5 5];
+lb = [-5 -30 -5 -5] ;
+ub = [5 19 5 5];
 
 ALPHA_vec = TDataDFz.SA;
 FY_vec    = TDataDFz.FY;
@@ -143,7 +143,9 @@ SA_vec = -0.3:0.001:0.3;
 [P_dfz, fval, exitflag] = fmincon(@(P)resid_pure_Fy_varFz(P, FY_vec, ALPHA_vec, 0, FZ_vec, tyre_coeffs),...
                                P0,[],[],[],[],lb,ub);
 
-disp(exitflag)
+P_dfz
+fval
+%%
 % Change tyre data with new optimal values                             
 tyre_coeffs.pDy2 = P_dfz(1); % 1
 tyre_coeffs.pEy2 = P_dfz(2);  
@@ -156,24 +158,24 @@ tmp_zeros = zeros(size(SA_vec));
 tmp_ones = ones(size(SA_vec));
 
 FY0_fz_var_vec1 = MF96_FY0_vec(tmp_zeros, SA_vec, tmp_zeros, mean(FZ_220.FZ)*tmp_ones,tyre_coeffs);
-FY0_fz_var_vec2 = MF96_FY0_vec(tmp_zeros, SA_vec, tmp_zeros, mean(FZ_700.FZ)*tmp_ones,tyre_coeffs);
-FY0_fz_var_vec3 = MF96_FY0_vec(tmp_zeros, SA_vec, tmp_zeros, mean(FZ_900.FZ)*tmp_ones,tyre_coeffs);
+FY0_fz_var_vec2 = MF96_FY0_vec(tmp_zeros, SA_vec, tmp_zeros, mean(FZ_440.FZ)*tmp_ones,tyre_coeffs);
+FY0_fz_var_vec3 = MF96_FY0_vec(tmp_zeros, SA_vec, tmp_zeros, mean(FZ_700.FZ)*tmp_ones,tyre_coeffs);
 FY0_fz_var_vec4 = MF96_FY0_vec(tmp_zeros, SA_vec, tmp_zeros, mean(FZ_1120.FZ)*tmp_ones,tyre_coeffs);
 FY0_fz_var_vec5 = MF96_FY0_vec(tmp_zeros, SA_vec, tmp_zeros, mean(FZ_1550.FZ)*tmp_ones,tyre_coeffs);
 
 x_fit = repmat(SA_vec', 1, 5);
 y_fit = [FY0_fz_var_vec1', FY0_fz_var_vec2', FY0_fz_var_vec3', FY0_fz_var_vec4', FY0_fz_var_vec5'];
 data_label = string(5);
-data_label = ["220 [N]", "700 [N]", "900 [N]", "1120 [N]", "1550 [N]"];
+data_label = ["220 [N]", "440 [N]", "700 [N]", "1120 [N]", "1550 [N]"];
 %figure 6
-plot_fitted_data(TDataDFz.SA, TDataDFz.FY, x_fit, y_fit, '$\alpha$ [-]', '$F_{Y}$ [N]', data_label,'fig_fit_variable_load_FY', 'Fitting with variable load', line_width, font_size_title)
+plot_fitted_data(TDataDFz.SA, TDataDFz.FY, x_fit, y_fit, '$\alpha$ [-]', '$F_{Y}$ [N]', data_label,'fig_fit_variable_load_FY', 'Fitting with variable load', line_width, font_size_title);
 
 
 [alpha__y, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, 0, 0, mean(FZ_220.FZ), tyre_coeffs);
 Calfa_vec1_0 = magic_formula_stiffness(alpha__y, By, Cy, Dy, Ey, SVy);
-[alpha__y, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, 0, 0, mean(FZ_700.FZ), tyre_coeffs);
+[alpha__y, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, 0, 0, mean(FZ_440.FZ), tyre_coeffs);
 Calfa_vec2_0 = magic_formula_stiffness(alpha__y, By, Cy, Dy, Ey, SVy);
-[alpha__y, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, 0, 0, mean(FZ_900.FZ), tyre_coeffs);
+[alpha__y, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, 0, 0, mean(FZ_700.FZ), tyre_coeffs);
 Calfa_vec3_0 = magic_formula_stiffness(alpha__y, By, Cy, Dy, Ey, SVy);
 [alpha__y, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, 0, 0, mean(FZ_1120.FZ), tyre_coeffs);
 Calfa_vec4_0 = magic_formula_stiffness(alpha__y, By, Cy, Dy, Ey, SVy);
@@ -181,8 +183,8 @@ Calfa_vec4_0 = magic_formula_stiffness(alpha__y, By, Cy, Dy, Ey, SVy);
 Calfa_vec5_0 = magic_formula_stiffness(alpha__y, By, Cy, Dy, Ey, SVy);
 
 Calfa_vec1 = MF96_CorneringStiffness(tmp_zeros, SA_vec, tmp_zeros, mean(FZ_220.FZ)*tmp_ones,tyre_coeffs);
-Calfa_vec2 = MF96_CorneringStiffness(tmp_zeros, SA_vec, tmp_zeros, mean(FZ_700.FZ)*tmp_ones,tyre_coeffs);
-Calfa_vec3 = MF96_CorneringStiffness(tmp_zeros, SA_vec, tmp_zeros, mean(FZ_900.FZ)*tmp_ones,tyre_coeffs);
+Calfa_vec2 = MF96_CorneringStiffness(tmp_zeros, SA_vec, tmp_zeros, mean(FZ_440.FZ)*tmp_ones,tyre_coeffs);
+Calfa_vec3 = MF96_CorneringStiffness(tmp_zeros, SA_vec, tmp_zeros, mean(FZ_700.FZ)*tmp_ones,tyre_coeffs);
 Calfa_vec4 = MF96_CorneringStiffness(tmp_zeros, SA_vec, tmp_zeros, mean(FZ_1120.FZ)*tmp_ones,tyre_coeffs);
 Calfa_vec5 = MF96_CorneringStiffness(tmp_zeros, SA_vec, tmp_zeros, mean(FZ_1550.FZ)*tmp_ones,tyre_coeffs);
 
@@ -199,11 +201,11 @@ plot_stiffness_FY;
 
 % Guess values for parameters to be optimised
 %    [pDy3  pEy4     pHy3    pKy3   pVy3    ]
-P0 = [5.16  -4.2     -0.03   1.3    -2.92    ]; 
+P0 = [ -10 10 0 0 0   ]; 
 
 % NOTE: many local minima => limits on parameters are fundamentals
-lb = [];
-ub = [];
+lb = [-25 -15 -15 -15 -15];
+ub = [15 25 15 15 15];
 
 zeros_vec = zeros(size(TDataGamma.SA));
 ones_vec  = ones(size(TDataGamma.SA));
@@ -227,6 +229,10 @@ export_fig(fig_camber_FY, 'images\fig_camber_FY.png')
 [P_varGamma,fval,exitflag] = fmincon(@(P)resid_pure_Fy_varGamma(P,FY_vec, ALPHA_vec, GAMMA_vec, tyre_coeffs.FZ0, tyre_coeffs),...
                                P0,[],[],[],[],lb,ub);
 
+P_varGamma
+fval
+
+%%
 % Change tyre data with new optimal values
 tyre_coeffs.pDy3 = P_varGamma(1); 
 tyre_coeffs.pEy4 = P_varGamma(2); 

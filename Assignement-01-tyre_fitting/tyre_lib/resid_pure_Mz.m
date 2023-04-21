@@ -10,19 +10,16 @@ function res = resid_pure_Mz(P,MZ,ALPHA,GAMMA,FZ,FY,tyre_data)
     %Fz0 = 200*4.44822; % Nominal load 200 lbf
     
     tmp_tyre_data = tyre_data;
-       
-    tmp_tyre_data.qHz1 = P(1); 
-    tmp_tyre_data.qBz1 = P(2);
-    tmp_tyre_data.qCz1 = P(3);
-    tmp_tyre_data.qDz1 = P(4);
-    tmp_tyre_data.qDz2 = P(5);
-    tmp_tyre_data.qDz3 = P(6);
-    tmp_tyre_data.qDz4 = P(7);
-    tmp_tyre_data.qEz1 = P(8);
-    tmp_tyre_data.qEz4 = P(9);
-    tmp_tyre_data.qBz9 = P(10);
-    tmp_tyre_data.qBz10 = P(11);
-    tmp_tyre_data.qDz6 = P(12);
+    
+    tmp_tyre_data.qHz1  = P(1); 
+    tmp_tyre_data.qBz1  = P(2);
+    tmp_tyre_data.qCz1  = P(3);
+    tmp_tyre_data.qDz1  = P(4);
+    tmp_tyre_data.qEz1  = P(5);
+    tmp_tyre_data.qEz4  = P(6);
+    tmp_tyre_data.qBz9  = P(7);
+    tmp_tyre_data.qDz6  = P(8);
+    tmp_tyre_data.qBz10 = P(9);
     
    %dfz = (Z - Fz0)./Fz0 ;
     
