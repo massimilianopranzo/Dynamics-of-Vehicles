@@ -1,4 +1,9 @@
 %% FITTING TYRE DATA-LATERAL BEHAVIOUR WITH MAGIC FORMULA 96
+%% Syntax functions
+% plot_fitted_data(x_raw, y_raw, x_fit, y_fit, label_x, label_y, name, plot_title, line_width, font_size_title)
+% plot_selected_data(tab, font_size_title)
+% magic_formula_stiffness(x, B, C, D, E, SV)
+% initialise_ty_data(R0, Fz0)
 
 
 %% Initialisation
@@ -7,7 +12,12 @@ clearvars
 close all 
 
 addpath('utilities\')
-addpath('')
+addpath('\MAINS\..')
+addpath('tyre_lib\FY')
+
+% Suppress warning export_fig for docked figures
+warning('off', 'MATLAB:Figure:SetPosition')
+
 % Choice of the dataset
 data_set_path = 'dataset/';
 data_set = 'Goodyear_B1464run13.mat';
@@ -15,12 +25,6 @@ struct_name = 'Goodyear_B1464';
 load_type = 'lateral';
 
 initialization
-
-%% Syntax functions
-% plot_fitted_data(x_raw, y_raw, x_fit, y_fit, label_x, label_y, name, plot_title, line_width, font_size_title)
-% plot_selected_data(tab, font_size_title)
-% magic_formula_stiffness(x, B, C, D, E, SV)
-% initialise_ty_data(R0, Fz0)
 
 
 %% Load raw data  
@@ -40,15 +44,13 @@ sorting_data;
 % figure 2
 plot_sorted_data;
 
-%% Intersect tables to obtain specific sub-datasets and plot them
+%% -------------------------------------------------------------------------
+% FITTING WITH GUESS VALUES and nominal vertical load
+%--------------------------------------------------------------------------
 [TData0, ~] = intersect_table_data(GAMMA_0, FZ_220 );
 
 % figure 3
 plot_selected_data(TData0, font_size_title);
-
-%% -------------------------------------------------------------------------
-% FITTING WITH GUESS VALUES and nominal vertical load
-%--------------------------------------------------------------------------
 if exist(['tyre_', struct_name,'.mat'], 'file')
   load(['tyre_', struct_name,'.mat']);
 else
@@ -85,10 +87,9 @@ SA_vec = -0.3:0.001:0.3; % lateral slip to be used in the plot for check the int
 
 % resid_pure_Fy returns the residual, so minimize the residual varying Y. 
 % It is an unconstrained minimization problem 
-[P_fz_nom, fval, exitflag] = fmincon(@(P)resid_pure_Fy(P, FY_vec, ALPHA_vec, 0, FZ0, tyre_coeffs),...
-                               P0,[],[],[],[],lb,ub);
-P_fz_nom
-fval    
+[P_fz_nom, res_Fy0, exitflag] = fmincon(@(P)resid_pure_Fy(P, FY_vec, ALPHA_vec, 0, FZ0, tyre_coeffs),...
+                               P0,[],[],[],[],lb,ub)
+  
 %%
 % Update tyre data with new optimal values                             
 tyre_coeffs.pCy1 = P_fz_nom(1) ; % 1
@@ -108,15 +109,15 @@ data_label = "Fitted data";
 plot_fitted_data(TData0.SA, TData0.FY, SA_vec', FY0_fz_nom_vec', '$\alpha [-]$', '$F_{y0}$ [N]', data_label, 'fig_fit_pure_conditions_FY', 'Fitting in pure conditions', line_width, font_size_title)
 
 res_Fy0 = resid_pure_Fy(P_fz_nom, FY_vec, ALPHA_vec, 0, FZ0, tyre_coeffs);
+
+
 %% ------------------------------------------------------------------------
 % FIT COEFFICIENTS WITH VARIABLE LOAD
 %--------------------------------------------------------------------------
 % extract data with variable load
 [TDataDFz, ~] = GAMMA_0; %intersect_table_data(GAMMA_0);
-TDataDFz([9808:9930], :) = [];
+% TDataDFz([9808:9930], :) = [];
 
-% Fit the coeffs {pCx1, pDx1, pEx1, pEx4, pKx1, pHx1, pVx1}
-%FZ0 = mean(TData0.FZ);
 
 zeros_vec = zeros(size(TDataDFz.SA));
 ones_vec  = ones(size(TDataDFz.SA));
@@ -140,11 +141,10 @@ SA_vec = -0.3:0.001:0.3;
 
 % LSM_pure_Fy returns the residual, so minimize the residual varying X. It
 % is an unconstrained minimization problem 
-[P_dfz, fval, exitflag] = fmincon(@(P)resid_pure_Fy_varFz(P, FY_vec, ALPHA_vec, 0, FZ_vec, tyre_coeffs),...
+[P_dfz, res_Fy0_varFz, exitflag] = fmincon(@(P)resid_pure_Fy_varFz(P, FY_vec, ALPHA_vec, 0, FZ_vec, tyre_coeffs),...
                                P0,[],[],[],[],lb,ub);
 
-P_dfz
-fval
+
 %%
 % Change tyre data with new optimal values                             
 tyre_coeffs.pDy2 = P_dfz(1); % 1
@@ -182,11 +182,11 @@ Calfa_vec4_0 = magic_formula_stiffness(alpha__y, By, Cy, Dy, Ey, SVy);
 [alpha__y, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, 0, 0, mean(FZ_1550.FZ), tyre_coeffs);
 Calfa_vec5_0 = magic_formula_stiffness(alpha__y, By, Cy, Dy, Ey, SVy);
 
-Calfa_vec1 = MF96_CorneringStiffness(tmp_zeros, SA_vec, tmp_zeros, mean(FZ_220.FZ)*tmp_ones,tyre_coeffs);
-Calfa_vec2 = MF96_CorneringStiffness(tmp_zeros, SA_vec, tmp_zeros, mean(FZ_440.FZ)*tmp_ones,tyre_coeffs);
-Calfa_vec3 = MF96_CorneringStiffness(tmp_zeros, SA_vec, tmp_zeros, mean(FZ_700.FZ)*tmp_ones,tyre_coeffs);
-Calfa_vec4 = MF96_CorneringStiffness(tmp_zeros, SA_vec, tmp_zeros, mean(FZ_1120.FZ)*tmp_ones,tyre_coeffs);
-Calfa_vec5 = MF96_CorneringStiffness(tmp_zeros, SA_vec, tmp_zeros, mean(FZ_1550.FZ)*tmp_ones,tyre_coeffs);
+Calfa_vec1 = MF96_CorneringStiffness_FY(tmp_zeros, SA_vec, tmp_zeros, mean(FZ_220.FZ)*tmp_ones,tyre_coeffs);
+Calfa_vec2 = MF96_CorneringStiffness_FY(tmp_zeros, SA_vec, tmp_zeros, mean(FZ_440.FZ)*tmp_ones,tyre_coeffs);
+Calfa_vec3 = MF96_CorneringStiffness_FY(tmp_zeros, SA_vec, tmp_zeros, mean(FZ_700.FZ)*tmp_ones,tyre_coeffs);
+Calfa_vec4 = MF96_CorneringStiffness_FY(tmp_zeros, SA_vec, tmp_zeros, mean(FZ_1120.FZ)*tmp_ones,tyre_coeffs);
+Calfa_vec5 = MF96_CorneringStiffness_FY(tmp_zeros, SA_vec, tmp_zeros, mean(FZ_1550.FZ)*tmp_ones,tyre_coeffs);
 
 % figure 7
 plot_stiffness_FY; 
@@ -226,11 +226,8 @@ export_fig(fig_camber_FY, 'images\fig_camber_FY.png')
 
 % LSM_pure_Fx returns the residual, so minimize the residual varying X. It
 % is an unconstrained minimization problem 
-[P_varGamma,fval,exitflag] = fmincon(@(P)resid_pure_Fy_varGamma(P,FY_vec, ALPHA_vec, GAMMA_vec, tyre_coeffs.FZ0, tyre_coeffs),...
-                               P0,[],[],[],[],lb,ub);
-
-P_varGamma
-fval
+[P_varGamma, res_Fy0_varGamma, exitflag] = fmincon(@(P)resid_pure_Fy_varGamma(P,FY_vec, ALPHA_vec, GAMMA_vec, tyre_coeffs.FZ0, tyre_coeffs),...
+                               P0,[],[],[],[],lb,ub)
 
 %%
 % Change tyre data with new optimal values
@@ -273,9 +270,8 @@ plot_label = ["$\gamma = 0 [deg]$", "$\gamma = 1 [deg]$", "$\gamma = 2 [deg]$", 
 plot_fitted_data_struct(plot_x, plot_y, plot_x, plot_fit, ...
   '$\alpha$ [-]', '$F_{Y}$ [N]', plot_label, 'fig_fit_variable_camber_FY', ...
   'Fitting with variable camber', line_width, font_size_title, colors_vect);
-  
-res_Fy0_varGamma  = resid_pure_Fy_varGamma(P_varGamma, FY_vec, ALPHA_vec,GAMMA_vec,tyre_coeffs.FZ0, tyre_coeffs);
-  
+
+
 %% ------------------------------------------------------------
 % FIT WITH GAMMA AND FZ
 % ------------------------------------------------------------
@@ -294,8 +290,8 @@ FY_vec    = tyre_data.FY;
 FZ_vec    = tyre_data.FZ;
 
 % Minimization with both gamma and Fz
-[P_varGammavarFz,fval,exitflag] = fmincon(@(P)resid_pure_Fy_varGamma_varFz(P,FY_vec, ALPHA_vec, GAMMA_vec, FZ_vec, tyre_coeffs),...
-                               P0,[],[],[],[],lb,ub);
+[P_varGammavarFz, res_Fy0_varGamma_varFz, exitflag] = fmincon(@(P)resid_pure_Fy_varGamma_varFz(P,FY_vec, ALPHA_vec, GAMMA_vec, FZ_vec, tyre_coeffs),...
+                               P0,[],[],[],[],lb,ub)
 
 % Change tyre data with new optimal values
 tyre_coeffs.pVy4 = P_varGammavarFz(1); 
@@ -324,15 +320,11 @@ plot_fitted_data_struct(plot_x, plot_y, plot_x, plot_fit, ...
   'Fitting with variable camber and vertical load, $F_{Z} = 220 [N]$', line_width, font_size_title, colors_vect);
 
 
-%% Calculate the residuals with the optimal solution found above
-res_Fy0_varGamma_varFz = resid_pure_Fy_varGamma_varFz(P_varGammavarFz, FY_vec, ALPHA_vec, GAMMA_vec, FZ_vec, tyre_coeffs);
 
 
-% R-squared is 
-% 1-SSE/SST
-% SSE/SST = res_Fx0_nom
 
-%% PLOT THE RESIDUALS
+%% -------------------
+% PLOT THE RESIDUALS
 fprintf("Pure confitions: %6.3f\n", res_Fy0);
 fprintf("Variable load: %6.3f\n", res_Fy0_varFz);
 fprintf("Variable camber: %6.3f\n", res_Fy0_varGamma);

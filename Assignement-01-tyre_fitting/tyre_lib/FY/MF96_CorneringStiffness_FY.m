@@ -8,7 +8,7 @@ function [Calfa_vec] = MF96_CorneringStiffness_FY(kappa_vec, alpha_vec, phi_vec,
    % precode
    [alpha__y, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(kappa_vec(i), alpha_vec(i), phi_vec(i), Fz_vec(i), tyre_data);
    % main code
-    Calfa_vec(i) = magic_formula_stiffness(kappa__y, By, Cy, Dy, Ey, SVy);
+    Calfa_vec(i) = magic_formula_stiffness(alpha__y, By, Cy, Dy, Ey, SVy);
   end
   
  end

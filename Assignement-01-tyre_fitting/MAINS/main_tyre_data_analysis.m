@@ -6,6 +6,8 @@ clearvars
 close all 
 
 addpath('utilities\')
+addpath('\MAINS\..')
+addpath('tyre_lib\FX')
 
 % Choice of the dataset
 data_set_path = 'dataset/';

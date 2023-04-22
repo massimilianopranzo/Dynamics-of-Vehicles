@@ -8,7 +8,7 @@ plot(mean(FZ_700.FZ),Calfa_vec2_0,'+','LineWidth',2)
 plot(mean(FZ_900.FZ),Calfa_vec3_0,'+','LineWidth',2)
 plot(mean(FZ_1120.FZ),Calfa_vec4_0,'+','LineWidth',2)
 plot(mean(FZ_1550.FZ),Calfa_vec5_0,'+','LineWidth',2)
-legend({'$Fz_{220}$','$Fz_{700}$','$Fz_{900}$','$Fz_{1120}$', '$Fz_{1550}'}, 'Location', 'best')
+legend({'$Fz_{220}$','$Fz_{700}$','$Fz_{900}$','$Fz_{1120}$', '$Fz_{1550}$'}, 'Location', 'best')
 xlabel('Vertical load [N]')
 ylabel('$C_{\alpha, MAX}$ TO CHECK [N/rad]')
 grid on
