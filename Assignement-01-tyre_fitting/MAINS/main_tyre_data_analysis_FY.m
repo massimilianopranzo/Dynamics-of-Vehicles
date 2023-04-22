@@ -22,7 +22,7 @@ warning('off', 'MATLAB:Figure:SetPosition')
 data_set_path = 'dataset/';
 data_set = 'Goodyear_B1464run13.mat';
 struct_name = 'Goodyear_B1464';  
-load_type = 'lateral';
+load_type = 'lateral'; 
 
 initialization
 
