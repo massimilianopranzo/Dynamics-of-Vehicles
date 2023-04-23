@@ -11,7 +11,8 @@ clc
 clearvars 
 close all 
 
-addpath('utilities\')
+addpath('..\utilities\')
+addpath('..\dataset\')
 addpath('\MAINS\..')
 addpath('tyre_lib\FY')
 
@@ -51,11 +52,11 @@ plot_sorted_data;
 
 % figure 3
 plot_selected_data(TData0, font_size_title);
-if exist(['tyre_', struct_name,'.mat'], 'file')
-  load(['tyre_', struct_name,'.mat']);
-else
+% if exist(['tyre_', struct_name,'.mat'], 'file')
+%   load(['tyre_', struct_name,'.mat']);
+% else
   tyre_coeffs = initialise_tyre_data(R0, Fz0);
-end
+% end
 
 FZ0 = mean(TData0.FZ);
 zeros_vec = zeros(size(TData0.SA));
@@ -88,7 +89,7 @@ SA_vec = -0.3:0.001:0.3; % lateral slip to be used in the plot for check the int
 % resid_pure_Fy returns the residual, so minimize the residual varying Y. 
 % It is an unconstrained minimization problem 
 [P_fz_nom, res_Fy0, exitflag] = fmincon(@(P)resid_pure_Fy(P, FY_vec, ALPHA_vec, 0, FZ0, tyre_coeffs),...
-                               P0,[],[],[],[],lb,ub)
+                               P0,[],[],[],[],lb,ub);
   
 %%
 % Update tyre data with new optimal values                             
@@ -116,7 +117,7 @@ res_Fy0 = resid_pure_Fy(P_fz_nom, FY_vec, ALPHA_vec, 0, FZ0, tyre_coeffs);
 %--------------------------------------------------------------------------
 % extract data with variable load
 [TDataDFz, ~] = GAMMA_0; %intersect_table_data(GAMMA_0);
-% TDataDFz([9808:9930], :) = [];
+TDataDFz([9808:9930], :) = [];
 
 
 zeros_vec = zeros(size(TDataDFz.SA));
@@ -125,12 +126,12 @@ ones_vec  = ones(size(TDataDFz.SA));
 % Guess values for parameters to be optimised
 %    [   pDy2     pEy2   pHy2     pVy2    ]
 %% WORK HERE
-P0 = [0.27 -15 1 -0.05];
+P0 = [1 0 1 -0.05];
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised
 %    [   pDy2     pEy2   pHy2     pVy2  ]
-lb = [-5 -30 -5 -5] ;
-ub = [5 19 5 5];
+lb = [-5 -5 -5 -5] ;
+ub = [5 10 5 5];
 
 ALPHA_vec = TDataDFz.SA;
 FY_vec    = TDataDFz.FY;
@@ -143,7 +144,8 @@ SA_vec = -0.3:0.001:0.3;
 % is an unconstrained minimization problem 
 [P_dfz, res_Fy0_varFz, exitflag] = fmincon(@(P)resid_pure_Fy_varFz(P, FY_vec, ALPHA_vec, 0, FZ_vec, tyre_coeffs),...
                                P0,[],[],[],[],lb,ub);
-
+P_dfz
+res_Fy0_varFz
 
 %%
 % Change tyre data with new optimal values                             

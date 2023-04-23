@@ -8,8 +8,8 @@ function [] = plot_fitted_data(x_raw, y_raw, x_fit, y_fit, label_x, label_y, dat
 	plot(x_raw, y_raw,'.', 'DisplayName','Raw data', 'LineWidth', line_width)
 	hold on
 	for i = 1:length(data_label)
-		[x_fit(:, i), pos] = sort(x_fit(:,i));
-		y_fit(:,i) = y_fit(pos,i); 
+		% [x_fit(:, i), pos] = sort(x_fit(:,i));
+		% y_fit(:,i) = y_fit(pos,i); 
 		plot(x_fit(:,i), y_fit(:,i),'-', 'DisplayName', data_label(i), 'LineWidth', line_width)
 	end
 	grid on
