@@ -48,7 +48,7 @@ plot_sorted_data;
 %% -------------------------------------------------------------------------
 % FITTING WITH GUESS VALUES and nominal vertical load
 %--------------------------------------------------------------------------
-[TData0, ~] = intersect_table_data(GAMMA_0, FZ_220 );
+[TData0, ~] = intersect_table_data(GAMMA_0, FZ_220);
 
 % figure 3
 plot_selected_data(TData0, font_size_title);
@@ -71,14 +71,14 @@ plot_fitted_data(TData0.SA, TData0.FY, TData0.SA, FY0_guess, '$\alpha [deg]$', '
 % FITTING WITH NOMINAL LOAD Fz=Fz_nom= 220N and camber=0  alpha = 0 VX= 10
 %--------------------------------------------------------------------------
 % Guess values for parameters to be optimised
-%    [pCy1 pDy1 pEy1  pHy1  pKy1  pKy2, pVy1, pEy3]
-P0 = [  1,   2,   1,     0,   1,     0,  0, 0]; 
+%    [pCy1 pDy1 pEy1  pHy1  pKy1  pKy2, pVy1]
+P0 = [  1,   2,   1,     0,   1,     0,  0]; 
 
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised
-%    [pCy1 pDy1 pEy1  pHy1  pKy1  pKy2, pVy1, pEy3]
-lb = [1,  0.1,   -1,   -10,  -4,   -10,  -10, -12]; % lower bound
-ub = [2,    4,   1,    10,   100,    10,   10, 10]; % upper bound
+%    [pCy1 pDy1 pEy1  pHy1  pKy1  pKy2, pVy1]
+lb = [1,  0.1,   -1,   -10,  -4,   -10,  -10]; % lower bound
+ub = [2,    4,   1,    10,   100,    10,   10]; % upper bound
 
 ALPHA_vec = TData0.SA;  % side slip angle
 FY_vec    = TData0.FY;  % lateral force
@@ -90,6 +90,7 @@ SA_vec = -0.3:0.001:0.3; % lateral slip to be used in the plot for check the int
 % It is an unconstrained minimization problem 
 [P_fz_nom, res_Fy0, exitflag] = fmincon(@(P)resid_pure_Fy(P, FY_vec, ALPHA_vec, 0, FZ0, tyre_coeffs),...
                                P0,[],[],[],[],lb,ub);
+P_fz_nom
   
 %%
 % Update tyre data with new optimal values                             
@@ -100,7 +101,6 @@ tyre_coeffs.pHy1 = P_fz_nom(4) ;
 tyre_coeffs.pKy1 = P_fz_nom(5) ;
 tyre_coeffs.pKy2 = P_fz_nom(6) ;
 tyre_coeffs.pVy1 = P_fz_nom(7) ;
-tyre_coeffs.pEy3 = P_fz_nom(8) ;
 
 FY0_fz_nom_vec = MF96_FY0_vec(zeros(size(SA_vec)), SA_vec, zeros(size(SA_vec)), ...
                               FZ0.*ones(size(SA_vec)),tyre_coeffs);
@@ -126,12 +126,12 @@ ones_vec  = ones(size(TDataDFz.SA));
 % Guess values for parameters to be optimised
 %    [   pDy2     pEy2   pHy2     pVy2    ]
 %% WORK HERE
-P0 = [1 0 1 -0.05];
+P0 = [1 2 3 0.05];
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised
 %    [   pDy2     pEy2   pHy2     pVy2  ]
-lb = [-5 -5 -5 -5] ;
-ub = [5 10 5 5];
+lb = [-5 -20 -5 -5] ;
+ub = [15 30 5 10];
 
 ALPHA_vec = TDataDFz.SA;
 FY_vec    = TDataDFz.FY;
@@ -202,12 +202,12 @@ plot_stiffness_FY;
 % Fit the coeffs { pDy3 pEy4 pHy3 pKy3 pVy3 pVy4}
 
 % Guess values for parameters to be optimised
-%    [pDy3  pEy4     pHy3    pKy3   pVy3    ]
-P0 = [ -10 10 0 0 0   ]; 
+%    [pHy3, pDy3, pKy3, pEy3, pEy4, pVy3, pVy4]
+P0 = [ -10     10     0     0     0     0    0] ; 
 
 % NOTE: many local minima => limits on parameters are fundamentals
-lb = [-25 -15 -15 -15 -15];
-ub = [15 25 15 15 15];
+lb = [-25 -15 -15 -15 -15 -15 -15];
+ub = [15 25 15 15 15 15 15];
 
 zeros_vec = zeros(size(TDataGamma.SA));
 ones_vec  = ones(size(TDataGamma.SA));
@@ -233,12 +233,13 @@ export_fig(fig_camber_FY, 'images\fig_camber_FY.png')
 
 %%
 % Change tyre data with new optimal values
-tyre_coeffs.pDy3 = P_varGamma(1); 
-tyre_coeffs.pEy4 = P_varGamma(2); 
-tyre_coeffs.pHy3 = P_varGamma(3); 
-tyre_coeffs.pKy3 = P_varGamma(4); 
-tyre_coeffs.pVy3 = P_varGamma(5); 
-
+tyre_coeffs.pHy3 = P(1); 
+tyre_coeffs.pDy3 = P(2); 
+tyre_coeffs.pKy3 = P(3); 
+tyre_coeffs.pEy3 = P(4); 
+tyre_coeffs.pEy4 = P(5); 
+tyre_coeffs.pVy3 = P(6); 
+tyre_coeffs.pVy4 = P(7); 
 
 FY0_varGamma_vec = MF96_FY0_vec(zeros_vec, ALPHA_vec, GAMMA_vec, tyre_coeffs.FZ0*ones_vec, tyre_coeffs);
 
@@ -274,63 +275,12 @@ plot_fitted_data_struct(plot_x, plot_y, plot_x, plot_fit, ...
   'Fitting with variable camber', line_width, font_size_title, colors_vect);
 
 
-%% ------------------------------------------------------------
-% FIT WITH GAMMA AND FZ
-% ------------------------------------------------------------
-% minimize P = [pVy4]
-P0 = [1]; % initial guess
-lb = [-100]; % lower bound
-ub = [10]; % upper bound
-
-% Pass all the structure
-zeros_vec = zeros(size(tyre_data.SA));
-ones_vec  = ones(size(tyre_data.SA));
-
-ALPHA_vec = tyre_data.SA;
-GAMMA_vec = tyre_data.IA; 
-FY_vec    = tyre_data.FY;
-FZ_vec    = tyre_data.FZ;
-
-% Minimization with both gamma and Fz
-[P_varGammavarFz, res_Fy0_varGamma_varFz, exitflag] = fmincon(@(P)resid_pure_Fy_varGamma_varFz(P,FY_vec, ALPHA_vec, GAMMA_vec, FZ_vec, tyre_coeffs),...
-                               P0,[],[],[],[],lb,ub)
-
-% Change tyre data with new optimal values
-tyre_coeffs.pVy4 = P_varGammavarFz(1); 
-
-TDataGamma0 = intersect_table_data(GAMMA_0, FZ_220);
-TDataGamma1 = intersect_table_data(GAMMA_1, FZ_220);
-TDataGamma2 = intersect_table_data(GAMMA_2, FZ_220);
-TDataGamma3 = intersect_table_data(GAMMA_3, FZ_220);
-TDataGamma4 = intersect_table_data(GAMMA_4, FZ_220);
-FY0_Gamma0 = MF96_FY0_vec(zeros_vec, TDataGamma0.SA, TDataGamma0.IA, tyre_coeffs.FZ0 * ones_vec, tyre_coeffs);
-FY0_Gamma1 = MF96_FY0_vec(zeros_vec, TDataGamma1.SA, TDataGamma1.IA, tyre_coeffs.FZ0 * ones_vec, tyre_coeffs);
-FY0_Gamma2 = MF96_FY0_vec(zeros_vec, TDataGamma2.SA, TDataGamma2.IA, tyre_coeffs.FZ0 * ones_vec, tyre_coeffs);
-FY0_Gamma3 = MF96_FY0_vec(zeros_vec, TDataGamma3.SA, TDataGamma3.IA, tyre_coeffs.FZ0 * ones_vec, tyre_coeffs);
-FY0_Gamma4 = MF96_FY0_vec(zeros_vec, TDataGamma4.SA, TDataGamma4.IA, tyre_coeffs.FZ0 * ones_vec, tyre_coeffs);
-
-plot_y = cell(5,1);
-plot_x = cell(5,1);
-plot_fit = cell(5,1);
-plot_x = {TDataGamma0.SA, TDataGamma1.SA, TDataGamma2.SA, TDataGamma3.SA, TDataGamma4.SA};
-plot_y = {TDataGamma0.FY, TDataGamma1.FY, TDataGamma2.FY, TDataGamma3.FY, TDataGamma4.FY};
-plot_fit = {FY0_Gamma0, FY0_Gamma1, FY0_Gamma2, FY0_Gamma3, FY0_Gamma4};
-plot_label = ["$\gamma = 0 [deg]$", "$\gamma = 1 [deg]$", "$\gamma = 2 [deg]$", "$\gamma = 3 [deg]$", "$\gamma = 4 [deg]$"];
-
-plot_fitted_data_struct(plot_x, plot_y, plot_x, plot_fit, ...
-  '$\alpha$ [-]', '$F_{Y}$ [N]', plot_label, 'fig_fit_variable_camber_variable_load_FY', ...
-  'Fitting with variable camber and vertical load, $F_{Z} = 220 [N]$', line_width, font_size_title, colors_vect);
-
-
-
-
-
 %% -------------------
 % PLOT THE RESIDUALS
 fprintf("Pure confitions: %6.3f\n", res_Fy0);
 fprintf("Variable load: %6.3f\n", res_Fy0_varFz);
 fprintf("Variable camber: %6.3f\n", res_Fy0_varGamma);
-fprintf("Variable camber and load: %6.3f\n", res_Fy0_varGamma_varFz);
+
 
 %%
 % SSE is the sum of squared error,  SST is the sum of squared total
