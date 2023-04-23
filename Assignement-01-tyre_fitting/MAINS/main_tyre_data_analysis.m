@@ -11,7 +11,7 @@ addpath('tyre_lib\FX')
 
 % Choice of the dataset
 data_set_path = 'dataset/';
-data_set = 'Goodyear_B1464run13.mat';
+data_set = 'Goodyear_B1464run58.mat';
 struct_name = 'Goodyear_B1464';  
 load_type = 'longitudinal';
 
@@ -76,7 +76,7 @@ P0 = [  1,   2,   1,  0,   0,   1,   0];
 % 1< pCx1 < 2 
 % 0< pEx1 < 1 
 %    [pCx1 pDx1 pEx1 pEx4  pHx1  pKx1  pVx1 
-lb = [1,  0.1,   -2,   0,  -10,     0,   -10]; % lower bound
+lb = [1,  0.1,   0,   0,  -10,     0,   -10]; % lower bound
 ub = [2,    4,   1,   4,   10,   100,    10]; % upper bound
 
 KAPPA_vec = TData0.SL;  % slip ratio

@@ -23,7 +23,7 @@ function res = resid_pure_Fy_varGamma(P,FY,ALPHA,GAMMA,FZ,tyre_data)
     % Longitudinal Force (Pure Longitudinal Slip) Equations
     res = 0;
     for i=1:length(ALPHA)
-       fy0  = MF96_FY0(0, ALPHA(i), GAMMA(i), FZ, tmp_tyre_data);
+       fy0  = MF96_FY0(0, ALPHA(i), GAMMA(i), FZ(i), tmp_tyre_data);
        res = res+(fy0-FY(i))^2;
     end
     
