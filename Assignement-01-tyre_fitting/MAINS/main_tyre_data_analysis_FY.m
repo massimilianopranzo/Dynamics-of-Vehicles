@@ -11,8 +11,7 @@ clc
 clearvars 
 close all 
 
-addpath('..\utilities\')
-addpath('..\dataset\')
+
 addpath('\MAINS\..')
 addpath('tyre_lib\FY')
 
@@ -32,8 +31,8 @@ initialization
 load ([data_set_path, data_set]); % pure lateral
 
 % select dataset portion
-cut_start = 1;
-cut_end = length(FY);
+cut_start = 5400;
+cut_end = 27000;% length(FY);
 smpl_range = cut_start:cut_end;
 
 % figure 1
@@ -90,6 +89,8 @@ SA_vec = -0.3:0.001:0.3; % lateral slip to be used in the plot for check the int
 % It is an unconstrained minimization problem 
 [P_fz_nom, res_Fy0, exitflag] = fmincon(@(P)resid_pure_Fy(P, FY_vec, ALPHA_vec, 0, FZ0, tyre_coeffs),...
                                P0,[],[],[],[],lb,ub);
+P_fz_nom
+res_Fy0
   
 %%
 % Update tyre data with new optimal values                             
@@ -117,8 +118,6 @@ res_Fy0 = resid_pure_Fy(P_fz_nom, FY_vec, ALPHA_vec, 0, FZ0, tyre_coeffs);
 %--------------------------------------------------------------------------
 % extract data with variable load
 [TDataDFz, ~] = GAMMA_0; %intersect_table_data(GAMMA_0);
-TDataDFz([9808:9930], :) = [];
-
 
 zeros_vec = zeros(size(TDataDFz.SA));
 ones_vec  = ones(size(TDataDFz.SA));
@@ -126,12 +125,12 @@ ones_vec  = ones(size(TDataDFz.SA));
 % Guess values for parameters to be optimised
 %    [   pDy2     pEy2   pHy2     pVy2    ]
 %% WORK HERE
-P0 = [1 0 1 -0.05];
+P0 = [1 0 0 0];
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised
 %    [   pDy2     pEy2   pHy2     pVy2  ]
-lb = [-5 -5 -5 -5] ;
-ub = [5 10 5 5];
+lb = -100*ones(1, 4);%[-5 -5 -5 -5] ;
+ub = 100*ones(1, 4);%[5 10 5 5];
 
 ALPHA_vec = TDataDFz.SA;
 FY_vec    = TDataDFz.FY;
