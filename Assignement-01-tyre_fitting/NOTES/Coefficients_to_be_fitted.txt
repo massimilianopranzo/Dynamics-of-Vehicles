@@ -5,10 +5,10 @@ LONGITUDINAL
 4) change dFz and gamma				: none 									   (0)
 
 lateral
-1) pure conditions					: pHy1, pCy1, pDy1, pKy1, pKy2, pEy1, pEy3, pVy1 (8)
-2) change dFz						: pHy2, pDy2, pEy2, pVy2 						 (4)
-3) variable gamma					: pHy3, pDy3, pKy3, pEy4, pVy3 					 (5)
-4) variable gamma and change dFz	: pVy4 									         (1)
+1) pure conditions					: pCy1 pDy1 pEy1  pHy1  pKy1  pVy1 (6)
+2) change dFz						: pHy2, pDy2, pEy2, pVy2, pKy2, pEy3 (6)
+3) variable gamma					: pHy3, pDy3, pKy3, pEy4, pVy3, pVy4 (6)
+4) variable gamma and change dFz	: none
 
 SELF ALIGNING MOMENT
 1) pure conditions					: qHz1, qBz1, qCz1, qDz1, qEz1, qEz4, qBz9, qBz10, qDz6 (9)
