@@ -32,8 +32,8 @@ initialization
 load ([data_set_path, data_set]); % pure lateral
 
 % select dataset portion
-cut_start = 5400;
-cut_end = 27000; %length(FY);
+cut_start = 1;
+cut_end = length(FY);
 smpl_range = cut_start:cut_end;
 
 % figure 1
@@ -72,26 +72,24 @@ plot_fitted_data(TData0.SA, TData0.FY, TData0.SA, FY0_guess, '$\alpha [deg]$', '
 %--------------------------------------------------------------------------
 % Guess values for parameters to be optimised
 %    [pCy1 pDy1 pEy1  pHy1  pKy1  pVy1]
-P0 =  [  1,   1,   30,     1,   1,  1]; 
+P0 = [  1,   2,   1,     0,   1,  0]; 
 
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised
 %    [pCy1 pDy1 pEy1  pHy1  pKy1  pVy1]
-lb = [1,  -inf, -100, -inf, -inf, -inf ]; % lower bound
-ub = [2,  inf, 100, inf, inf, inf]; % upper bound
+lb = [1,  0.1,   -1,   -10,  -4, -10]; % lower bound
+ub = [2,    4,   1,    10,   100, 10]; % upper bound
 
 ALPHA_vec = TData0.SA;  % side slip angle
 FY_vec    = TData0.FY;  % lateral force
 
 % check guess
-SA_vec = -0.28:0.001:0.28; % lateral slip to be used in the plot for check the interpolation outside the input data range
+SA_vec = -0.3:0.001:0.3; % lateral slip to be used in the plot for check the interpolation outside the input data range
 
 % resid_pure_Fy returns the residual, so minimize the residual varying Y. 
 % It is an unconstrained minimization problem 
 [P_fz_nom, res_Fy0, exitflag] = fmincon(@(P)resid_pure_Fy(P, FY_vec, ALPHA_vec, 0, FZ0, tyre_coeffs),...
                                P0,[],[],[],[],lb,ub);
-P_fz_nom
-res_Fy0
   
 %%
 % Update tyre data with new optimal values                             
@@ -117,6 +115,8 @@ res_Fy0 = resid_pure_Fy(P_fz_nom, FY_vec, ALPHA_vec, 0, FZ0, tyre_coeffs);
 %--------------------------------------------------------------------------
 % extract data with variable load
 [TDataDFz, ~] = GAMMA_0; %intersect_table_data(GAMMA_0);
+TDataDFz([9808:9930], :) = [];
+
 
 zeros_vec = zeros(size(TDataDFz.SA));
 ones_vec  = ones(size(TDataDFz.SA));
@@ -124,7 +124,7 @@ ones_vec  = ones(size(TDataDFz.SA));
 % Guess values for parameters to be optimised
 %    [ pHy2, pDy2, pEy2, pVy2, pKy2, pEy3]
 %% WORK HERE
-P0 = 0*ones(1, 6);
+P0 = 0*ones(6, 1);
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised
 %    [pHy2, pDy2, pEy2, pVy2, pKy2, pEy3]
@@ -155,8 +155,7 @@ tyre_coeffs.pVy2 = P_dfz(4);
 tyre_coeffs.pKy2 = P_dfz(5);
 tyre_coeffs.pEy3 = P_dfz(6);
 
-res_Fy0_varFz = resid_pure_Fy_varFz(P_dfz, FY_vec, SA_vec, 0, FZ_vec, ...
-  tyre_coeffs);
+res_Fy0_varFz = resid_pure_Fy_varFz(P_dfz, FY_vec, SA_vec, 0, FZ_vec, tyre_coeffs);
 
 tmp_zeros = zeros(size(SA_vec));
 tmp_ones = ones(size(SA_vec));
