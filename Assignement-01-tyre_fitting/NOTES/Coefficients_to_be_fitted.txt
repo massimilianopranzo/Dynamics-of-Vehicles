@@ -10,10 +10,10 @@ lateral
 3) variable gamma					: pHy3, pDy3, pKy3, pEy3, pEy4, pVy3, pVy4 (7)
 
 SELF ALIGNING MOMENT
-1) pure conditions					: qHz1, qBz1, qCz1, qDz1, qEz1, qEz4, qBz9, qBz10, qDz6 (9)
+1) pure conditions					: qHz1, qBz1, qCz1, qDz1, qEz1, qEz4, qBz9, qDz6, qBz10 (9)
 2) change dFz						: qHz2, qBz2, qBz3, qDz2, qEz2, qEz3, qDz7 		 		(7)
-3) varaible gamma					: qHz3, qBz4, qBz5, qDz3, qDz4, qEz5, qDz8 		 		(7)
-4) variable gamma and change dFz	: qHz4, qDz9 									 		(2)
+3) varaible gamma					: qHz3, qBz4, qBz5, qDz3, qDz4, qEz5, qDz8, qHz4, qDz9 		 		(9)
+4) variable gamma and change dFz	: none									 		(0)
 
 COMBINED LONGITUDINAL
 1) pure conditions   				: rHx1, rBx1, rCx1 (3)

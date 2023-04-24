@@ -12,14 +12,20 @@ function res = resid_pure_Mz_varGamma(P, MZ, ALPHA, GAMMA, FZ, FY_vec, tyre_data
 	
     % assign computed parameter
    
-    tmp_tyre_data.qBz4 = P(1); 
-    tmp_tyre_data.qBz5 = P(2); 
-    tmp_tyre_data.qEz5 = P(3);  
+    tmp_tyre_data.qHz3 = P(1); 
+    tmp_tyre_data.qBz4 = P(2); 
+    tmp_tyre_data.qBz5 = P(3); 
+    tmp_tyre_data.qDz3 = P(4); 
+    tmp_tyre_data.qDz4 = P(5); 
+    tmp_tyre_data.qEz5 = P(6); 
+    tmp_tyre_data.qDz9 = P(9);
+    tmp_tyre_data.qDz8 = P(7); 
+    tmp_tyre_data.qHz4 = P(8);  
         
     % Longitudinal Force (Pure Longitudinal Slip) Equations
     res = 0;
     for i=1:length(ALPHA)
-       mz0  = MF96_MZ0(ALPHA(i), GAMMA(i), FZ, FY_vec(i), tmp_tyre_data);
+       mz0  = MF96_MZ0(ALPHA(i), GAMMA(i), FZ, tmp_tyre_data);
        res = res+(mz0-MZ(i))^2;
     end
     

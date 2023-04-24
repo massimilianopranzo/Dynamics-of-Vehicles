@@ -248,7 +248,7 @@ plot_label = ["$\gamma = 0 [deg]$", "$\gamma = 1 [deg]$", "$\gamma = 2 [deg]$", 
 
 plot_fitted_data_struct(plot_x, plot_y, plot_x, plot_fit, ...
   '$\alpha$ [-]', '$F_{Y}$ [N]', plot_label, 'fig_fit_variable_camber_FY', ...
-  'Fitting with variable camber', line_width, font_size_title, colors_vect);
+  'Fitting with variable camber - Nominal force', line_width, font_size_title, colors_vect);
 
 
 %% -------------------

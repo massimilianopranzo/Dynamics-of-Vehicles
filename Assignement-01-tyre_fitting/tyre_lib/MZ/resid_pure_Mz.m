@@ -26,7 +26,7 @@ function res = resid_pure_Mz(P,MZ,ALPHA,GAMMA,FZ,FY,tyre_data)
     % Aligning moment Equations
     res = 0;
     for i=1:length(ALPHA)
-       mz0  = MF96_MZ0(ALPHA(i), GAMMA, FZ, FY(i), tmp_tyre_data);
+       mz0  = MF96_MZ0(ALPHA(i), GAMMA, FZ, tmp_tyre_data);
        res = res + (mz0-MZ(i))^2;
     end
     
