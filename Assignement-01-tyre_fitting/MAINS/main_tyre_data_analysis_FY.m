@@ -131,8 +131,8 @@ P0 = [0 0 0 0];
 %    [   pDy2     pEy2   pHy2     pVy2  ]
 % lb = [-5 -20 -5 -5] ;
 % ub = [15 30 5 10];
-lb = -inf*ones(1, 4);
-ub = inf*ones(1, 4);
+lb = -100*ones(1, 4);
+ub = 100*ones(1, 4);
 
 
 ALPHA_vec = TDataDFz.SA;
