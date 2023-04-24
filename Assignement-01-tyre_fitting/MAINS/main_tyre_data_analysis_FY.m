@@ -11,9 +11,9 @@ clc
 clearvars 
 close all 
 
-addpath('..\utilities\')
-addpath('..\dataset\')
-addpath('\MAINS\..')
+% addpath('..\utilities\')
+% addpath('..\dataset\')
+addpath('\MAINS\..') 
 addpath('tyre_lib\FY')
 
 % Suppress warning export_fig for docked figures
@@ -21,8 +21,8 @@ warning('off', 'MATLAB:Figure:SetPosition')
 
 % Choice of the dataset
 data_set_path = 'dataset/';
-data_set = 'Goodyear_B1464run13.mat';
-struct_name = 'Goodyear_B1464run13';  
+data_set = 'Hoosier_B1464run23.mat';
+struct_name = 'Hoosier_B1464run23';  
 load_type = 'lateral'; 
 
 initialization
@@ -32,8 +32,8 @@ initialization
 load ([data_set_path, data_set]); % pure lateral
 
 % select dataset portion
-cut_start = 5000;
-cut_end = 27000;%length(FY);
+cut_start = 27760;%9000;
+cut_end = 54500;%34500;%length(FY);
 smpl_range = cut_start:cut_end;
 
 % figure 1
@@ -72,27 +72,28 @@ plot_fitted_data(TData0.SA, TData0.FY, TData0.SA, FY0_guess, '$\alpha [deg]$', '
 %--------------------------------------------------------------------------
 % Guess values for parameters to be optimised
 %    [pCy1 pDy1 pEy1  pHy1  pKy1  pKy2, pVy1]
-P0 = [  1,   2,   1,     0,   1,     0,  0]; 
+P0 = [  0.7,   3.1,   -0.4,     0,   -110,     -3.2,  0]; % parametri stefano
+% P0 = [1 1 1 1 1 1 1]; 
 
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised
 %    [pCy1 pDy1 pEy1  pHy1  pKy1  pKy2, pVy1]
-lb = [1,  0.1,   -1,   -10,  -4,   -10,  -10]; % lower bound
-ub = [2,    4,   1,    10,   100,    10,   10]; % upper bound
+lb = [];% [1 -inf -inf -inf -inf -inf -inf]; % lower bound -inf*ones(1, 7);
+ub = [];%[2 inf inf inf inf inf inf]; % upper bound % inf*ones(1, 7);
 
 ALPHA_vec = TData0.SA;  % side slip angle
 FY_vec    = TData0.FY;  % lateral force
 
 % check guess
-SA_vec = -0.3:0.001:0.3; % lateral slip to be used in the plot for check the interpolation outside the input data range
+SA_vec = -0.28:0.001:0.28; % lateral slip to be used in the plot for check the interpolation outside the input data range
 
 % resid_pure_Fy returns the residual, so minimize the residual varying Y. 
 % It is an unconstrained minimization problem 
 [P_fz_nom, res_Fy0, exitflag] = fmincon(@(P)resid_pure_Fy(P, FY_vec, ALPHA_vec, 0, FZ0, tyre_coeffs),...
                                P0,[],[],[],[],lb,ub);
 P_fz_nom
+res_Fy0
   
-%%
 % Update tyre data with new optimal values                             
 tyre_coeffs.pCy1 = P_fz_nom(1) ; % 1
 tyre_coeffs.pDy1 = P_fz_nom(2) ;  
@@ -107,7 +108,10 @@ FY0_fz_nom_vec = MF96_FY0_vec(zeros(size(SA_vec)), SA_vec, zeros(size(SA_vec)), 
        
 data_label = "Fitted data"; 
 % figure 5          
-plot_fitted_data(TData0.SA, TData0.FY, SA_vec', FY0_fz_nom_vec', '$\alpha [-]$', '$F_{y0}$ [N]', data_label, 'fig_fit_pure_conditions_FY', 'Fitting in pure conditions', line_width, font_size_title)
+plot_fitted_data(TData0.SA, TData0.FY, SA_vec', FY0_fz_nom_vec', ...
+  '$\alpha [-]$', '$F_{y0}$ [N]', data_label, ...
+  'fig_fit_pure_conditions_FY', 'Fitting in pure conditions', line_width, ...
+  font_size_title)
 
 res_Fy0 = resid_pure_Fy(P_fz_nom, FY_vec, ALPHA_vec, 0, FZ0, tyre_coeffs);
 
@@ -131,8 +135,8 @@ P0 = [0 0 0 0];
 %    [   pDy2     pEy2   pHy2     pVy2  ]
 % lb = [-5 -20 -5 -5] ;
 % ub = [15 30 5 10];
-lb = -100*ones(1, 4);
-ub = 100*ones(1, 4);
+lb = [];
+ub = [];
 
 
 ALPHA_vec = TDataDFz.SA;
@@ -140,7 +144,7 @@ FY_vec    = TDataDFz.FY;
 FZ_vec    = TDataDFz.FZ;
 
 % check guess
-SA_vec = -0.3:0.001:0.3;
+SA_vec = -0.28:0.001:0.28;
 
 % LSM_pure_Fy returns the residual, so minimize the residual varying X. It
 % is an unconstrained minimization problem 
@@ -170,15 +174,13 @@ plot_stiffness_FY;
 % extract data with variable load
 [TDataGamma, ~] = FZ_220; % intersect_table_data(SA_0, FZ_220);
 
-% Fit the coeffs { pDy3 pEy4 pHy3 pKy3 pVy3 pVy4}
-
 % Guess values for parameters to be optimised
 %    [pHy3, pDy3, pKy3, pEy3, pEy4, pVy3, pVy4]
-P0 = [ 0     0     0     0     0     0    0] ; 
+P0 = [ 0     5     2     0.9     -5     0    -4] ; 
 
 % NOTE: many local minima => limits on parameters are fundamentals
-lb = [-inf -inf -inf -inf -inf -inf -inf];
-ub = [inf inf inf inf inf inf inf];
+lb = [ ];
+ub = [ ];
 
 zeros_vec = zeros(size(TDataGamma.SA));
 ones_vec  = ones(size(TDataGamma.SA));

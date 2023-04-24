@@ -10,12 +10,19 @@ tyre_data.SL =  SL(smpl_range);             % Longitudinal slip
 % else
 %   tyre_data.SA =  SA(smpl_range)*to_rad;      % Side slip angle
 % end
+
+
+
 tyre_data.SA =  SA(smpl_range)*to_rad;      % Side slip angle
 tyre_data.FZ = -FZ(smpl_range);             % Vertical force                    % 0.453592  lb/kg
 tyre_data.FX =  FX(smpl_range);             % Longitudinal force
-tyre_data.FY =  FY(smpl_range);             % Lateral force
-tyre_data.MZ =  MZ(smpl_range);             % Self aligning moment
+tyre_data.MZ =  -MZ(smpl_range);             % Self aligning moment
+tyre_data.FY =  -FY(smpl_range);             % Lateral force
 tyre_data.IA =  IA(smpl_range)*to_rad;      % Camber angle
+
+% Remove all the data outside a threshold
+indices = find(abs(tyre_data.MZ) > 15.2);
+tyre_data(indices, :) = [];
 
 % Extract points at constant inclination angle (camber angle)
 GAMMA_tol = 0.05*to_rad;
@@ -45,7 +52,7 @@ idx.FZ_220  = 220-FZ_tol < tyre_data.FZ & tyre_data.FZ < 220+FZ_tol;
 idx.FZ_440  = 440-FZ_tol < tyre_data.FZ & tyre_data.FZ < 440+FZ_tol;
 idx.FZ_700  = 700-FZ_tol < tyre_data.FZ & tyre_data.FZ < 700+FZ_tol;
 idx.FZ_900  = 900-FZ_tol < tyre_data.FZ & tyre_data.FZ < 900+FZ_tol;
-idx.FZ_1120 = 1120-FZ_tol < tyre_data.FZ & tyre_data.FZ < 1120+FZ_tol*1.2;
+idx.FZ_1120 = 1120-FZ_tol < tyre_data.FZ & tyre_data.FZ < 1120+FZ_tol;
 idx.FZ_1550 = 1550-FZ_tol < tyre_data.FZ & tyre_data.FZ < 1550+FZ_tol;
 FZ_220  = tyre_data( idx.FZ_220, : );
 FZ_440  = tyre_data( idx.FZ_440, : );

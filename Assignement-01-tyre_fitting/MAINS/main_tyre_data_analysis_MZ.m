@@ -10,8 +10,8 @@ addpath('tyre_lib\MZ')
 
 % Choice of the dataset
 data_set_path = 'dataset/';
-data_set = 'Goodyear_B1464run13.mat';
-struct_name = 'Goodyear_B1464';  
+data_set = 'Hoosier_B1464run23.mat';
+struct_name = 'Hoosier_B1464run23';  
 load_type = 'self_aligning'; 
 
 initialization
@@ -27,8 +27,8 @@ initialization
 load ([data_set_path, data_set]); % pure lateral
 
 % select dataset portion
-cut_start = 5300;
-cut_end = 27000;%length(MZ);
+cut_start = 27760;%9000;
+cut_end = 54500;%34500;%length(FY);
 smpl_range = cut_start:cut_end;
 
 % figure 1
@@ -103,13 +103,13 @@ plot_fitted_data(TData0.SA, TData0.MZ, TData0.SA, MZ0_guess, ...
 %--------------------------------------------------------------------------
 % Guess values for parameters to be optimised
 %    [qHz1, qBz1, qCz1, qDz1, qEz1, qEz4, qBz9, qDz6, qBz10]
-P0 = 2*ones(1, 9); %[2, 1, 10, 1, 1, 1, 1, 1, 2]; 
+P0 = -1*ones(1, 9); %[2, 1, 10, 1, 1, 1, 1, 1, 2]; 
 
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised
 %    [qHz1, qBz1, qCz1, qDz1, qEz1, qEz4, qBz9, qDz6, qBz10]
-lb = -100*ones(1, 9); %[0, -5, -5, 0, -5, 0, 0, 0, 0, 0, -5]; % lower bound
-ub = 100*ones(1, 9); %[15, 10, 10 , 10, 10, 10, 10, 50, 10 ]; % upper bound
+lb = []; %-100*ones(1, 9); %[0, -5, -5, 0, -5, 0, 0, 0, 0, 0, -5]; % lower bound
+ub = []; %100*ones(1, 9); %[15, 10, 10 , 10, 10, 10, 10, 50, 10 ]; % upper bound
 % lb = [];
 % ub = [];
 
@@ -128,7 +128,7 @@ SA_vec = -0.3:0.001:0.3; % lateral slip to be used in the plot for check
 
 P_fz_nom
 fval
-%%
+
 % Update tyre data with new optimal values                   
 tyre_coeffs.qHz1  = P_fz_nom(1); 
 tyre_coeffs.qBz1  = P_fz_nom(2);
@@ -144,7 +144,10 @@ MZ0_fz_nom_vec = MF96_MZ0_vec(SA_vec, zeros(size(SA_vec)), FZ0.*ones(size(SA_vec
         
 data_label = "Fitted data"; 
 % figure 5          
-plot_fitted_data(TData0.SA, TData0.MZ, SA_vec', MZ0_fz_nom_vec', '$\alpha [-]$', '$M_{z0}$ [N]', data_label, 'fig_fit_pure_conditions_MZ', 'Fitting in pure conditions', line_width, font_size_title)
+plot_fitted_data(TData0.SA, TData0.MZ, SA_vec', MZ0_fz_nom_vec', ...
+  '$\alpha [-]$', '$M_{z0}$ [N]', data_label, ...
+  'fig_fit_pure_conditions_MZ', 'Fitting in pure conditions', ...
+  line_width, font_size_title)
 
 
 %% ------------------------------------------------------------------------
@@ -159,16 +162,13 @@ plot_fitted_data(TData0.SA, TData0.MZ, SA_vec', MZ0_fz_nom_vec', '$\alpha [-]$',
 zeros_vec = zeros(size(TDataDFz.SA));
 ones_vec  = ones(size(TDataDFz.SA));
 
-% Guess values for parameters to be optimised
-%    [  qHz2 qHz3 qHz4 qBz2 qBz3 qEz2 qEz3 qDz7 qDz8 qDz9]
-%% WORK HERE
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised
 %    [ qHz2, qBz2, qBz3, qDz2, qEz2, qEz3, qDz7]
 P0 = [0, 0, 0, 0, 0, 0, 0];
-%% WORK HERE
-lb = [0, 0, 0, 0, 0, 0, 0];
-ub = [10, 10, 10, 10, 10, 10, 10];
+
+lb = []; %[0, 0, 0, 0, 0, 0, 0];
+ub = []; %[10, 10, 10, 10, 10, 10, 10];
 
 ALPHA_vec = TDataDFz.SA;
 MZ_vec    = TDataDFz.MZ;
@@ -184,8 +184,9 @@ SA_vec = -0.3:0.001:0.3;
 % is an unconstrained minimization problem 
 [P_dfz,fval,exitflag] = fmincon(@(P)resid_pure_Mz_varFz(P, MZ_vec, ALPHA_vec, 0, FZ_vec, FY_vec, tyre_coeffs),...
                                P0,[],[],[],[],lb,ub);
+P_dfz
+fval
 
-disp(exitflag)
 % Change tyre data with new optimal values          
 tyre_coeffs.qHz2 = P_dfz(1); 
 tyre_coeffs.qBz2 = P_dfz(2); 
@@ -197,17 +198,18 @@ tyre_coeffs.qDz7 = P_dfz(7);
 
 tmp_zeros = zeros(size(SA_vec));
 tmp_ones = ones(size(SA_vec));
-%%
+
 
 MZ0_fz_var_vec1 = MF96_MZ0_vec(SA_vec, tmp_zeros, mean(FZ_220.FZ)*tmp_ones, tyre_coeffs);
-MZ0_fz_var_vec2 = MF96_MZ0_vec(SA_vec, tmp_zeros, mean(FZ_700.FZ)*tmp_ones, tyre_coeffs);
-MZ0_fz_var_vec3 = MF96_MZ0_vec(SA_vec, tmp_zeros, mean(FZ_900.FZ)*tmp_ones, tyre_coeffs);
-MZ0_fz_var_vec4 = MF96_MZ0_vec(SA_vec, tmp_zeros, mean(FZ_1120.FZ)*tmp_ones, tyre_coeffs);
+MZ0_fz_var_vec2 = MF96_MZ0_vec(SA_vec, tmp_zeros, mean(FZ_440.FZ)*tmp_ones, tyre_coeffs);
+MZ0_fz_var_vec3 = MF96_MZ0_vec(SA_vec, tmp_zeros, mean(FZ_700.FZ)*tmp_ones, tyre_coeffs);
+MZ0_fz_var_vec4 = MF96_MZ0_vec(SA_vec, tmp_zeros, mean(FZ_900.FZ)*tmp_ones, tyre_coeffs);
+MZ0_fz_var_vec5 = MF96_MZ0_vec(SA_vec, tmp_zeros, mean(FZ_1120.FZ)*tmp_ones, tyre_coeffs);
 
-x_fit = repmat(SA_vec', 1, 4);
-y_fit = [MZ0_fz_var_vec1', MZ0_fz_var_vec2', MZ0_fz_var_vec3', MZ0_fz_var_vec4'];
-data_label = string(4);
-data_label = ["220 [N]", "700 [N]", "900 [N]", "1120 [N]"];
+x_fit = repmat(SA_vec', 1, 5);
+y_fit = [MZ0_fz_var_vec1', MZ0_fz_var_vec2', MZ0_fz_var_vec3', MZ0_fz_var_vec4', MZ0_fz_var_vec5'];
+data_label = string(5);
+data_label = ["220 [N]", "440 [N]", "700 [N]", "900 [N]", "1120 [N]"];
 %figure 6
 plot_fitted_data(TDataDFz.SA, TDataDFz.MZ, x_fit, y_fit, '$\alpha$ [-]', '$M_{Z}$ [N]', data_label,'fig_fit_variable_load_MZ', 'Fitting with variable load', line_width, font_size_title)
 
