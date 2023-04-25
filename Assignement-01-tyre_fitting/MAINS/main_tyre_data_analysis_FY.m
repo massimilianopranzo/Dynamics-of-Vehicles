@@ -22,7 +22,7 @@ warning('off', 'MATLAB:Figure:SetPosition')
 % Choice of the dataset
 data_set_path = 'dataset/';
 data_set = 'Hoosier_B1464run23.mat';
-struct_name = 'Hoosier_B1464run23';  
+struct_name = 'Hoosier_B1464';  
 load_type = 'lateral'; 
 
 initialization
@@ -52,11 +52,29 @@ plot_sorted_data;
 
 % figure 3
 plot_selected_data(TData0, font_size_title);
-% if exist(['tyre_', struct_name,'.mat'], 'file')
-%   load(['tyre_', struct_name,'.mat']);
-% else
+if exist(['tyre_', struct_name,'.mat'], 'file')
+  load(['tyre_', struct_name,'.mat']);
+  tyre_coeffs.pHy1 = 0;
+  tyre_coeffs.pCy1 = 0;
+  tyre_coeffs.pDy1 = 0;
+  tyre_coeffs.pKy1 = 0;
+  tyre_coeffs.pKy2 = 0;
+  tyre_coeffs.pEy1 = 0;
+  tyre_coeffs.pVy1 = 0;
+  tyre_coeffs.pHy2 = 0;
+  tyre_coeffs.pDy2 = 0;
+  tyre_coeffs.pEy2 = 0;
+  tyre_coeffs.pVy2 = 0;
+  tyre_coeffs.pHy3 = 0;
+  tyre_coeffs.pDy3 = 0;
+  tyre_coeffs.pKy3 = 0;
+  tyre_coeffs.pEy3 = 0;
+  tyre_coeffs.pEy4 = 0;
+  tyre_coeffs.pVy3 = 0;
+  tyre_coeffs.pVy4 = 0;
+else
   tyre_coeffs = initialise_tyre_data(R0, Fz0);
-% end
+end
 
 FZ0 = mean(TData0.FZ);
 zeros_vec = zeros(size(TData0.SA));

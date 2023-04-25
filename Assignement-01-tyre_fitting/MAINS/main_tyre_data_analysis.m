@@ -11,8 +11,8 @@ addpath('tyre_lib\FX')
 
 % Choice of the dataset
 data_set_path = 'dataset/';
-data_set = 'Goodyear_B1464run58.mat';
-struct_name = 'Goodyear_B1464';  
+data_set = 'Hoosier_B1464run30.mat';
+struct_name = 'Hoosier_B1464';  
 load_type = 'longitudinal';
 
 initialization
@@ -51,6 +51,21 @@ plot_selected_data(TData0, font_size_title);
 %--------------------------------------------------------------------------
 if exist(['tyre_' struct_name,'.mat'], 'file')
   load(['tyre_' struct_name,'.mat']);
+  tyre_coeffs.pHx1 = 0;
+  tyre_coeffs.pCx1 = 0;
+  tyre_coeffs.pDx1 = 0;
+  tyre_coeffs.pKx1 = 0;
+  tyre_coeffs.pEx1 = 0;
+  tyre_coeffs.pEx4 = 0;
+  tyre_coeffs.pVx1 = 0;
+  tyre_coeffs.pHx2 = 0;
+  tyre_coeffs.pDx2 = 0;
+  tyre_coeffs.pKx2 = 0;
+  tyre_coeffs.pKx3 = 0;
+  tyre_coeffs.pEx2 = 0;
+  tyre_coeffs.pEx3 = 0;
+  tyre_coeffs.pVx2 = 0;
+  tyre_coeffs.pDx3 = 0;
 else
   tyre_coeffs = initialise_tyre_data(R0, Fz0);
 end
@@ -76,8 +91,8 @@ P0 = [  1,   2,   1,  0,   0,   1,   0];
 % 1< pCx1 < 2 
 % 0< pEx1 < 1 
 %    [pCx1 pDx1 pEx1 pEx4  pHx1  pKx1  pVx1 
-lb = [1,  0.1,   0,   0,  -10,     0,   -10]; % lower bound
-ub = [2,    4,   1,   4,   10,   100,    10]; % upper bound
+lb = [1,  0.1,   0, 0, -10, 0, -10]; % lower bound
+ub = [2,    4,   1,    1,  10,  100,  10]; % upper bound
 
 KAPPA_vec = TData0.SL;  % slip ratio
 FX_vec    = TData0.FX;  % longitudianl force
@@ -122,13 +137,13 @@ ones_vec  = ones(size(TDataDFz.SL));
 
 % Guess values for parameters to be optimised
 %    [pDx2 pEx2 pEx3 pHx2  pKx2  pKx3  pVx2] 
-P0 = [  0,   0,   0,  0,   0,   0.5,   0]; 
+P0 = [  0,   0,   0,  0,   0,   0,   0]; 
 
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised 
 %    [pDx2 pEx2 pEx3 pHx2  pKx2  pKx3  pVx2] 
-lb = [-1 -1 -1 -1 -1 -1 -1];
-ub = [1 1 1 1 1 1 1];
+lb = []; %[-1 -1 -1 -1 -1 -1 -1];
+ub = []; % [1 1 1 1 1 1 1];
 
 KAPPA_vec = TDataDFz.SL;
 FX_vec    = TDataDFz.FX;
@@ -197,11 +212,11 @@ plot_stiffness;
 % Fit the coeffs { pDx3}
 
 % Guess values for parameters to be optimised
-P0 = [2000]; 
+P0 = [0]; 
 
 % NOTE: many local minima => limits on parameters are fundamentals
-lb = [0];
-ub = [20];
+lb = []; %[0];
+ub = []; %[20];
 
 zeros_vec = zeros(size(TDataGamma.SL));
 ones_vec  = ones(size(TDataGamma.SL));

@@ -16,7 +16,7 @@ SELF ALIGNING MOMENT
 4) variable gamma and change dFz	: none									 		(0)
 
 COMBINED LONGITUDINAL
-1) pure conditions   				: rHx1, rBx1, rCx1 (3)
+1) pure conditions   				: rHx1, rBx1, rCx1, rBx2 (4)
 2) change dFz		 				: none             (0)
 3) variable gamma					: none 		   	   (0)
 4) change dFz and gamma				: none		       (0)

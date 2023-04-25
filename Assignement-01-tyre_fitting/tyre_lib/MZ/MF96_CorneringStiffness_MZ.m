@@ -9,10 +9,12 @@ function [Calfa_vec] = MF96_CorneringStiffness_MZ(alpha_vec, phi_vec, Fz_vec, ty
   for i = 1:length(alpha_vec)
     % precode
     [alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr] = MF96_MZ0_coeffs(alpha_vec(i), phi_vec(i), Fz_vec(i), tyre_data);
+    [alpha__y, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, alpha_vec(i), 0, Fz_vec(i), tyre_data);
     [Fy] = MF96_FY0(0, alpha_vec(i), phi_vec(i), Fz_vec(i), tyre_data);
     
     % main code
-    Calfa_vec(i) = magic_formula_stiffness_MZ(alpha_vec(i), alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, Fy);
+    Calfa_vec(i) = magic_formula_stiffness_MZ(alpha_vec(i), alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, By, Cy, Dy, Ey, SVy, Fz_vec(i), tyre_data);
+%     Calfa_vec(i) = magic_formula_stiffness_MZ(alpha_vec(i), alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, Fz_vec(i), tyre_data);
   end
   
  end

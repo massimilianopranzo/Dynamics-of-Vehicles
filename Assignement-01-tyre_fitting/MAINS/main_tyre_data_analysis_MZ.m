@@ -8,10 +8,14 @@ close all
 addpath('utilities\')
 addpath('tyre_lib\MZ')
 
+
+warning('off', 'MATLAB:Figure:SetPosition')
+
+
 % Choice of the dataset
 data_set_path = 'dataset/';
 data_set = 'Hoosier_B1464run23.mat';
-struct_name = 'Hoosier_B1464run23';  
+struct_name = 'Hoosier_B1464';  
 load_type = 'self_aligning'; 
 
 initialization
@@ -173,7 +177,6 @@ ub = []; %[10, 10, 10, 10, 10, 10, 10];
 ALPHA_vec = TDataDFz.SA;
 MZ_vec    = TDataDFz.MZ;
 FZ_vec    = TDataDFz.FZ;
-FY_vec    = TDataDFz.FY;
 
 % check guess
 SA_vec = -0.3:0.001:0.3;
@@ -182,8 +185,8 @@ SA_vec = -0.3:0.001:0.3;
 
 % LSM_pure_Fx returns the residual, so minimize the residual varying X. It
 % is an unconstrained minimization problem 
-[P_dfz,fval,exitflag] = fmincon(@(P)resid_pure_Mz_varFz(P, MZ_vec, ALPHA_vec, 0, FZ_vec, FY_vec, tyre_coeffs),...
-                               P0,[],[],[],[],lb,ub);
+[P_dfz,fval,exitflag] = fmincon(@(P)resid_pure_Mz_varFz(P, MZ_vec, ...
+  ALPHA_vec, 0, FZ_vec, tyre_coeffs),P0,[],[],[],[],lb,ub);
 P_dfz
 fval
 
@@ -211,25 +214,72 @@ y_fit = [MZ0_fz_var_vec1', MZ0_fz_var_vec2', MZ0_fz_var_vec3', MZ0_fz_var_vec4',
 data_label = string(5);
 data_label = ["220 [N]", "440 [N]", "700 [N]", "900 [N]", "1120 [N]"];
 %figure 6
-plot_fitted_data(TDataDFz.SA, TDataDFz.MZ, x_fit, y_fit, '$\alpha$ [-]', '$M_{Z}$ [N]', data_label,'fig_fit_variable_load_MZ', 'Fitting with variable load', line_width, font_size_title)
+plot_fitted_data(TDataDFz.SA, TDataDFz.MZ, x_fit, y_fit, '$\alpha$ [-]',...
+  '$M_{Z}$ [N]', data_label,'fig_fit_variable_load_MZ', ...
+  'Fitting with variable load', line_width, font_size_title)
+
+T220  = intersect_table_data(FZ_220, GAMMA_0);
+T440  = intersect_table_data(FZ_440, GAMMA_0);
+T700  = intersect_table_data(FZ_700, GAMMA_0);
+T900  = intersect_table_data(FZ_900, GAMMA_0);
+T1120 = intersect_table_data(FZ_1120, GAMMA_0);
+
+SA_cell = cell(1, 5);
+SA_cell = {T220.SA, T440.SA, T700.SA, T900.SA, T1120.SA};
+MZ_cell = cell(1, 5);
+MZ_cell = {T220.MZ, T440.MZ, T700.MZ, T900.MZ, T1120.MZ};
+x_fit_cell = cell(1, 5);
+y_fit_cell = cell(1, 5);
+for i=1:5
+  x_fit_cell{i} = x_fit(:, i);
+  y_fit_cell{i} = y_fit(:, i);
+end
+plot_fitted_data_struct(SA_cell, MZ_cell, x_fit_cell, y_fit_cell, '$\alpha$ [-]',...
+  '$M_{Z}$ [N]', data_label,'fig_fit_variable_load_MZ_multicolot', ...
+  'Fitting with variable load', line_width, font_size_title, colors_vect);
 
 %% Stiffness
 [alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr] = MF96_MZ0_coeffs(0, 0, mean(FZ_220.FZ), tyre_coeffs);
-% Calfa_vec1_0 = magic_formula_stiffness_MZ(alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr);
+[~, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, 0, 0, mean(FZ_220.FZ), tyre_coeffs);
+Calfa_vec1_0 = magic_formula_stiffness_MZ(0, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, By, Cy, Dy, Ey, SVy, mean(FZ_220.FZ), tyre_coeffs);
+
+[alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr] = MF96_MZ0_coeffs(0, 0, mean(FZ_440.FZ), tyre_coeffs);
+[~, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, 0, 0, mean(FZ_440.FZ), tyre_coeffs);
+Calfa_vec2_0 = magic_formula_stiffness_MZ(0, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, By, Cy, Dy, Ey, SVy, mean(FZ_440.FZ), tyre_coeffs);
+
 [alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr] = MF96_MZ0_coeffs(0, 0, mean(FZ_700.FZ), tyre_coeffs);
-% Calfa_vec2_0 = magic_formula_stiffness_MZ(alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr);
+[~, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, 0, 0, mean(FZ_700.FZ), tyre_coeffs);
+Calfa_vec3_0 = magic_formula_stiffness_MZ(0, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, By, Cy, Dy, Ey, SVy, mean(FZ_700.FZ), tyre_coeffs);
+
 [alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr] = MF96_MZ0_coeffs(0, 0, mean(FZ_900.FZ), tyre_coeffs);
-% Calfa_vec3_0 = magic_formula_stiffness_MZ(alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr);
+[~, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, 0, 0, mean(FZ_900.FZ), tyre_coeffs);
+Calfa_vec4_0 = magic_formula_stiffness_MZ(0, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, By, Cy, Dy, Ey, SVy, mean(FZ_900.FZ), tyre_coeffs);
+
 [alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr] = MF96_MZ0_coeffs(0, 0, mean(FZ_1120.FZ), tyre_coeffs);
-% Calfa_vec4_0 = magic_formula_stiffness_MZ(alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr);
+[~, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, 0, 0, mean(FZ_1120.FZ), tyre_coeffs);
+Calfa_vec5_0 = magic_formula_stiffness_MZ(0, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, By, Cy, Dy, Ey, SVy, mean(FZ_1120.FZ), tyre_coeffs);
+
+
+
+
+
+% [alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr] = MF96_MZ0_coeffs(0, 0, mean(FZ_440.FZ), tyre_coeffs);
+% Calfa_vec2_0 = magic_formula_stiffness_MZ(0, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, mean(FZ_440.FZ), tyre_coeffs);
+% [alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr] = MF96_MZ0_coeffs(0, 0, mean(FZ_700.FZ), tyre_coeffs);
+% Calfa_vec3_0 = magic_formula_stiffness_MZ(0, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, mean(FZ_700.FZ), tyre_coeffs);
+% [alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr] = MF96_MZ0_coeffs(0, 0, mean(FZ_900.FZ), tyre_coeffs);
+% Calfa_vec4_0 = magic_formula_stiffness_MZ(0, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, mean(FZ_900.FZ), tyre_coeffs);
+% [alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr] = MF96_MZ0_coeffs(0, 0, mean(FZ_1120.FZ), tyre_coeffs);
+% Calfa_vec5_0 = magic_formula_stiffness_MZ(0, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, mean(FZ_1120.FZ), tyre_coeffs);
 
 Calfa_vec1 = MF96_CorneringStiffness_MZ(SA_vec, tmp_zeros, mean(FZ_220.FZ)  * tmp_ones, tyre_coeffs);
-Calfa_vec1 = MF96_CorneringStiffness_MZ(SA_vec, tmp_zeros, mean(FZ_440.FZ)  * tmp_ones, tyre_coeffs);
+Calfa_vec2 = MF96_CorneringStiffness_MZ(SA_vec, tmp_zeros, mean(FZ_440.FZ)  * tmp_ones, tyre_coeffs);
 Calfa_vec3 = MF96_CorneringStiffness_MZ(SA_vec, tmp_zeros, mean(FZ_700.FZ)  * tmp_ones, tyre_coeffs);
-Calfa_vec4 = MF96_CorneringStiffness_MZ(SA_vec, tmp_zeros, mean(FZ_1120.FZ) * tmp_ones, tyre_coeffs);
+Calfa_vec4 = MF96_CorneringStiffness_MZ(SA_vec, tmp_zeros, mean(FZ_900.FZ)  * tmp_ones, tyre_coeffs);
+Calfa_vec5 = MF96_CorneringStiffness_MZ(SA_vec, tmp_zeros, mean(FZ_1120.FZ) * tmp_ones, tyre_coeffs);
 
 % figure 7
-% plot_stiffness_MZ; 
+plot_stiffness_MZ; 
 
 %% ------------------------------------------------------------------------
 % FIT COEFFICIENTS WITH VARIABLE CAMBER
@@ -239,11 +289,11 @@ Calfa_vec4 = MF96_CorneringStiffness_MZ(SA_vec, tmp_zeros, mean(FZ_1120.FZ) * tm
 
 % Guess values for parameters to be optimised
 %    [qHz3, qBz4, qBz5, qDz3, qDz4, qEz5, qDz8, qHz4, qDz9]
-P0 = [1, 1, 1, 1, 1, 1, 1, 1, 1]; 
+P0 = 1*ones(1, 9); %[1, 1, 1, 1, 1, 1, 1, 1, 1]; 
 
 % NOTE: many local minima => limits on parameters are fundamentals
-lb = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-ub = [10, 10, 10, 10, 10, 10, 10, 10, 10];
+lb = [];
+ub = [];
 
 zeros_vec = zeros(size(TDataGamma.SA));
 ones_vec  = ones(size(TDataGamma.SA));
@@ -264,6 +314,8 @@ TDataGamma4 = intersect_table_data(GAMMA_4, FZ_220);
 % is an unconstrained minimization problem 
 [P_varGamma, fval, exitflag] = fmincon(@(P)resid_pure_Mz_varGamma(P, MZ_vec, ALPHA_vec, GAMMA_vec, tyre_coeffs.FZ0, FY_vec, tyre_coeffs),...
                                P0,[],[],[],[],lb,ub);
+P_varGamma
+fval
 
 % Change tyre data with new optimal values
 tyre_coeffs.qHz3 = P_varGamma(1); 
@@ -305,6 +357,16 @@ ylabel('$M_{Z}$ [N]')
 title('Fitting with variable camber $F_{Z}$ = 220[N]', 'FontSize',font_size_title)
 grid on
 export_fig(fig_fit_variable_camber_MZ, 'images\fig_fit_variable_camber_MZ.png');
+%%
+x_fit_cell = cell(1, 5);
+y_fit_cell = cell(1, 5);
+y_raw_cell = cell(1, 5);
+x_fit_cell = {TDataGamma0.SA, TDataGamma1.SA, TDataGamma2.SA, TDataGamma3.SA, TDataGamma4.SA};
+y_fit_cell = {MZ0_Gamma0, MZ0_Gamma1, MZ0_Gamma2, MZ0_Gamma3, MZ0_Gamma4};
+y_raw_cell = {TDataGamma0.MZ, TDataGamma1.MZ, TDataGamma2.MZ, TDataGamma3.MZ, TDataGamma4.MZ};
+data_label = ["$\gamma = 0 [deg]$", "$\gamma = 1 [deg]$", "$\gamma = 2 [deg]$", "$\gamma = 3 [deg]$", "$\gamma = 4 [deg]$"];
+plot_fitted_data_struct(x_fit_cell, y_raw_cell, x_fit_cell, y_fit_cell, '$\alpha []$', 'MZ [Nm]', data_label,  'fig_fit_variable_camber_MZ_2.png', 'Self alignign moment for variable camber', line_width, font_size_title, colors_vect);
+
 
 % NON CANCELLARE
 % fig_camber_MZ = figure('Color', 'w');
