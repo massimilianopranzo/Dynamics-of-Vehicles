@@ -1,3 +1,6 @@
+function plot_stiffness(SL_vec,FZ_220, FZ_700, FZ_900, FZ_1120, Calfa_vec1_0, ...
+  Calfa_vec2_0, Calfa_vec3_0, Calfa_vec4_0, Calfa_vec1, Calfa_vec2, ...
+  Calfa_vec3, Calfa_vec4,plot_title, plot_name, font_size_title )
 %% PLOT CORNERING STIFFNESS
 
 fig_stiffness_FX = figure('Name','C_alpha', 'Color', 'w');
@@ -25,5 +28,8 @@ ylabel('$C_{\kappa}$ TO CHECK [N/rad]')
 grid on
 title('Longitudinal cornering stiffness TO CHECK')
 
-sgtitle('Cornering stiffness', 'interpreter', 'latex', 'FontSize', font_size_title)
-export_fig(fig_stiffness_FX, 'images\fig_stiffness_FX.png')
+sgtitle(plot_title, 'interpreter', 'latex', 'FontSize', font_size_title)
+name = ['images\', plot_name, '.png'];
+export_fig(fig_stiffness_FX, name)
+
+end

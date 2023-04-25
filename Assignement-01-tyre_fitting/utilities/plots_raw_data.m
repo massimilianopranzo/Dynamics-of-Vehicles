@@ -1,6 +1,7 @@
+function [] = plots_raw_data(cut_start,cut_end,FZ,IA,SA,SL,P,TSTC,TSTI, ...
+  TSTO,font_size_title,name)
 %% PLOTS
 
-%% Plot ranged data
 fig_loaded_data = figure('Color','w');
 tiledlayout(3,2)
 
@@ -70,4 +71,7 @@ grid on
 linkaxes(ax_list,'x')
 
 sgtitle('Loaded data', 'interpreter', 'latex', 'FontSize', font_size_title)
-export_fig(fig_loaded_data,'images/fig_loaded_data.png')
+plot_name = ['images/', name, '.png' ];
+export_fig(fig_loaded_data,plot_name)
+
+end

@@ -1,8 +1,7 @@
 function [] = plot_fitted_data(x_raw, y_raw, x_fit, y_fit, label_x, label_y, data_label, name, plot_title, line_width, font_size_title)
 
 	if ismatrix(data_label) == 0
-		error('Data label must be a vector')
-		return;
+		error('Data label must be a vector');
 	end
   fig = figure('Color','w');
 	plot(x_raw, y_raw,'.', 'DisplayName','Raw data', 'LineWidth', line_width)

@@ -10,6 +10,8 @@ R0  = diameter/2/100; % [m] get from nominal load R0 (m) *** TO BE CHANGED ***
 
 % Set valeus for the plots
 font_size_title = 20; % font size for the titles
+font_size = 18;       % font size for the labels
+font_size = 15; % font size for the titles
 line_width = 2;       % line width for the plots
 
 % Set LaTeX as default interpreter for axis labels, ticks and legends

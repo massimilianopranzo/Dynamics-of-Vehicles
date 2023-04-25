@@ -36,13 +36,17 @@ cut_end = 54500;%34500;%length(FY);
 smpl_range = cut_start:cut_end;
 
 % figure 1
-plots_raw_data;
+plots_raw_data(cut_start,cut_end,FZ,IA,SA,SL,P,TSTC,TSTI,TSTO, ...
+  font_size_title,'raw_data_MZ');
 
 %% Sort data
 sorting_data;
 
 % figure 2
-plot_sorted_data;
+plot_sorted_data(tyre_data, idx, vec_samples, GAMMA_0, GAMMA_1, ...
+  GAMMA_2, GAMMA_3, GAMMA_4, GAMMA_5, FZ_220, FZ_440, FZ_700, FZ_900, FZ_1120, ...
+  FZ_1550, load_type, SA_0, SA_3neg, SA_6neg, font_size_title, ...
+  'Sorted data self aligning','sorted_data_MZ');
 
 %% Intersect tables to obtain specific sub-datasets and plot them
 [TData0, ~] = intersect_table_data(GAMMA_0, FZ_220 );
@@ -278,9 +282,12 @@ Calfa_vec3 = MF96_CorneringStiffness_MZ(SA_vec, tmp_zeros, mean(FZ_700.FZ)  * tm
 Calfa_vec4 = MF96_CorneringStiffness_MZ(SA_vec, tmp_zeros, mean(FZ_900.FZ)  * tmp_ones, tyre_coeffs);
 Calfa_vec5 = MF96_CorneringStiffness_MZ(SA_vec, tmp_zeros, mean(FZ_1120.FZ) * tmp_ones, tyre_coeffs);
 
-% figure 7
-plot_stiffness_MZ; 
-
+%% figure 7
+% plot_stiffness_MZ; 
+plot_stiffness_FY(SA_vec,FZ_220, FZ_700, FZ_900, FZ_1120, FZ_1550, ...
+  Calfa_vec1_0,Calfa_vec2_0, Calfa_vec3_0, Calfa_vec4_0, Calfa_vec5_0, ...
+  Calfa_vec1, Calfa_vec2, Calfa_vec3, Calfa_vec4, Calfa_vec5, ...
+  'Cornering stiffness', 'cornering_stiffness_MZ', font_size_title )
 %% ------------------------------------------------------------------------
 % FIT COEFFICIENTS WITH VARIABLE CAMBER
 %--------------------------------------------------------------------------

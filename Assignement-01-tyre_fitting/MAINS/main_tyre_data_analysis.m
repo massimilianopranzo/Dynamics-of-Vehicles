@@ -33,12 +33,16 @@ cut_end = length(FX);
 smpl_range = cut_start:cut_end;
 
 % figure 1
-plots_raw_data;
+plots_raw_data(cut_start,cut_end,FZ,IA,SA,SL,P,TSTC,TSTI,TSTO, ...
+  font_size_title,'raw_data_FX');
 
 %% Sort data
 sorting_data;
 % figure 2
-plot_sorted_data;
+plot_sorted_data(tyre_data, idx, vec_samples, GAMMA_0, GAMMA_1, ...
+  GAMMA_2, GAMMA_3, GAMMA_4, GAMMA_5, FZ_220, FZ_440, FZ_700, FZ_900, ...
+  FZ_1120, FZ_1550, load_type, SA_0, SA_3neg, SA_6neg, font_size_title, ...
+  'Sorted data longitudinal','sorted_data_FX');
 
 %% Intersect tables to obtain specific sub-datasets and plot them
 [TData0, ~] = intersect_table_data(SA_0, GAMMA_0, FZ_220 );
@@ -102,10 +106,11 @@ SL_vec = -0.3:0.001:0.3; % longitudinal slip to be used in the plot for check th
 
 % resid_pure_Fx returns the residual, so minimize the residual varying X. 
 % It is an unconstrained minimization problem 
-[P_fz_nom,fval,exitflag] = fmincon(@(P)resid_pure_Fx(P, FX_vec, KAPPA_vec, 0, FZ0, tyre_coeffs),...
+[P_fz_nom,fval_nom,exitflag] = fmincon(@(P)resid_pure_Fx(P, FX_vec, KAPPA_vec, 0, FZ0, tyre_coeffs),...
                                P0,[],[],[],[],lb,ub);
-res_Fx0 = fval;
-P_fz_nom;
+P_fz_nom
+res_Fx0 = fval_nom
+
 % Update tyre data with new optimal values                             
 tyre_coeffs.pCx1 = P_fz_nom(1) ; % 1
 tyre_coeffs.pDx1 = P_fz_nom(2) ;  
@@ -120,7 +125,9 @@ FX0_fz_nom_vec = MF96_FX0_vec(SL_vec,zeros(size(SL_vec)), zeros(size(SL_vec)), .
         
 data_label = "Fitted data"; 
 %% figure 5          
-plot_fitted_data(TData0.SL, TData0.FX, SL_vec', FX0_fz_nom_vec', '$\kappa [-]$', '$F_{x0}$ [N]', data_label, 'fig_fit_pure_conditions_FX', 'Fitting in pure conditions', line_width, font_size_title)
+plot_fitted_data(TData0.SL, TData0.FX, SL_vec', FX0_fz_nom_vec', ...
+  '$\kappa [-]$', '$F_{x0}$ [N]', data_label, 'fig_fit_pure_conditions_FX', ...
+  'Fitting in pure conditions', line_width, font_size_title)
 
 
 %% ------------------------------------------------------------------------
@@ -151,8 +158,6 @@ FZ_vec    = TDataDFz.FZ;
 
 % check guess
 SL_vec = -0.3:0.001:0.3;
-% FX0_dfz_vec = MF96_FX0_vec(SL_vec,zeros(size(SL_vec)), zeros(size(SL_vec)), ...
-%                            TDataDFz.FZ,tyre_coeffs);
 
 % LSM_pure_Fx returns the residual, so minimize the residual varying X. It
 % is an unconstrained minimization problem 
@@ -161,7 +166,6 @@ SL_vec = -0.3:0.001:0.3;
 res_Fx0_varFz = fval
 P_dfz                        
 
-disp(exitflag)
 % Change tyre data with new optimal values    
 tyre_coeffs.pDx2 = P_dfz(1); % 1
 tyre_coeffs.pEx2 = P_dfz(2);  
@@ -183,7 +187,9 @@ x_fit = repmat(SL_vec', 1, 4);
 y_fit = [FX0_fz_var_vec1', FX0_fz_var_vec2', FX0_fz_var_vec3', FX0_fz_var_vec4'];
 data_label = ["220 [N]", "700 [N]", "900 [N]", "1120 [N]"];
 %figure 6
-plot_fitted_data(TDataDFz.SL, TDataDFz.FX, x_fit, y_fit, '$\kappa$ [-]', '$F_{X}$ [N]', data_label,'fig_fit_variable_load_FX', 'Fitting with variable load', line_width, font_size_title)
+plot_fitted_data(TDataDFz.SL, TDataDFz.FX, x_fit, y_fit, '$\kappa$ [-]',...
+  '$F_{X}$ [N]', data_label,'fig_fit_variable_load_FX', ...
+  'Fitting with variable load', line_width, font_size_title)
 
 
 [kappa__x, Bx, Cx, Dx, Ex, SVx] =MF96_FX0_coeffs(0, 0, 0, mean(FZ_220.FZ), tyre_coeffs);
@@ -201,7 +207,10 @@ Calfa_vec3 = MF96_CorneringStiffness(SL_vec,tmp_zeros ,tmp_zeros, mean(FZ_900.FZ
 Calfa_vec4 = MF96_CorneringStiffness(SL_vec,tmp_zeros ,tmp_zeros, mean(FZ_1120.FZ)*tmp_ones,tyre_coeffs);
 
 % figure 7
-plot_stiffness; 
+plot_stiffness(SL_vec,FZ_220, FZ_700, FZ_900, FZ_1120, Calfa_vec1_0, ...
+  Calfa_vec2_0, Calfa_vec3_0, Calfa_vec4_0, Calfa_vec1, Calfa_vec2, ...
+  Calfa_vec3, Calfa_vec4,'Cornering Stiffness','cornering_stiffness_FY',...
+  font_size_title ) 
 
 %% ------------------------------------------------------------------------
 % FIT COEFFICIENTS WITH VARIABLE CAMBER
@@ -227,14 +236,14 @@ FX_vec    = TDataGamma.FX;
 FZ_vec    = TDataGamma.FZ;
 
 % NON CALNCELLARE
-% fig_camber_FX = figure('Color', 'w');
-% plot(KAPPA_vec,FX_vec, '.', 'DisplayName', '$F_{z}=220 [N]$');
-% grid on
-% xlabel('$\gamma$ [rad]')
-% ylabel('$F_X$ [N]')
-% title('Longitudianl force as function of camber angle')
-% legend('Location', 'best')
-% export_fig(fig_camber_FX, 'images\fig_camber_FX.png')
+fig_camber_FX = figure('Color', 'w');
+plot(KAPPA_vec,FX_vec, '.', 'DisplayName', '$F_{z}=220 [N]$');
+grid on
+xlabel('$\gamma$ [rad]')
+ylabel('$F_X$ [N]')
+title('Longitudianl force as function of camber angle')
+legend('Location', 'best')
+export_fig(fig_camber_FX, 'images\fig_camber_FX.png')
 
 % LSM_pure_Fx returns the residual, so minimize the residual varying X. It
 % is an unconstrained minimization problem 

@@ -28,12 +28,16 @@ cut_end = 37643;
 smpl_range = cut_start:cut_end;
 
 % figure 1
-plots_raw_data;
+plots_raw_data(cut_start,cut_end,FZ,IA,SA,SL,P,TSTC,TSTI,TSTO, ...
+  font_size_title,'raw_data_longitudinal_FX');
 
 %% Sort data
 sorting_data;
 % figure 2
-plot_sorted_data;
+plot_sorted_data(tyre_data, idx, vec_samples, GAMMA_0, GAMMA_1, ...
+  GAMMA_2, GAMMA_3, GAMMA_4, GAMMA_5, FZ_220, FZ_440, FZ_700, FZ_900, FZ_1120, ...
+  FZ_1550, load_type, SA_0, SA_3neg, SA_6neg, font_size_title, ...
+  'Sorted data combined longitudinal','sorted_data_combined_FX');
 
 if exist(['tyre_' struct_name,'.mat'], 'file')
   load(['tyre_' struct_name,'.mat']);
@@ -49,9 +53,10 @@ end
 
 
 % rHx1, rBx1, rCx1 rBx2
-P0 = [10 10 2 9];
-lb = [];
-ub = [];
+% -27.1725    5.5548   11.0463   -1.4499
+P0 = [-27 5.5 11 -1.5];
+lb = [-30 4 10 -2];
+ub = [-20 7 15 0];
 
 FX_vec = tyre_data.FX;
 KAPPA_vec = tyre_data.SL;
@@ -90,3 +95,27 @@ data_label = ["FZ=220 [N]", "FZ=700 [N]", "FZ=900 [N]", "FZ=1120 [N]"];
 
 plot_fitted_data_struct(x_raw, FX_raw, x_raw, FX_fit, '$\kappa [-]$', 'FX [N]', ...
   data_label, 'combined_longitudinal' , 'Combined longitudinal, $\gamma = 0 [deg]$', line_width, font_size_title, colors_vect)
+
+
+kappa_var = -0.5:0.001:0.5;
+for i=1:length(kappa_var)
+  [Gxa0(i), ~, ~] = MF96_FXFYCOMB_coeffs_eqns(kappa_var(i), 0, 0, 0, tyre_coeffs);
+  [Gxa3(i), ~, ~] = MF96_FXFYCOMB_coeffs_eqns(kappa_var(i), -3*pi/180, 0, 0, tyre_coeffs);
+	[Gxa6(i), ~, ~] = MF96_FXFYCOMB_coeffs_eqns(kappa_var(i), -6*pi/180, 0, 0, tyre_coeffs);
+  [Gxa8(i), ~, ~] = MF96_FXFYCOMB_coeffs_eqns(kappa_var(i), -8*pi/180, 0, 0, tyre_coeffs);
+end
+
+figure('Color', 'w')
+plot(kappa_var, Gxa0, 'LineWidth', line_width);
+hold on
+plot(kappa_var, Gxa3, 'LineWidth', line_width);
+plot(kappa_var, Gxa6, 'LineWidth', line_width);
+plot(kappa_var, Gxa8, 'LineWidth', line_width);
+hold off
+grid on
+xlabel('$\kappa [-]$', 'Interpreter', 'latex', 'FontSize', font_size)
+ylabel('$G_{xa} [-]$', 'Interpreter', 'latex', 'FontSize', font_size)
+title('Weighting function','Interpreter', 'latex', 'FontSize', font_size_title)
+legend('$\alpha = 0 [deg]$', '$\alpha = -3 [deg]$', '$\alpha = -6 [deg]$', ...
+  '$\alpha = -8 [deg]$','Interpreter', 'latex', 'FontSize', font_size, ...
+  'location', 'southeast')
