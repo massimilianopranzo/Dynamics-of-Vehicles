@@ -28,8 +28,8 @@ initialization
 load ([data_set_path, data_set]); % pure lateral
 
 % select dataset portion
-cut_start = 1;
-cut_end = length(FX);
+cut_start = 19030;
+cut_end = 38000;
 smpl_range = cut_start:cut_end;
 
 % figure 1
@@ -77,11 +77,6 @@ end
 FZ0 = mean(TData0.FZ);
 zeros_vec = zeros(size(TData0.SL));
 ones_vec  = ones(size(TData0.SL));
-FX0_guess = MF96_FX0_vec(TData0.SL, zeros_vec , zeros_vec, tyre_coeffs.FZ0*ones_vec, tyre_coeffs); 
-label = "Fitted data";
-% figure 4
-plot_fitted_data(TData0.SL, TData0.FX, TData0.SL, FX0_guess, '$\kappa [-]$', '$F_{x0}$ [N]', label, 'fig_fit_guess_FX', 'Fitting with initial guess', line_width, font_size_title)
-
 
 %% ------------------------------------------------------------------------
 % FITTING WITH NOMINAL LOAD Fz=Fz_nom= 220N and camber=0  alpha = 0 VX= 10
@@ -106,10 +101,11 @@ SL_vec = -0.3:0.001:0.3; % longitudinal slip to be used in the plot for check th
 
 % resid_pure_Fx returns the residual, so minimize the residual varying X. 
 % It is an unconstrained minimization problem 
-[P_fz_nom,fval_nom,exitflag] = fmincon(@(P)resid_pure_Fx(P, FX_vec, KAPPA_vec, 0, FZ0, tyre_coeffs),...
-                               P0,[],[],[],[],lb,ub);
+[P_fz_nom,fval_nom,exitflag] = fmincon(@(P)resid_pure_Fx(P, FX_vec, ...
+  KAPPA_vec, 0, FZ0, tyre_coeffs),P0,[],[],[],[],lb,ub);
 P_fz_nom
 res_Fx0 = fval_nom
+RMS_Fx0 = sqrt(fval_nom*sum(FX_vec.^2)/length(FX_vec));
 
 % Update tyre data with new optimal values                             
 tyre_coeffs.pCx1 = P_fz_nom(1) ; % 1
@@ -123,8 +119,8 @@ tyre_coeffs.pVx1 = P_fz_nom(7) ;
 FX0_fz_nom_vec = MF96_FX0_vec(SL_vec,zeros(size(SL_vec)), zeros(size(SL_vec)), ...
                               FZ0.*ones(size(SL_vec)),tyre_coeffs);
         
+% figure 5   
 data_label = "Fitted data"; 
-%% figure 5          
 plot_fitted_data(TData0.SL, TData0.FX, SL_vec', FX0_fz_nom_vec', ...
   '$\kappa [-]$', '$F_{x0}$ [N]', data_label, 'fig_fit_pure_conditions_FX', ...
   'Fitting in pure conditions', line_width, font_size_title)
@@ -165,6 +161,7 @@ SL_vec = -0.3:0.001:0.3;
                                P0,[],[],[],[],lb,ub);
 res_Fx0_varFz = fval
 P_dfz                        
+RMS_Fx0_varFz = sqrt(res_Fx0_varFz*sum(FX_vec.^2)/length(FX_vec));
 
 % Change tyre data with new optimal values    
 tyre_coeffs.pDx2 = P_dfz(1); % 1
@@ -188,10 +185,10 @@ y_fit = [FX0_fz_var_vec1', FX0_fz_var_vec2', FX0_fz_var_vec3', FX0_fz_var_vec4']
 data_label = ["220 [N]", "700 [N]", "900 [N]", "1120 [N]"];
 %figure 6
 plot_fitted_data(TDataDFz.SL, TDataDFz.FX, x_fit, y_fit, '$\kappa$ [-]',...
-  '$F_{X}$ [N]', data_label,'fig_fit_variable_load_FX', ...
-  'Fitting with variable load', line_width, font_size_title)
+  '$F_{x0}$ [N]', data_label,'fig_fit_variable_load_FX', ...
+  'Fitting with variable load, $\gamma$ =0 [deg]', line_width, font_size_title)
 
-
+%%
 [kappa__x, Bx, Cx, Dx, Ex, SVx] =MF96_FX0_coeffs(0, 0, 0, mean(FZ_220.FZ), tyre_coeffs);
 Calfa_vec1_0 = magic_formula_stiffness(kappa__x, Bx, Cx, Dx, Ex, SVx);
 [kappa__x, Bx, Cx, Dx, Ex, SVx] =MF96_FX0_coeffs(0, 0, 0, mean(FZ_700.FZ), tyre_coeffs);
@@ -209,7 +206,7 @@ Calfa_vec4 = MF96_CorneringStiffness(SL_vec,tmp_zeros ,tmp_zeros, mean(FZ_1120.F
 % figure 7
 plot_stiffness(SL_vec,FZ_220, FZ_700, FZ_900, FZ_1120, Calfa_vec1_0, ...
   Calfa_vec2_0, Calfa_vec3_0, Calfa_vec4_0, Calfa_vec1, Calfa_vec2, ...
-  Calfa_vec3, Calfa_vec4,'Cornering Stiffness','cornering_stiffness_FY',...
+  Calfa_vec3, Calfa_vec4,'Longitudinal Stiffness','longitudinal_stiffness_FX',...
   font_size_title ) 
 
 %% ------------------------------------------------------------------------
@@ -251,6 +248,7 @@ export_fig(fig_camber_FX, 'images\fig_camber_FX.png')
                                P0,[],[],[],[],lb,ub);
 res_Fx0_varGamma = fval
 P_varGamma
+RMS_Fx0_varGamma = sqrt(res_Fx0_varGamma*sum(FX_vec.^2)/length(FX_vec));
 
 % Change tyre data with new optimal values
 tyre_coeffs.pDx3 = P_varGamma(1); % 1
@@ -273,13 +271,16 @@ plot_fit = {FX0_Gamma0, FX0_Gamma2, FX0_Gamma4};
 plot_label = ["$\gamma = 0 [deg]$", "$\gamma = 2 [deg]$", "$\gamma = 4 [deg]$"];
 
 plot_fitted_data_struct(plot_x, plot_y, plot_x, plot_fit, ...
-  '$\kappa$ [-]', '$F_{X}$ [N]', plot_label, 'fig_fit_variable_camber_FX', ...
+  '$\kappa$ [-]', '$F_{x0}$ [N]', plot_label, 'fig_fit_variable_camber_FX', ...
   'Fitting with variable camber', line_width, font_size_title, colors_vect);
 
 data_label = ["Fitted data FZ=220 [N]"];
 x_fit = repmat(KAPPA_vec, 1, 2);
 y_fit = [FX0_varGamma_vec];
-plot_fitted_data(TDataGamma.SL, TDataGamma.FX, x_fit, y_fit, '$\kappa$ [-]', '$F_{X}$ [N]', data_label, 'fig_fit_variable_camber_FX', 'Fitting with variable camber', line_width, font_size_title)
+plot_fitted_data(TDataGamma.SL, TDataGamma.FX, x_fit, y_fit, ...
+  '$\kappa$ [-]', '$F_{x0}$ [N]', data_label, ...
+  'fig_fit_variable_camber_FX_1plot', 'Fitting with variable camber', ...
+  line_width, font_size_title)
 
 %% CHECK THE RESIDUALS
 fprintf("Pure conditions: %6.3f\n", res_Fx0);
@@ -291,9 +292,15 @@ fprintf("Variable camber: %6.3f\n", res_Fx0_varGamma);
 % SSE/SST = res_Fx0_nom
 
 % SSE is the sum of squared error,  SST is the sum of squared total
+fprintf('\n')
+fprintf('R-squared = %6.3f\n',1-res_Fx0);
+fprintf('R-squared = %6.3f\n',1-res_Fx0_varFz);
 fprintf('R-squared = %6.3f\n',1-res_Fx0_varGamma);
-
-
+fprintf('\n')
+fprintf('RMS = %6.3f\n', RMS_Fx0);
+fprintf('RMS = %6.3f\n', RMS_Fx0_varFz);
+fprintf('RMS = %6.3f\n', RMS_Fx0_varGamma);
+fprintf('\n')
 [kappa__x, Bx, Cx, Dx, Ex, SVx] = MF96_FX0_coeffs(0, 0, GAMMA_vec(3), tyre_coeffs.FZ0, tyre_coeffs);
 fprintf('Bx      = %6.3f\n',Bx);
 fprintf('Cx      = %6.3f\n',Cx);

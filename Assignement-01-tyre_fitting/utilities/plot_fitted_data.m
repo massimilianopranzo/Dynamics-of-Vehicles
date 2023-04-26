@@ -4,7 +4,7 @@ function [] = plot_fitted_data(x_raw, y_raw, x_fit, y_fit, label_x, label_y, dat
 		error('Data label must be a vector');
 	end
   fig = figure('Color','w');
-	plot(x_raw, y_raw,'.', 'DisplayName','Raw data', 'LineWidth', line_width)
+	plot(x_raw, y_raw,'.', 'DisplayName','Raw data', 'LineWidth', line_width, 'MarkerSize',10)
 	hold on
 	for i = 1:length(data_label)
 		% [x_fit(:, i), pos] = sort(x_fit(:,i));

@@ -83,11 +83,6 @@ end
 FZ0 = mean(TData0.FZ);
 zeros_vec = zeros(size(TData0.SA));
 ones_vec  = ones(size(TData0.SA));
-FY0_guess = MF96_FY0_vec(zeros_vec ,TData0.SA, zeros_vec, tyre_coeffs.FZ0 * ones_vec, tyre_coeffs); 
-label = "Fitted data";
-% figure 4
-plot_fitted_data(TData0.SA, TData0.FY, TData0.SA, FY0_guess, '$\alpha [deg]$', '$F_{Y0}$ [N]', label, 'fig_fit_guess_FY', 'Fitting with initial guess', line_width, font_size_title)
-
 
 %% ------------------------------------------------------------------------
 % FITTING WITH NOMINAL LOAD Fz=Fz_nom= 220N and camber=0  alpha = 0 VX= 10
@@ -115,6 +110,7 @@ SA_vec = -0.28:0.001:0.28; % lateral slip to be used in the plot for check the i
                                P0,[],[],[],[],lb,ub);
 P_fz_nom
 res_Fy0
+RMS_Fy0 = sqrt(res_Fy0*sum(FY_vec.^2)/length(FY_vec));
   
 % Update tyre data with new optimal values                             
 tyre_coeffs.pCy1 = P_fz_nom(1) ; % 1
@@ -134,8 +130,6 @@ plot_fitted_data(TData0.SA, TData0.FY, SA_vec', FY0_fz_nom_vec', ...
   '$\alpha [-]$', '$F_{y0}$ [N]', data_label, ...
   'fig_fit_pure_conditions_FY', 'Fitting in pure conditions', line_width, ...
   font_size_title)
-
-res_Fy0 = resid_pure_Fy(P_fz_nom, FY_vec, ALPHA_vec, 0, FZ0, tyre_coeffs);
 
 
 %% ------------------------------------------------------------------------
@@ -165,7 +159,7 @@ FY_vec    = TDataDFz.FY;
 FZ_vec    = TDataDFz.FZ;
 
 % check guess
-SA_vec = -0.28:0.001:0.28;
+SA_vec = -0.3:0.001:0.3;
 
 % LSM_pure_Fy returns the residual, so minimize the residual varying X. It
 % is an unconstrained minimization problem 
@@ -173,7 +167,7 @@ SA_vec = -0.28:0.001:0.28;
   FY_vec, ALPHA_vec, 0, FZ_vec, tyre_coeffs),P0,[],[],[],[],lb,ub);
 P_dfz
 res_Fy0_varFz
-
+RMS_Fy0_varFz = sqrt(res_Fy0_varFz*sum(FY_vec.^2)/length(FY_vec));
 
 % Change tyre data with new optimal values                             
 tyre_coeffs.pDy2 = P_dfz(1); % 1
@@ -181,14 +175,12 @@ tyre_coeffs.pEy2 = P_dfz(2);
 tyre_coeffs.pHy2 = P_dfz(3);
 tyre_coeffs.pVy2 = P_dfz(4);
 
-res_Fy0_varFz = resid_pure_Fy_varFz(P_dfz, FY_vec, SA_vec, 0, FZ_vec, tyre_coeffs);
-
 % figure
 plot_variable_loads
 
-% figure 7
+%% figure 7
 % plot_stiffness_FY; 
-plot_stiffness_FY(SA_vec,FZ_220, FZ_700, FZ_900, FZ_1120, FZ_1550, ...
+plot_stiffness_FY(SA_vec,FZ_220, FZ_440, FZ_700, FZ_900, FZ_1120, ...
   Calfa_vec1_0,Calfa_vec2_0, Calfa_vec3_0, Calfa_vec4_0, Calfa_vec5_0, ...
   Calfa_vec1, Calfa_vec2, Calfa_vec3, Calfa_vec4, Calfa_vec5, ...
   'Cornering stiffness', 'cornering_stiffness_FY', font_size_title);
@@ -216,14 +208,14 @@ FY_vec    = TDataGamma.FY;
 FZ_vec    = TDataGamma.FZ;
 
 % NOT CANCELLARE
-% fig_camber_FY = figure('Color', 'w');
-% plot(ALPHA_vec,FY_vec, '.', 'DisplayName', '$F_{z}=220 [N]$');
-% grid on
-% xlabel('$\gamma$ [rad]')
-% ylabel('$F_Y$ [N]')
-% title('Lateral force as function of camber angle')
-% legend('Location', 'best')
-% export_fig(fig_camber_FY, 'images\fig_camber_FY.png')
+fig_camber_FY = figure('Color', 'w');
+plot(ALPHA_vec,FY_vec, '.', 'DisplayName', '$F_{z}=220 [N]$');
+grid on
+xlabel('$\gamma$ [rad]')
+ylabel('$F_{y0}$ [N]')
+title('Lateral force as function of camber angle')
+legend('Location', 'best')
+export_fig(fig_camber_FY, 'images\fig_camber_FY.png')
 
 % LSM_pure_Fx returns the residual, so minimize the residual varying X. It
 % is an unconstrained minimization problem 
@@ -233,6 +225,7 @@ FZ_vec    = TDataGamma.FZ;
   ub); %tyre_coeffs.FZ0,
 P_varGamma
 res_Fy0_varGamma
+RMS_Fy0_varGamma = sqrt(res_Fy0_varGamma*sum(FY_vec.^2)/length(FY_vec));
 
 %%
 % Change tyre data with new optimal values
@@ -244,7 +237,8 @@ tyre_coeffs.pEy4 = P_varGamma(5);
 tyre_coeffs.pVy3 = P_varGamma(6); 
 tyre_coeffs.pVy4 = P_varGamma(7); 
 
-FY0_varGamma_vec = MF96_FY0_vec(zeros_vec, ALPHA_vec, GAMMA_vec, tyre_coeffs.FZ0*ones_vec, tyre_coeffs);
+FY0_varGamma_vec = MF96_FY0_vec(zeros_vec, ALPHA_vec, GAMMA_vec, ...
+  tyre_coeffs.FZ0*ones_vec, tyre_coeffs);
 
 % data_label = ["Fitted data FZ=220 [N]"];
 % x_fit = repmat(ALPHA_vec, 1, 2);
@@ -274,8 +268,9 @@ plot_fit = {FY0_Gamma0, FY0_Gamma1, FY0_Gamma2, FY0_Gamma3, FY0_Gamma4};
 plot_label = ["$\gamma = 0 [deg]$", "$\gamma = 1 [deg]$", "$\gamma = 2 [deg]$", "$\gamma = 3 [deg]$", "$\gamma = 4 [deg]$"];
 
 plot_fitted_data_struct(plot_x, plot_y, plot_x, plot_fit, ...
-  '$\alpha$ [-]', '$F_{Y}$ [N]', plot_label, 'fig_fit_variable_camber_FY', ...
-  'Fitting with variable camber - Nominal force', line_width, font_size_title, colors_vect);
+  '$\alpha$ [-]', '$F_{y0}$ [N]', plot_label, 'fig_fit_variable_camber_FY', ...
+  'Fitting with variable camber - Nominal load', line_width, ...
+  font_size_title, colors_vect);
 
 
 %% -------------------
@@ -283,7 +278,11 @@ plot_fitted_data_struct(plot_x, plot_y, plot_x, plot_fit, ...
 fprintf("Pure confitions: %6.3f\n", res_Fy0);
 fprintf("Variable load: %6.3f\n", res_Fy0_varFz);
 fprintf("Variable camber: %6.3f\n", res_Fy0_varGamma);
-
+fprintf('\n')
+fprintf('RMS = %6.3f\n', RMS_Fy0);
+fprintf('RMS = %6.3f\n', RMS_Fy0_varFz);
+fprintf('RMS = %6.3f\n', RMS_Fy0_varGamma);
+fprintf('\n')
 
 %%
 % SSE is the sum of squared error,  SST is the sum of squared total

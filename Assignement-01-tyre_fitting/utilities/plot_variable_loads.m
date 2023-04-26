@@ -12,7 +12,9 @@ y_fit = [FY0_fz_var_vec1', FY0_fz_var_vec2', FY0_fz_var_vec3', FY0_fz_var_vec4',
 data_label = string(5);
 data_label = ["220 [N]", "440 [N]", "700 [N]", "900 [N]", "1120 [N]"];
 %figure 6
-plot_fitted_data(TDataDFz.SA, TDataDFz.FY, x_fit, y_fit, '$\alpha$ [-]', '$F_{Y}$ [N]', data_label,'fig_fit_variable_load_FY', 'Fitting with variable load', line_width, font_size_title);
+plot_fitted_data(TDataDFz.SA, TDataDFz.FY, x_fit, y_fit, '$\alpha$ [-]', ...
+  '$F_{y0}$ [N]', data_label,'fig_fit_variable_load_FY', ...
+  'Fitting with variable load', line_width, font_size_title);
 
 
 [alpha__y, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, 0, 0, mean(FZ_220.FZ), tyre_coeffs);
