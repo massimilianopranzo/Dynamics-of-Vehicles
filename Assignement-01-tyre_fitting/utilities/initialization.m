@@ -9,9 +9,9 @@ Fz0 = 220;   % [N] nominal load is given
 R0  = diameter/2/100; % [m] get from nominal load R0 (m) *** TO BE CHANGED ***
 
 % Set valeus for the plots
-font_size_title = 20; % font size for the titles
-font_size = 18;       % font size for the labels
-line_width = 2;       % line width for the plots
+font_size_title = 26; % font size for the titles
+font_size = 26;       % font size for the labels
+line_width = 4;       % line width for the plots
 
 % Set LaTeX as default interpreter for axis labels, ticks and legends
 set(0,'defaulttextinterpreter','latex')
@@ -21,7 +21,8 @@ set(groot, 'defaultLegendInterpreter','latex');
 set(0,'DefaultFigureWindowStyle','docked');
 set(0,'defaultAxesFontSize',  font_size)
 set(0,'DefaultLegendFontSize',font_size)
-set(0,'DefaultTitleFontSize',font_size_title)
+set(0,'DefaultAxesTitleFontWeight','bold')
+set(0,'DefaultAxesFontWeight','bold')
 
 
 addpath('tyre_lib\')

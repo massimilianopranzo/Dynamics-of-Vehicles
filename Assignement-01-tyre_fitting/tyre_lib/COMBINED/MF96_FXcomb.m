@@ -1,4 +1,4 @@
-% Pure longitudinal force FX0
+% Combined longitudinal force FX
 function [fx] = MF96_FXcomb(kappa, alpha, phi, Fz, tyre_data)
 
   len = length(kappa);
