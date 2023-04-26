@@ -4,7 +4,7 @@
 % 20 diameter in inches
 % 7.0 section width in inches
 % tread width in inches
-diameter = 20*2.56; % [cm]
+diameter = 18*2.56; % [cm]
 Fz0 = 220;   % [N] nominal load is given
 R0  = diameter/2/100; % [m] get from nominal load R0 (m) *** TO BE CHANGED ***
 

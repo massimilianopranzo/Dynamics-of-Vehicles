@@ -3,7 +3,7 @@ function [] = plot_sorted_data(tyre_data, idx, vec_samples, GAMMA_0, GAMMA_1, ..
   FZ_1550, load_type, SA_0, SA_3neg, SA_6neg, font_size_title, plot_title, ...
   plot_name)
 %% PLOT SORTED DATA
-to_deg = pi/180;
+to_deg = 180*pi;
 
 fig_sorted = figure('Color','w');
 
@@ -50,7 +50,7 @@ if strcmp(load_type, 'longitudinal')
   plot(vec_samples(idx.SA_0),   SA_0.SA*to_deg,'.');
   plot(vec_samples(idx.SA_3neg),SA_3neg.SA*to_deg,'.');
   plot(vec_samples(idx.SA_6neg),SA_6neg.SA*to_deg,'.');
-  title('Slide slip', 'FontSize',font_size_title)
+  title('Side slip', 'FontSize',font_size_title)
   xlabel('Samples [-]')
   ylabel('[deg]')
   grid on

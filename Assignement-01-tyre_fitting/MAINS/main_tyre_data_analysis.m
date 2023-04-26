@@ -55,6 +55,7 @@ plot_selected_data(TData0, font_size_title);
 %--------------------------------------------------------------------------
 if exist(['tyre_' struct_name,'.mat'], 'file')
   load(['tyre_' struct_name,'.mat']);
+  tyre_coeffs.R0 = R0;
   tyre_coeffs.pHx1 = 0;
   tyre_coeffs.pCx1 = 0;
   tyre_coeffs.pDx1 = 0;

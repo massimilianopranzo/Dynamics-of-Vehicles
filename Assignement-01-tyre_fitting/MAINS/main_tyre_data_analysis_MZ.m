@@ -103,7 +103,7 @@ ones_vec  = ones(size(TData0.SA));
 %--------------------------------------------------------------------------
 % Guess values for parameters to be optimised
 %    [qHz1, qBz1, qCz1, qDz1, qEz1, qEz4, qBz9, qDz6, qBz10]
-P0 = -1*ones(1, 9);
+P0 = -0.75*ones(1, 9);
 
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised
@@ -164,7 +164,7 @@ ones_vec  = ones(size(TDataDFz.SA));
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised
 %    [ qHz2, qBz2, qBz3, qDz2, qEz2, qEz3, qDz7]
-P0 = [0, 0, 0, 0, 0, 0, 0];
+P0 = 0*ones(7,1); % [0, 0, 0, 0, 0, 0, 0];
 
 lb = []; %[0, 0, 0, 0, 0, 0, 0];
 ub = []; %[10, 10, 10, 10, 10, 10, 10];
@@ -366,7 +366,7 @@ x_fit_cell = {TDataGamma0.SA, TDataGamma1.SA, TDataGamma2.SA, TDataGamma3.SA, TD
 y_fit_cell = {MZ0_Gamma0, MZ0_Gamma1, MZ0_Gamma2, MZ0_Gamma3, MZ0_Gamma4};
 y_raw_cell = {TDataGamma0.MZ, TDataGamma1.MZ, TDataGamma2.MZ, TDataGamma3.MZ, TDataGamma4.MZ};
 data_label = ["$\gamma = 0 [deg]$", "$\gamma = 1 [deg]$", "$\gamma = 2 [deg]$", "$\gamma = 3 [deg]$", "$\gamma = 4 [deg]$"];
-plot_fitted_data_struct(x_fit_cell, y_raw_cell, x_fit_cell, y_fit_cell, '$\alpha []$', 'M_{z0} [Nm]', data_label,  'fig_fit_variable_camber_MZ_2.png', 'Self alignign moment for variable camber', line_width, font_size_title, colors_vect);
+plot_fitted_data_struct(x_fit_cell, y_raw_cell, x_fit_cell, y_fit_cell, '$\alpha []$', '$M_{z0}$ [Nm]', data_label,  'fig_fit_variable_camber_MZ_2.png', 'Self alignign moment for variable camber', line_width, font_size_title, colors_vect);
 
 
 % NON CANCELLARE
