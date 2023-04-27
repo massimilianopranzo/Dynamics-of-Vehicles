@@ -127,6 +127,7 @@ SA_vec = -0.3:0.001:0.3; % lateral slip to be used in the plot for check
 P_fz_nom
 res_Mz0
 RMS_Mz0 = sqrt(res_Mz0*sum(MZ_vec.^2)/length(MZ_vec));
+R2_Mz0 = 1 - res_Mz0*sum(MZ_vec.^2)/sum((MZ_vec - mean(MZ_vec)).^2);
 
 % Update tyre data with new optimal values                   
 tyre_coeffs.qHz1  = P_fz_nom(1); 
@@ -145,7 +146,7 @@ data_label = "Fitted data";
 % figure 5          
 plot_fitted_data(TData0.SA, TData0.MZ, SA_vec', MZ0_fz_nom_vec', ...
   '$\alpha [-]$', '$M_{z0}$ [Nm]', data_label, ...
-  'fig_fit_pure_conditions_MZ0', 'Fitting in pure conditions', ...
+  'fig_fit_nominal_conditions_MZ0', 'Fitting in nominal conditions', ...
   line_width, font_size_title)
 
 
@@ -185,6 +186,7 @@ SA_vec = -0.3:0.001:0.3;
 P_dfz
 res_Mz0_varFz
 RMS_Mz0_varFz = sqrt(res_Mz0_varFz*sum(MZ_vec.^2)/length(MZ_vec));
+R2_Mz0_varFz = 1 - res_Mz0_varFz*sum(MZ_vec.^2)/sum((MZ_vec - mean(MZ_vec)).^2);
 
 % Change tyre data with new optimal values          
 tyre_coeffs.qHz2 = P_dfz(1); 
@@ -317,6 +319,7 @@ TDataGamma4 = intersect_table_data(GAMMA_4, FZ_220);
 P_varGamma
 res_Mz0_varGamma
 RMS_Mz0_varGamma = sqrt(res_Mz0_varGamma*sum(MZ_vec.^2)/length(MZ_vec));
+R2_Mz0_varGamma = 1 - res_Mz0_varGamma*sum(MZ_vec.^2)/sum((MZ_vec - mean(MZ_vec)).^2);
 
 % Change tyre data with new optimal values
 tyre_coeffs.qHz3 = P_varGamma(1); 
@@ -328,29 +331,31 @@ tyre_coeffs.qEz5 = P_varGamma(6);
 tyre_coeffs.qDz8 = P_varGamma(7); 
 tyre_coeffs.qHz4 = P_varGamma(8); 
 tyre_coeffs.qDz9 = P_varGamma(9);
-
-MZ0_Gamma0 = MF96_MZ0_vec(TDataGamma0.SA, TDataGamma0.IA, tyre_coeffs.FZ0*ones_vec, tyre_coeffs);
-MZ0_Gamma1 = MF96_MZ0_vec(TDataGamma1.SA, TDataGamma1.IA, tyre_coeffs.FZ0*ones_vec, tyre_coeffs);
-MZ0_Gamma2 = MF96_MZ0_vec(TDataGamma2.SA, TDataGamma2.IA, tyre_coeffs.FZ0*ones_vec, tyre_coeffs);
-MZ0_Gamma3 = MF96_MZ0_vec(TDataGamma3.SA, TDataGamma3.IA, tyre_coeffs.FZ0*ones_vec, tyre_coeffs);
-MZ0_Gamma4 = MF96_MZ0_vec(TDataGamma4.SA, TDataGamma4.IA, tyre_coeffs.FZ0*ones_vec, tyre_coeffs);
+%%
+alpha_vec = -0.25:0.001:0.25;
+ones_vec = ones(length(alpha_vec), 1);
+MZ0_Gamma0 = MF96_MZ0_vec(alpha_vec, 0*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
+MZ0_Gamma1 = MF96_MZ0_vec(alpha_vec, 1*pi/180*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
+MZ0_Gamma2 = MF96_MZ0_vec(alpha_vec, 2*pi/180*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
+MZ0_Gamma3 = MF96_MZ0_vec(alpha_vec, 3*pi/180*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
+MZ0_Gamma4 = MF96_MZ0_vec(alpha_vec, 4*pi/180*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
 
 fig_fit_variable_camber_MZ = figure('Color', 'w');
 hold on
 plot(TDataGamma0.SA, TDataGamma0.MZ, '.', 'Color', colors_vect(1, :), 'HandleVisibility', 'off', 'MarkerSize',10);
-plot(TDataGamma0.SA, MZ0_Gamma0, '-', 'Color', colors_vect(1, :) , 'LineWidth', line_width, 'DisplayName', '$\gamma = 0 [deg]$' );
+plot(alpha_vec, MZ0_Gamma0, '-', 'Color', colors_vect(1, :) , 'LineWidth', line_width, 'DisplayName', '$\gamma = 0 [deg]$' );
 
 plot(TDataGamma1.SA, TDataGamma1.MZ, '.', 'Color', colors_vect(2, :), 'HandleVisibility', 'off', 'MarkerSize',10);
-plot(TDataGamma1.SA, MZ0_Gamma1, '-', 'Color', colors_vect(2, :), 'LineWidth', line_width , 'DisplayName', '$\gamma = 1 [deg]$');
+plot(alpha_vec, MZ0_Gamma1, '-', 'Color', colors_vect(2, :), 'LineWidth', line_width , 'DisplayName', '$\gamma = 1 [deg]$');
 
 plot(TDataGamma2.SA, TDataGamma2.MZ, '.', 'Color', colors_vect(3, :), 'HandleVisibility', 'off', 'MarkerSize',10);
-plot(TDataGamma2.SA, MZ0_Gamma2, '-', 'Color', colors_vect(3, :) , 'LineWidth', line_width,  'DisplayName', '$\gamma = 2 [deg]$' );
+plot(alpha_vec, MZ0_Gamma2, '-', 'Color', colors_vect(3, :) , 'LineWidth', line_width,  'DisplayName', '$\gamma = 2 [deg]$' );
 
 plot(TDataGamma3.SA, TDataGamma3.MZ, '.', 'Color', colors_vect(4, :), 'HandleVisibility', 'off', 'MarkerSize',10);
-plot(TDataGamma3.SA, MZ0_Gamma3, '-', 'Color', colors_vect(4, :), 'LineWidth', line_width, 'DisplayName', '$\gamma = 3 [deg]$' );
+plot(alpha_vec, MZ0_Gamma3, '-', 'Color', colors_vect(4, :), 'LineWidth', line_width, 'DisplayName', '$\gamma = 3 [deg]$' );
 
 plot(TDataGamma4.SA, TDataGamma4.MZ, '.', 'Color', colors_vect(5, :), 'HandleVisibility', 'off', 'MarkerSize',10);
-plot(TDataGamma4.SA, MZ0_Gamma4, '-', 'Color', colors_vect(5, :)  , 'LineWidth', line_width, 'DisplayName', '$\gamma = 4 [deg]$' );
+plot(alpha_vec, MZ0_Gamma4, '-', 'Color', colors_vect(5, :)  , 'LineWidth', line_width, 'DisplayName', '$\gamma = 4 [deg]$' );
 hold off
 legend('location', 'northeast')
 xlabel('$\alpha$')
@@ -362,11 +367,13 @@ export_fig(fig_fit_variable_camber_MZ, 'images\fig_fit_variable_camber_MZ0.png')
 x_fit_cell = cell(1, 5);
 y_fit_cell = cell(1, 5);
 y_raw_cell = cell(1, 5);
-x_fit_cell = {TDataGamma0.SA, TDataGamma1.SA, TDataGamma2.SA, TDataGamma3.SA, TDataGamma4.SA};
+x_raw_cell = cell(1, 5);
+x_raw_cell = {TDataGamma0.SA, TDataGamma1.SA, TDataGamma2.SA, TDataGamma3.SA, TDataGamma4.SA};
+x_fit_cell = {alpha_vec, alpha_vec, alpha_vec, alpha_vec, alpha_vec};
 y_fit_cell = {MZ0_Gamma0, MZ0_Gamma1, MZ0_Gamma2, MZ0_Gamma3, MZ0_Gamma4};
 y_raw_cell = {TDataGamma0.MZ, TDataGamma1.MZ, TDataGamma2.MZ, TDataGamma3.MZ, TDataGamma4.MZ};
 data_label = ["$\gamma = 0 [deg]$", "$\gamma = 1 [deg]$", "$\gamma = 2 [deg]$", "$\gamma = 3 [deg]$", "$\gamma = 4 [deg]$"];
-plot_fitted_data_struct(x_fit_cell, y_raw_cell, x_fit_cell, y_fit_cell, ...
+plot_fitted_data_struct(x_raw_cell, y_raw_cell, x_fit_cell, y_fit_cell, ...
   '$\alpha []$', '$M_{z0}$ [Nm]', data_label,  'fig_fit_variable_camber_MZ0_2', ...
   'Self alignign moment for variable camber', line_width, font_size_title, colors_vect);
 
@@ -382,7 +389,7 @@ plot_fitted_data_struct(x_fit_cell, y_raw_cell, x_fit_cell, y_fit_cell, ...
 % export_fig(fig_camber_MZ, 'images\fig_camber_MZ.png')
 
 %%
-
+ones_vec = ones(length(ALPHA_vec), 1);
 MZ0_varGamma_vec = MF96_MZ0_vec(ALPHA_vec, GAMMA_vec, tyre_coeffs.FZ0*ones_vec, tyre_coeffs);
 
 data_label = ["Fitted data FZ=220 [N]"];
@@ -392,15 +399,8 @@ plot_fitted_data(TDataGamma.SA, TDataGamma.MZ, x_fit, y_fit, '$\alpha$ [-]', ...
   '$M_{z0}$ [N]', data_label, 'fig_fit_variable_camber_MZ0', ...
   'Fitting with variable camber', line_width, font_size_title)
 
-% R-squared is 
-% 1-SSE/SST
-% SSE/SST = res_Fx0_nom
 
-R2_Mz0 = 1-res_Mz0;
-R2_Mz0_varFz = 1-res_Mz0_varFz;
-R2_Mz0_varGamma = 1-res_Mz0_varGamma;
-
-fprintf("Pure conditions: %6.3f\n", res_Mz0);
+fprintf("Nominal conditions: %6.3f\n", res_Mz0);
 fprintf("Variable load: %6.3f\n", res_Mz0_varFz);
 fprintf("Variable camber: %6.3f\n", res_Mz0_varGamma);
 fprintf('\n')

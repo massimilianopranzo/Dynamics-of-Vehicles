@@ -111,7 +111,8 @@ SA_vec = -0.28:0.001:0.28; % lateral slip to be used in the plot for check the i
 P_fz_nom
 res_Fy0
 RMS_Fy0 = sqrt(res_Fy0*sum(FY_vec.^2)/length(FY_vec));
-  
+R2_Fy0 = 1 - res_Fy0*sum(FY_vec.^2)/sum((FY_vec - mean(FY_vec)).^2);
+
 % Update tyre data with new optimal values                             
 tyre_coeffs.pCy1 = P_fz_nom(1) ; % 1
 tyre_coeffs.pDy1 = P_fz_nom(2) ;  
@@ -128,7 +129,7 @@ data_label = "Fitted data";
 % figure 5          
 plot_fitted_data(TData0.SA, TData0.FY, SA_vec', FY0_fz_nom_vec', ...
   '$\alpha [-]$', '$F_{y0}$ [N]', data_label, ...
-  'fig_fit_pure_conditions_FY', 'Fitting in pure conditions', line_width, ...
+  'fig_fit_nominal_conditions_FY', 'Fitting in nominal conditions', line_width, ...
   font_size_title)
 
 
@@ -168,6 +169,7 @@ SA_vec = -0.3:0.001:0.3;
 P_dfz
 res_Fy0_varFz
 RMS_Fy0_varFz = sqrt(res_Fy0_varFz*sum(FY_vec.^2)/length(FY_vec));
+R2_Fy0_varFz = 1 - res_Fy0_varFz*sum(FY_vec.^2)/sum((FY_vec - mean(FY_vec)).^2);
 
 % Change tyre data with new optimal values                             
 tyre_coeffs.pDy2 = P_dfz(1); % 1
@@ -226,6 +228,7 @@ export_fig(fig_camber_FY, 'images\fig_camber_FY.png')
 P_varGamma
 res_Fy0_varGamma
 RMS_Fy0_varGamma = sqrt(res_Fy0_varGamma*sum(FY_vec.^2)/length(FY_vec));
+R2_Fy0_varGamma = 1 - res_Fy0_varGamma*sum(FY_vec.^2)/sum((FY_vec - mean(FY_vec)).^2);
 
 %%
 % Change tyre data with new optimal values
@@ -248,26 +251,30 @@ FY0_varGamma_vec = MF96_FY0_vec(zeros_vec, ALPHA_vec, GAMMA_vec, ...
 %   'Fitting with variable camber', line_width, font_size_title)
 
 %%
+alpha_vec = -0.25:0.001:0.25;
+ones_vec = ones(length(alpha_vec), 1 );
 TDataGamma0 = intersect_table_data(GAMMA_0, FZ_220);
 TDataGamma1 = intersect_table_data(GAMMA_1, FZ_220);
 TDataGamma2 = intersect_table_data(GAMMA_2, FZ_220);
 TDataGamma3 = intersect_table_data(GAMMA_3, FZ_220);
 TDataGamma4 = intersect_table_data(GAMMA_4, FZ_220);
-FY0_Gamma0 = MF96_FY0_vec(zeros_vec, TDataGamma0.SA, TDataGamma0.IA, tyre_coeffs.FZ0*ones_vec, tyre_coeffs);
-FY0_Gamma1 = MF96_FY0_vec(zeros_vec, TDataGamma1.SA, TDataGamma1.IA, tyre_coeffs.FZ0*ones_vec, tyre_coeffs);
-FY0_Gamma2 = MF96_FY0_vec(zeros_vec, TDataGamma2.SA, TDataGamma2.IA, tyre_coeffs.FZ0*ones_vec, tyre_coeffs);
-FY0_Gamma3 = MF96_FY0_vec(zeros_vec, TDataGamma3.SA, TDataGamma3.IA, tyre_coeffs.FZ0*ones_vec, tyre_coeffs);
-FY0_Gamma4 = MF96_FY0_vec(zeros_vec, TDataGamma4.SA, TDataGamma4.IA, tyre_coeffs.FZ0*ones_vec, tyre_coeffs);
-
+FY0_Gamma0 = MF96_FY0_vec(zeros_vec, alpha_vec, 0*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
+FY0_Gamma1 = MF96_FY0_vec(zeros_vec, alpha_vec, -1*pi/180*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
+FY0_Gamma2 = MF96_FY0_vec(zeros_vec, alpha_vec, -2*pi/180*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
+FY0_Gamma3 = MF96_FY0_vec(zeros_vec, alpha_vec, -3*pi/180*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
+FY0_Gamma4 = MF96_FY0_vec(zeros_vec, alpha_vec, -4*pi/180*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
+%%
 plot_y = cell(5,1);
 plot_x = cell(5,1);
 plot_fit = cell(5,1);
+x_fit = cell(5, 1);
 plot_x = {TDataGamma0.SA, TDataGamma1.SA, TDataGamma2.SA, TDataGamma3.SA, TDataGamma4.SA};
 plot_y = {TDataGamma0.FY, TDataGamma1.FY, TDataGamma2.FY, TDataGamma3.FY, TDataGamma4.FY};
 plot_fit = {FY0_Gamma0, FY0_Gamma1, FY0_Gamma2, FY0_Gamma3, FY0_Gamma4};
+x_fit = {alpha_vec, alpha_vec, alpha_vec, alpha_vec, alpha_vec};
 plot_label = ["$\gamma = 0 [deg]$", "$\gamma = 1 [deg]$", "$\gamma = 2 [deg]$", "$\gamma = 3 [deg]$", "$\gamma = 4 [deg]$"];
 
-plot_fitted_data_struct(plot_x, plot_y, plot_x, plot_fit, ...
+plot_fitted_data_struct(plot_x, plot_y, x_fit, plot_fit, ...
   '$\alpha$ [-]', '$F_{y0}$ [N]', plot_label, 'fig_fit_variable_camber_FY', ...
   'Fitting with variable camber - Nominal load', line_width, ...
   font_size_title, colors_vect);
@@ -286,14 +293,7 @@ fprintf('alpha_y = %6.3f\n', alpha__y);
 fprintf('Ky      = %6.3f\n', By*Cy*Dy/tyre_coeffs.FZ0);
 
 
-%% Save tyre data structure to mat file
-% SSE is the sum of squared error,  SST is the sum of squared total
-%% CHECK THE RESIDUALS
-R2_Fy0 = 1-res_Fy0;
-R2_Fy0_varFz = 1-res_Fy0_varFz;
-R2_Fy0_varGamma = 1-res_Fy0_varGamma;
-
-fprintf("Pure conditions: %6.3f\n", res_Fy0);
+fprintf("Nominal conditions: %6.3f\n", res_Fy0);
 fprintf("Variable load: %6.3f\n", res_Fy0_varFz);
 fprintf("Variable camber: %6.3f\n", res_Fy0_varGamma);
 fprintf('\n')

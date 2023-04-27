@@ -107,6 +107,7 @@ SL_vec = -0.3:0.001:0.3; % longitudinal slip to be used in the plot for check th
 P_fz_nom
 res_Fx0 = fval_nom
 RMS_Fx0 = sqrt(fval_nom*sum(FX_vec.^2)/length(FX_vec));
+R2_Fx0 = 1 - res_Fx0*sum(FX_vec.^2)/sum((FX_vec - mean(FX_vec)).^2);
 
 % Update tyre data with new optimal values                             
 tyre_coeffs.pCx1 = P_fz_nom(1) ; % 1
@@ -123,8 +124,8 @@ FX0_fz_nom_vec = MF96_FX0_vec(SL_vec,zeros(size(SL_vec)), zeros(size(SL_vec)), .
 % figure 5   
 data_label = "Fitted data"; 
 plot_fitted_data(TData0.SL, TData0.FX, SL_vec', FX0_fz_nom_vec', ...
-  '$\kappa [-]$', '$F_{x0}$ [N]', data_label, 'fig_fit_pure_conditions_FX', ...
-  'Fitting in pure conditions', line_width, font_size_title)
+  '$\kappa [-]$', '$F_{x0}$ [N]', data_label, 'fig_fit_nominal_conditions_FX', ...
+  'Fitting in nominal conditions', line_width, font_size_title)
 
 
 %% ------------------------------------------------------------------------
@@ -163,6 +164,7 @@ SL_vec = -0.3:0.001:0.3;
 res_Fx0_varFz = fval
 P_dfz                        
 RMS_Fx0_varFz = sqrt(res_Fx0_varFz*sum(FX_vec.^2)/length(FX_vec));
+R2_Fx0_varFz = 1 - res_Fx0_varFz*sum(FX_vec.^2)/sum((FX_vec - mean(FX_vec)).^2);
 
 % Change tyre data with new optimal values    
 tyre_coeffs.pDx2 = P_dfz(1); % 1
@@ -250,6 +252,7 @@ export_fig(fig_camber_FX, 'images\fig_camber_FX.png')
 res_Fx0_varGamma = fval
 P_varGamma
 RMS_Fx0_varGamma = sqrt(res_Fx0_varGamma*sum(FX_vec.^2)/length(FX_vec));
+R2_Fx0_varGamma = 1 - res_Fx0_varGamma*sum(FX_vec.^2)/sum((FX_vec - mean(FX_vec)).^2);
 
 % Change tyre data with new optimal values
 tyre_coeffs.pDx3 = P_varGamma(1); % 1
@@ -294,16 +297,9 @@ fprintf('SVx     = %6.3f\n',SVx);
 fprintf('kappa_x = %6.3f\n',kappa__x);
 fprintf('Kx      = %6.3f\n',Bx*Cx*Dx/tyre_coeffs.FZ0);
 
-% R-squared is 
-% 1-SSE/SST
-% SSE/SST = res_Fx0_nom
-R2_Fx0 = 1-res_Fx0;
-R2_Fx0_varFz = 1-res_Fx0_varFz;
-R2_Fx0_varGamma = 1-res_Fx0_varGamma;
-
 % SSE is the sum of squared error,  SST is the sum of squared total
 %% CHECK THE RESIDUALS
-fprintf("Pure conditions: %6.3f\n", res_Fx0);
+fprintf("Nominal conditions: %6.3f\n", res_Fx0);
 fprintf("Variable load: %6.3f\n", res_Fx0_varFz);
 fprintf("Variable camber: %6.3f\n", res_Fx0_varGamma);
 fprintf('\n')

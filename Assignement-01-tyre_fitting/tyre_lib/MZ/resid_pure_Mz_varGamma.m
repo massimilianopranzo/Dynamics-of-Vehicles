@@ -31,6 +31,6 @@ function res = resid_pure_Mz_varGamma(P, MZ, ALPHA, GAMMA, FZ, FY_vec, tyre_data
     
     % Compute the residuals
     res = res/sum(MZ.^2);
-
+ 
 end
 

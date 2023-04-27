@@ -28,7 +28,8 @@ function res = resid_pure_Fx(P,FX,KAPPA,GAMMA,FZ,tyre_data)
        res = res+(fx0-FX(i))^2;
        %res = res+(fx0/FX(i)-1)^2;
     end
-    
+
+
     % Compute the residuals
     res = res/sum(FX.^2);
     
