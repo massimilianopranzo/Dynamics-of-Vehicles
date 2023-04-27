@@ -78,11 +78,12 @@ ALPHA_vec = tyre_data.SA;
 GAMMA_vec = tyre_data.IA;
 FZ_vec = tyre_data.FZ;
 
-[P_min,fval,exitflag] = fmincon(@(P)resid_long(P, FX_vec, KAPPA_vec, ALPHA_vec, GAMMA_vec, FZ_vec, tyre_coeffs),...
+[P_min,res_Fx,exitflag] = fmincon(@(P)resid_long(P, FX_vec, KAPPA_vec, ALPHA_vec, GAMMA_vec, FZ_vec, tyre_coeffs),...
 P0,[],[],[],[],lb,ub);
 
 P_min
-fval
+res_Fx
+RMS_Fx = sqrt(res_Fx*sum(FX_vec.^2)/length(FX_vec));
 
 tyre_coeffs.rHx1 = P_min(1);
 tyre_coeffs.rBx1 = P_min(2);
@@ -121,7 +122,7 @@ x_raw{3}{3}(:) = intersect_table_data(Data_900, SA_6neg).SL; % fz900
 x_raw{4}{1}(:) = intersect_table_data(Data_1120, SA_0).SL; % fz1120
 x_raw{4}{2}(:) = intersect_table_data(Data_1120, SA_3neg).SL; % fz1120
 x_raw{4}{3}(:) = intersect_table_data(Data_1120, SA_6neg).SL; % fz1120
-%%
+
 FX_raw = cell(4,1);
 FX_raw{1}{1}(:) = intersect_table_data(Data_220, SA_0).FX; % fz220
 FX_raw{1}{2}(:) = intersect_table_data(Data_220, SA_3neg).FX; % fz220
@@ -136,7 +137,7 @@ FX_raw{4}{1}(:) = intersect_table_data(Data_1120, SA_0).FX; % fz1120
 FX_raw{4}{2}(:) = intersect_table_data(Data_1120, SA_3neg).FX; % fz1120
 FX_raw{4}{3}(:) = intersect_table_data(Data_1120, SA_6neg).FX; % fz1120
 
-kappa_var = -0.5:0.001:0.5;
+kappa_var = -0.25:0.001:0.25;
 ones_vec = ones(length(kappa_var), 1);
 FX_fit = cell(4,1);
 [FX_fit{1}{1}(:)] = MF96_FXcomb(kappa_var, 0*pi/180*ones_vec, 0*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
@@ -153,8 +154,9 @@ FX_fit = cell(4,1);
 [FX_fit{4}{3}(:)] = MF96_FXcomb(kappa_var, -6*pi/180*ones_vec, 0*ones_vec, mean(FZ_1120.FZ)*ones_vec, tyre_coeffs);
 
 %%
+legends_name = [];
 plot_fitted_data_struct_combined(x_raw, FX_raw, kappa_var, FX_fit, '$\kappa [-]$', '$F_{X}$ [N]', ...
-data_label, leg_angle,'combined_longitudinal' , 'Combined longitudinal, $\gamma = 0 [deg]$', line_width, font_size_title, colors_vect)
+data_label, leg_angle, legends_name,'combined_longitudinal' , 'Combined longitudinal, $\gamma = 0 [deg]$', line_width, font_size_title, colors_vect)
 %%
 
 for i=1:length(kappa_var)
@@ -164,7 +166,7 @@ for i=1:length(kappa_var)
   [Gxa8(i), ~, ~] = MF96_FXFYCOMB_coeffs_eqns(kappa_var(i), -8*pi/180, 0, 0, tyre_coeffs);
 end
 
-figure('Color', 'w')
+fig_Gxa = figure('Color', 'w');
 plot(kappa_var, Gxa0, 'LineWidth', line_width);
 hold on
 plot(kappa_var, Gxa3, 'LineWidth', line_width);
@@ -178,6 +180,7 @@ title('Weighting function','Interpreter', 'latex', 'FontSize', font_size_title)
 legend('$\alpha = 0 [deg]$', '$\alpha = -3 [deg]$', '$\alpha = -6 [deg]$', ...
 '$\alpha = -8 [deg]$','Interpreter', 'latex', 'FontSize', font_size, ...
 'location', 'southeast')
+export_fig(fig_Gxa, 'images\fig_Gxa.png')
 
 %% COMBINED LATERAL
 
@@ -198,10 +201,11 @@ P0 = 0.4*[1 1 1 1 1 1 1 1 1];
 lb = [];
 ub = [];
 
-[P_min,fval_FY_pure,exitflag] = fmincon(@(P)resid_lateral_pure(P, FY_vec, KAPPA_vec, ALPHA_vec, 0 * ones_vec, FZ_vec, tyre_coeffs),...
+[P_min,res_Fy,exitflag] = fmincon(@(P)resid_lateral_pure(P, FY_vec, KAPPA_vec, ALPHA_vec, 0 * ones_vec, FZ_vec, tyre_coeffs),...
 P0,[],[],[],[],lb,ub);
 P_min
-fval_FY_pure
+res_Fy
+RMS_Fy = sqrt(res_Fy*sum(FY_vec.^2)/length(FY_vec));
 
 tyre_coeffs.rVy1 = P_min(1);
 tyre_coeffs.rVy4 = P_min(2);
@@ -253,11 +257,12 @@ P0 = [2];
 lb = [];
 ub = [];
 
-[P_min,fval_FY_varFz,exitflag] = fmincon(@(P)resid_lateral_varFz(P, ...
+[P_min,res_Fy_varFz,exitflag] = fmincon(@(P)resid_lateral_varFz(P, ...
   FY_vec, KAPPA_vec, ALPHA_vec, 0 * ones_vec, FZ_vec, tyre_coeffs),...
 P0,[],[],[],[],lb,ub);
 P_min
-fval_FY_varFz
+res_Fy_varFz
+RMS_Fy_varFz = sqrt(res_Fy_varFz*sum(FY_vec.^2)/length(FY_vec));
 
 tyre_coeffs.rVy2 = P_min(1);
 
@@ -274,17 +279,17 @@ ALPHA_vec6neg = -6*pi/180*ones_vec;
 KAPPA_vec_struct = {KAPPA_vec, KAPPA_vec, KAPPA_vec};
 
 FY_fit = cell(3, 1);
-FY_fit{1} = MF96_FYcomb(KAPPA_vec, ALPHA_vec0, 0*ones_vec, mean(FZ_vec)*ones_vec, tyre_coeffs);
-FY_fit{2} = MF96_FYcomb(KAPPA_vec, ALPHA_vec3neg, 0*ones_vec, mean(FZ_vec)*ones_vec, tyre_coeffs);
-FY_fit{3} = MF96_FYcomb(KAPPA_vec, ALPHA_vec6neg, 0*ones_vec, mean(FZ_vec)*ones_vec, tyre_coeffs);
+FY_fit{1} = MF96_FYcomb(KAPPA_vec, ALPHA_vec0, 0*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
+FY_fit{2} = MF96_FYcomb(KAPPA_vec, ALPHA_vec3neg, 0*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
+FY_fit{3} = MF96_FYcomb(KAPPA_vec, ALPHA_vec6neg, 0*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
 
 x_raw = {TDataFZ_SA0.SL, TDataFZ_SA3neg.SL, TDataFZ_SA6neg.SL};
 y_raw = {TDataFZ_SA0.FY, TDataFZ_SA3neg.FY, TDataFZ_SA6neg.FY};
-
+%%
 plot_label = {'$\alpha = 0 [deg]$', '$\alpha = -3 [deg]$', '$\alpha = -6 [deg]$'};
 plot_fitted_data_struct(x_raw, y_raw, KAPPA_vec_struct, FY_fit, ...
-  '$\kappa$ [-]', '$F_{y}$ [N]', plot_label, 'fig_fit_pure_conditions_FY_comb', ...
-  'Fitting in pure conditions - Plots for different $\alpha$', line_width, ...
+  '$\kappa$ [-]', '$F_{y}$ [N]', plot_label, 'fig_fit_variable_load_FY_comb', ...
+  'Fitting with variable loads - Plots for different $\alpha$ and FZ=220[N]', line_width, ...
   font_size_title, colors_vect);
   
   %% Variable load and camber
@@ -301,17 +306,20 @@ P0 = [2];
 lb = [];
 ub = [];
 
-[P_min,fval_FY_varGamma,exitflag] = fmincon(@(P)resid_lateral_varGamma(P, ...
+[P_min,res_Fy_varGamma,exitflag] = fmincon(@(P)resid_lateral_varGamma(P, ...
   FY_vec, KAPPA_vec, ALPHA_vec, GAMMA_vec, FZ_vec, tyre_coeffs),...
 P0,[],[],[],[],lb,ub);
 P_min
-fval_FY_varGamma
+res_Fy_varGamma
+RMS_Fy_varGamma = sqrt(res_Fy_varGamma*sum(FY_vec.^2)/length(FY_vec));
 
 tyre_coeffs.rVy3 = P_min(1);
 
 TDataFZ_SA0 = intersect_table_data(SA_0, FZ_220, GAMMA_0);
 TDataFZ_SA3neg = intersect_table_data(SA_3neg, FZ_220, GAMMA_0);
 TDataFZ_SA6neg = intersect_table_data(SA_6neg, FZ_220, GAMMA_0);
+
+kappa_var = -0.25:0.01:0.25;
 
 x_raw = cell(3, 1);
 x_raw{1}{1}(:) = intersect_table_data(SA_0, FZ_220, GAMMA_0).SL;
@@ -349,9 +357,11 @@ FY_fit = cell(4,1);
 
 
 data_label = ["$\gamma = 0 [deg]$", "$\gamma = 2 [deg]$", "$\gamma = 4 [deg]$"];
-
+legends_name = ["Fit $\alpha = 0[deg]$", "Raw $\alpha$ = 0[deg]",...
+"Fit $\alpha$ = -3[deg]", "Raw $\alpha$ = -3[deg]",...
+"Fit $\alpha$ = -6[deg]", "Raw $\alpha$ = -6[deg]"];
 plot_fitted_data_struct_combined(x_raw, y_raw, kappa_var, FY_fit, '$\kappa [-]$', '$F_{y}$ [N]', ...
-data_label, leg_angle,'combined_lateral' , 'Combined lateral, $FZ = 220 [N]$', line_width, font_size_title, colors_vect)
+data_label, leg_angle, legends_name,'combined_lateral' , 'Combined lateral, $FZ = 220 [N]$', line_width, font_size_title, colors_vect)
 
 
 %% WEIGHTING FUNCTION
@@ -362,7 +372,7 @@ for i=1:length(kappa_var)
   [~, Gyk8(i), ~] = MF96_FXFYCOMB_coeffs_eqns(kappa_var(i), -8*pi/180, 0, 0, tyre_coeffs);
 end
 
-figure('Color', 'w')
+fig_Gyk = figure('Color', 'w');
 plot(kappa_var, Gyk0, 'LineWidth', line_width);
 hold on
 plot(kappa_var, Gyk3, 'LineWidth', line_width);
@@ -376,6 +386,7 @@ title('Weighting function','Interpreter', 'latex', 'FontSize', font_size_title)
 legend('$\alpha = 0 [deg]$', '$\alpha = -3 [deg]$', '$\alpha = -6 [deg]$', ...
 '$\alpha = -8 [deg]$','Interpreter', 'latex', 'FontSize', font_size, ...
 'location', 'northeast')
+export_fig(fig_Gyk, 'images/fig_Gyk.png');
   
 %% COMPARISON BETWEEEN THE TWO MEHTODS
 ones_vec = ones(length(kappa_var),1);
@@ -397,13 +408,50 @@ Fy{2}{3}(:) = coeff6neg'.*MF96_FY0_vec(0*ones_vec, -6*pi/180*ones_vec, 2*pi/180*
 Fy{3}{1}(:) = coeff0'.*MF96_FY0_vec(0*ones_vec, 0*ones_vec, 4*pi/180*ones_vec, 220*ones_vec, tyre_coeffs);
 Fy{3}{2}(:) = coeff3neg'.*MF96_FY0_vec(0*ones_vec, -3*pi/180*ones_vec, 4*pi/180*ones_vec, 220*ones_vec, tyre_coeffs);
 Fy{3}{3}(:) = coeff6neg'.*MF96_FY0_vec(0*ones_vec, -6*pi/180*ones_vec, 4*pi/180*ones_vec, 220*ones_vec, tyre_coeffs);
-
+%%
 % plot_fitted_data_struct_combined_sigma(x_raw, y_raw, x_fit, y_fit, x_fit_sig, y_fit_sig ...
 %   label_x, label_y, data_label, leg_angle, name, plot_title, line_width, ...
 %   font_size_title, colors_vector)
+legend_names = ["Fit $\alpha = 0[deg]$","App. $\alpha = 0[deg]$", "Raw $\alpha$ = 0[deg]",...
+"Fit $\alpha$ = -3[deg]","App. $\alpha$ = -3[deg]", "Raw $\alpha$ = -3[deg]",...
+"Fit $\alpha$ = -6[deg]","App. $\alpha$ = -6[deg]", "Raw $\alpha$ = -6[deg]"];
 plot_fitted_data_struct_combined_sigma(x_raw, y_raw, kappa_var, FY_fit, kappa_var, Fy, ...
-'$\kappa [-]$', '$F_{y}$ [N]', data_label, leg_angle, 'combined_lateral_sigma' , ...
+'$\kappa [-]$', '$F_{y}$ [N]', data_label,leg_angle, legend_names,'combined_lateral_sigma' , ...
 'Combined lateral, $FZ = 220 [N]$', line_width, font_size_title, colors_vect)
 
 %% Save the coefficients
+R2_Fx = 1-res_Fx;
+
+R2_Fy = 1-res_Fy;
+R2_Fy_varFz = 1-res_Fy_varFz;
+R2_Fy_varGamma = 1-res_Fy_varGamma;
+
+
+fprintf("--- Combined Fx ---\n")
+fprintf("Pure conditions: %6.3f\n", res_Fx);
+fprintf("Pure conditions: %6.3f\n", R2_Fx);
+fprintf("Pure conditions: %6.3f\n", RMS_Fx);
+
+fprintf("--- Combined Fy ---\n")
+fprintf("Pure conditions: %6.3f\n", res_Fy);
+fprintf("Variable load: %6.3f\n", res_Fy_varFz);
+fprintf("Variable camber: %6.3f\n", res_Fy_varGamma);
+fprintf('\n')
+fprintf("Pure conditions: %6.3f\n", R2_Fy);
+fprintf("Variable load: %6.3f\n", R2_Fy_varFz);
+fprintf("Variable camber: %6.3f\n", R2_Fy_varGamma);
+fprintf('\n')
+fprintf("Pure conditions: %6.3f\n", RMS_Fy);
+fprintf("Variable load: %6.3f\n", RMS_Fy_varFz);
+fprintf("Variable camber: %6.3f\n", RMS_Fy_varGamma);
+
+
+
+%% Save tyre data structure to mat file
+name = ["resFx", "RtwoFx", "RMSFx", "resFy", "resFyvarFz", "resFyvarGamma", "RtwoFy", "RtwoFyvarFz", "RtwoFyvarGamma", "RMSFy", "RMSFyvarFz", "RMSFyvarGamma"];
+
+data = [res_Fx, R2_Fx, RMS_Fx, res_Fy, res_Fy_varFz, res_Fy_varGamma, R2_Fy, R2_Fy_varFz, R2_Fy_varGamma, RMS_Fy, RMS_Fy_varFz, RMS_Fy_varGamma];
+
+
+write_latex_macro('results_to_lates_Fcomb.tex', name, data, 'w');
 save(['tyre_' struct_name,'.mat'],'tyre_coeffs');

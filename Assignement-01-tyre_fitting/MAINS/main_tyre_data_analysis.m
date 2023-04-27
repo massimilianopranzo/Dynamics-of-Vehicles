@@ -283,24 +283,7 @@ plot_fitted_data(TDataGamma.SL, TDataGamma.FX, x_fit, y_fit, ...
   'fig_fit_variable_camber_FX_1plot', 'Fitting with variable camber', ...
   line_width, font_size_title)
 
-%% CHECK THE RESIDUALS
-fprintf("Pure conditions: %6.3f\n", res_Fx0);
-fprintf("Variable load: %6.3f\n", res_Fx0_varFz);
-fprintf("Variable camber: %6.3f\n", res_Fx0_varGamma);
 %%
-% R-squared is 
-% 1-SSE/SST
-% SSE/SST = res_Fx0_nom
-
-% SSE is the sum of squared error,  SST is the sum of squared total
-fprintf('\n')
-fprintf('R-squared = %6.3f\n',1-res_Fx0);
-fprintf('R-squared = %6.3f\n',1-res_Fx0_varFz);
-fprintf('R-squared = %6.3f\n',1-res_Fx0_varGamma);
-fprintf('\n')
-fprintf('RMS = %6.3f\n', RMS_Fx0);
-fprintf('RMS = %6.3f\n', RMS_Fx0_varFz);
-fprintf('RMS = %6.3f\n', RMS_Fx0_varGamma);
 fprintf('\n')
 [kappa__x, Bx, Cx, Dx, Ex, SVx] = MF96_FX0_coeffs(0, 0, GAMMA_vec(3), tyre_coeffs.FZ0, tyre_coeffs);
 fprintf('Bx      = %6.3f\n',Bx);
@@ -311,8 +294,33 @@ fprintf('SVx     = %6.3f\n',SVx);
 fprintf('kappa_x = %6.3f\n',kappa__x);
 fprintf('Kx      = %6.3f\n',Bx*Cx*Dx/tyre_coeffs.FZ0);
 
+% R-squared is 
+% 1-SSE/SST
+% SSE/SST = res_Fx0_nom
+R2_Fx0 = 1-res_Fx0;
+R2_Fx0_varFz = 1-res_Fx0_varFz;
+R2_Fx0_varGamma = 1-res_Fx0_varGamma;
+
+% SSE is the sum of squared error,  SST is the sum of squared total
+%% CHECK THE RESIDUALS
+fprintf("Pure conditions: %6.3f\n", res_Fx0);
+fprintf("Variable load: %6.3f\n", res_Fx0_varFz);
+fprintf("Variable camber: %6.3f\n", res_Fx0_varGamma);
+fprintf('\n')
+fprintf('R-squared = %6.3f\n',R2_Fx0);
+fprintf('R-squared = %6.3f\n',R2_Fx0_varFz);
+fprintf('R-squared = %6.3f\n',R2_Fx0_varGamma);
+fprintf('\n')
+fprintf('RMS = %6.3f\n', RMS_Fx0);
+fprintf('RMS = %6.3f\n', RMS_Fx0_varFz);
+fprintf('RMS = %6.3f\n', RMS_Fx0_varGamma);
+
 
 %% Save tyre data structure to mat file
+name = ["resFxzero", "resFxzerovarFz", "resFxzerovarGamma", "RtwoFxzero", ...
+  "RtwoFxzerovarFz", "RtwoFxzerovarGamma", "RMSFxzero", "RMSFxzerovarFz", "RMSFxzerovarGamma"];
+data = [res_Fx0, res_Fx0_varFz, res_Fx0_varGamma, R2_Fx0, R2_Fx0_varFz, R2_Fx0_varGamma, RMS_Fx0, RMS_Fx0_varFz, RMS_Fx0_varGamma];
+write_latex_macro('results_to_lates_FX0.tex', name, data, 'w');
 save(['tyre_' struct_name,'.mat'],'tyre_coeffs');
 
 

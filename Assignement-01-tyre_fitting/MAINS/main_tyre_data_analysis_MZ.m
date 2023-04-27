@@ -46,7 +46,7 @@ sorting_data;
 plot_sorted_data(tyre_data, idx, vec_samples, GAMMA_0, GAMMA_1, ...
   GAMMA_2, GAMMA_3, GAMMA_4, GAMMA_5, FZ_220, FZ_440, FZ_700, FZ_900, FZ_1120, ...
   FZ_1550, load_type, SA_0, SA_3neg, SA_6neg, font_size_title, ...
-  'Sorted data self aligning','sorted_data_MZ');
+  'Sorted data self aligning','sorted_data_MZ0');
 
 %% Intersect tables to obtain specific sub-datasets and plot them
 [TData0, ~] = intersect_table_data(GAMMA_0, FZ_220 );
@@ -145,7 +145,7 @@ data_label = "Fitted data";
 % figure 5          
 plot_fitted_data(TData0.SA, TData0.MZ, SA_vec', MZ0_fz_nom_vec', ...
   '$\alpha [-]$', '$M_{z0}$ [Nm]', data_label, ...
-  'fig_fit_pure_conditions_MZ', 'Fitting in pure conditions', ...
+  'fig_fit_pure_conditions_MZ0', 'Fitting in pure conditions', ...
   line_width, font_size_title)
 
 
@@ -212,7 +212,7 @@ data_label = ["$F_{z}$ = 220 [N]", "$F_{z}$ = 440 [N]", ...
   "$F_{z}$ = 700 [N]", "$F_{z}$ = 900 [N]", "$F_{z}$ = 1120 [N]"];
 %figure 6
 plot_fitted_data(TDataDFz.SA, TDataDFz.MZ, x_fit, y_fit, '$\alpha$ [-]',...
-  '$M_{z0}$ [Nm]', data_label,'fig_fit_variable_load_MZ', ...
+  '$M_{z0}$ [Nm]', data_label,'fig_fit_variable_load_MZ0', ...
   'Fitting with variable load', line_width, font_size_title)
 
 T220  = intersect_table_data(FZ_220, GAMMA_0);
@@ -232,7 +232,7 @@ for i=1:5
   y_fit_cell{i} = y_fit(:, i);
 end
 plot_fitted_data_struct(SA_cell, MZ_cell, x_fit_cell, y_fit_cell, '$\alpha$ [-]',...
-  '$M_{z0}$ [Nm]', data_label,'fig_fit_variable_load_MZ_multicolot', ...
+  '$M_{z0}$ [Nm]', data_label,'fig_fit_variable_load_MZ0_multicolot', ...
   'Fitting with variable load', line_width, font_size_title, colors_vect);
 
 %% Stiffness
@@ -357,7 +357,7 @@ xlabel('$\alpha$')
 ylabel('$M_{z0}$ [N]')
 title('Fitting with variable camber $F_{Z}$ = 220[N]', 'FontSize',font_size_title)
 grid on
-export_fig(fig_fit_variable_camber_MZ, 'images\fig_fit_variable_camber_MZ.png');
+export_fig(fig_fit_variable_camber_MZ, 'images\fig_fit_variable_camber_MZ0.png');
 %%
 x_fit_cell = cell(1, 5);
 y_fit_cell = cell(1, 5);
@@ -366,7 +366,9 @@ x_fit_cell = {TDataGamma0.SA, TDataGamma1.SA, TDataGamma2.SA, TDataGamma3.SA, TD
 y_fit_cell = {MZ0_Gamma0, MZ0_Gamma1, MZ0_Gamma2, MZ0_Gamma3, MZ0_Gamma4};
 y_raw_cell = {TDataGamma0.MZ, TDataGamma1.MZ, TDataGamma2.MZ, TDataGamma3.MZ, TDataGamma4.MZ};
 data_label = ["$\gamma = 0 [deg]$", "$\gamma = 1 [deg]$", "$\gamma = 2 [deg]$", "$\gamma = 3 [deg]$", "$\gamma = 4 [deg]$"];
-plot_fitted_data_struct(x_fit_cell, y_raw_cell, x_fit_cell, y_fit_cell, '$\alpha []$', '$M_{z0}$ [Nm]', data_label,  'fig_fit_variable_camber_MZ_2.png', 'Self alignign moment for variable camber', line_width, font_size_title, colors_vect);
+plot_fitted_data_struct(x_fit_cell, y_raw_cell, x_fit_cell, y_fit_cell, ...
+  '$\alpha []$', '$M_{z0}$ [Nm]', data_label,  'fig_fit_variable_camber_MZ0_2', ...
+  'Self alignign moment for variable camber', line_width, font_size_title, colors_vect);
 
 
 % NON CANCELLARE
@@ -386,28 +388,38 @@ MZ0_varGamma_vec = MF96_MZ0_vec(ALPHA_vec, GAMMA_vec, tyre_coeffs.FZ0*ones_vec, 
 data_label = ["Fitted data FZ=220 [N]"];
 x_fit = repmat(ALPHA_vec, 1, 2);
 y_fit = [MZ0_varGamma_vec];
-plot_fitted_data(TDataGamma.SA, TDataGamma.MZ, x_fit, y_fit, '$\alpha$ [-]', '$M_{z0}$ [N]', data_label, 'fig_fit_variable_camber_MZ', 'Fitting with variable camber', line_width, font_size_title)
+plot_fitted_data(TDataGamma.SA, TDataGamma.MZ, x_fit, y_fit, '$\alpha$ [-]', ...
+  '$M_{z0}$ [N]', data_label, 'fig_fit_variable_camber_MZ0', ...
+  'Fitting with variable camber', line_width, font_size_title)
 
-%%
-fprintf("Pure confitions: %6.3f\n", res_Mz0);
-fprintf("Variable load: %6.3f\n", res_Mz0_varFz);
-fprintf("Variable camber: %6.3f\n", res_Mz0_varGamma);
-fprintf('\n')
-fprintf('RMS = %6.3f\n', RMS_Mz0);
-fprintf('RMS = %6.3f\n', RMS_Mz0_varFz);
-fprintf('RMS = %6.3f\n', RMS_Mz0_varGamma);
-fprintf('\n')
 % R-squared is 
 % 1-SSE/SST
 % SSE/SST = res_Fx0_nom
 
-%% SSE is the sum of squared error,  SST is the sum of squared total
-% fprintf('R-squared = %6.3f\n', 1 - res_Mz0_varGamma);
+R2_Mz0 = 1-res_Mz0;
+R2_Mz0_varFz = 1-res_Mz0_varFz;
+R2_Mz0_varGamma = 1-res_Mz0_varGamma;
+
+fprintf("Pure conditions: %6.3f\n", res_Mz0);
+fprintf("Variable load: %6.3f\n", res_Mz0_varFz);
+fprintf("Variable camber: %6.3f\n", res_Mz0_varGamma);
+fprintf('\n')
+fprintf('R-squared = %6.3f\n',R2_Mz0);
+fprintf('R-squared = %6.3f\n',R2_Mz0_varFz);
+fprintf('R-squared = %6.3f\n',R2_Mz0_varGamma);
+fprintf('\n')
+fprintf('RMS = %6.3f\n', RMS_Mz0);
+fprintf('RMS = %6.3f\n', RMS_Mz0_varFz);
+fprintf('RMS = %6.3f\n', RMS_Mz0_varGamma); 
+
+
+%% Save tyre data structure to mat file
+name = ["resMzzero", "resMzzerovarFz", "resMzzerovarGamma", "RtwoMzzero", ...
+  "RtwoMzzerovarFz", "RtwoMzzerovarGamma", "RMSMzzero", "RMSMzzerovarFz", "RMSMzzerovarGamma"];
+data = [res_Mz0, res_Mz0_varFz, res_Mz0_varGamma, R2_Mz0, R2_Mz0_varFz, R2_Mz0_varGamma, RMS_Mz0, RMS_Mz0_varFz, RMS_Mz0_varGamma];
+write_latex_macro('results_to_lates_MZ0.tex', name, data, 'w');
 
 
 %% Save tyre data structure to mat file
 %
 save(['tyre_' struct_name,'.mat'],'tyre_coeffs');
-
-
-

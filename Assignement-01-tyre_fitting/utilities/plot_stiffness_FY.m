@@ -13,7 +13,7 @@ plot(mean(FZ_700.FZ),Calfa_vec3_0,'+','LineWidth',2, 'MarkerSize',10)
 plot(mean(FZ_900.FZ),Calfa_vec4_0,'+','LineWidth',2, 'MarkerSize',10)
 plot(mean(FZ_1120.FZ),Calfa_vec5_0,'+','LineWidth',2, 'MarkerSize',10)
 legend({'$Fz_{220}$','$Fz_{440}$','$Fz_{700}$','$Fz_{900}$','$Fz_{1120}$'...
-  }, 'Location', 'northwest')
+  }, 'Location', 'eastoutside')
 xlabel('Vertical load [N]')
 ylabel('$C_{\alpha}$ [N]')
 grid on
@@ -27,7 +27,7 @@ plot(SA_vec,Calfa_vec3,'-','LineWidth',2)
 plot(SA_vec,Calfa_vec4,'-','LineWidth',2)
 plot(SA_vec,Calfa_vec5,'-','LineWidth',2)
 legend({'$Fz_{220}$','$Fz_{440}$','$Fz_{700}$','$Fz_{900}$', ...
-  '$Fz_{1120}$'}, 'Location', 'northwest')
+  '$Fz_{1120}$'}, 'Location', 'eastoutside')
 xlabel('$\alpha$ [-]')
 ylabel('$C_{\alpha}$ [N]')
 grid on

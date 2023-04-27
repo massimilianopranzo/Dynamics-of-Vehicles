@@ -275,20 +275,7 @@ plot_fitted_data_struct(plot_x, plot_y, plot_x, plot_fit, ...
 
 %% -------------------
 % PLOT THE RESIDUALS
-fprintf("Pure confitions: %6.3f\n", res_Fy0);
-fprintf("Variable load: %6.3f\n", res_Fy0_varFz);
-fprintf("Variable camber: %6.3f\n", res_Fy0_varGamma);
-fprintf('\n')
-fprintf('RMS = %6.3f\n', RMS_Fy0);
-fprintf('RMS = %6.3f\n', RMS_Fy0_varFz);
-fprintf('RMS = %6.3f\n', RMS_Fy0_varGamma);
-fprintf('\n')
-
-%%
 % SSE is the sum of squared error,  SST is the sum of squared total
-fprintf('R-squared = %6.3f\n',1-res_Fy0_varGamma);
-
-
 [alpha__y, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, 0, GAMMA_vec(3), tyre_coeffs.FZ0, tyre_coeffs);
 fprintf('By      = %6.3f\n', By);
 fprintf('Cy      = %6.3f\n', Cy);
@@ -300,7 +287,31 @@ fprintf('Ky      = %6.3f\n', By*Cy*Dy/tyre_coeffs.FZ0);
 
 
 %% Save tyre data structure to mat file
-%
+% SSE is the sum of squared error,  SST is the sum of squared total
+%% CHECK THE RESIDUALS
+R2_Fy0 = 1-res_Fy0;
+R2_Fy0_varFz = 1-res_Fy0_varFz;
+R2_Fy0_varGamma = 1-res_Fy0_varGamma;
+
+fprintf("Pure conditions: %6.3f\n", res_Fy0);
+fprintf("Variable load: %6.3f\n", res_Fy0_varFz);
+fprintf("Variable camber: %6.3f\n", res_Fy0_varGamma);
+fprintf('\n')
+fprintf('R-squared = %6.3f\n',R2_Fy0);
+fprintf('R-squared = %6.3f\n',R2_Fy0_varFz);
+fprintf('R-squared = %6.3f\n',R2_Fy0_varGamma);
+fprintf('\n')
+fprintf('RMS = %6.3f\n', RMS_Fy0);
+fprintf('RMS = %6.3f\n', RMS_Fy0_varFz);
+fprintf('RMS = %6.3f\n', RMS_Fy0_varGamma); 
+
+
+%% Save tyre data structure to mat file
+name = ["resFyzero", "resFyzerovarFz", "resFyzerovarGamma", "RtwoFyzero",...
+  "RtwoFyzerovarFz", "RtwoFyzerovarGamma", "RMSFyzero", "RMSFyzerovarFz", "RMSFyzerovarGamma"];
+data = [res_Fy0, res_Fy0_varFz, res_Fy0_varGamma, R2_Fy0, R2_Fy0_varFz, R2_Fy0_varGamma, RMS_Fy0, RMS_Fy0_varFz, RMS_Fy0_varGamma];
+write_latex_macro('results_to_lates_FY0.tex', name, data, 'w');
+
 save(['tyre_' struct_name,'.mat'],'tyre_coeffs');
 
 
