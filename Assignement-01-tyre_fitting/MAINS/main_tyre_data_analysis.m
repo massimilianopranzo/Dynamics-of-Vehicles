@@ -84,15 +84,15 @@ ones_vec  = ones(size(TData0.SL));
 %--------------------------------------------------------------------------
 % Guess values for parameters to be optimised
 %    [pCx1 pDx1 pEx1 pEx4  pHx1  pKx1  pVx1]
-P0 = [  1,   2,   1,  0,   0,   1,   0]; 
-
+P1 = [  1,   2,   1,  0,   0,   1,   0]; 
+name1 = ["pCx1", "pDx1", "pEx1", "pEx4", "pHx1", "pKx1", "pVx1"];
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised
 % 1< pCx1 < 2 
 % 0< pEx1 < 1 
 %    [pCx1 pDx1 pEx1 pEx4  pHx1  pKx1  pVx1 
-lb = [1,  0.1,   0, 0, -10, 0, -10]; % lower bound
-ub = [2,    4,   1,    1,  10,  100,  10]; % upper bound
+lb1 = [1,  0.1,   0, 0, -10, 0, -10]; % lower bound
+ub1 = [2,    4,   1,    1,  10,  100,  10]; % upper bound
 
 KAPPA_vec = TData0.SL;  % slip ratio
 FX_vec    = TData0.FX;  % longitudianl force
@@ -103,7 +103,7 @@ SL_vec = -0.3:0.001:0.3; % longitudinal slip to be used in the plot for check th
 % resid_pure_Fx returns the residual, so minimize the residual varying X. 
 % It is an unconstrained minimization problem 
 [P_fz_nom,fval_nom,exitflag] = fmincon(@(P)resid_pure_Fx(P, FX_vec, ...
-  KAPPA_vec, 0, FZ0, tyre_coeffs),P0,[],[],[],[],lb,ub);
+  KAPPA_vec, 0, FZ0, tyre_coeffs),P1,[],[],[],[],lb1,ub1);
 P_fz_nom
 res_Fx0 = fval_nom
 RMS_Fx0 = sqrt(fval_nom*sum(FX_vec.^2)/length(FX_vec));
@@ -142,13 +142,14 @@ ones_vec  = ones(size(TDataDFz.SL));
 
 % Guess values for parameters to be optimised
 %    [pDx2 pEx2 pEx3 pHx2  pKx2  pKx3  pVx2] 
-P0 = [  0,   0,   0,  0,   0,   0,   0]; 
+P2 = [  0,   0,   0,  0,   0,   0,   0]; 
+name2 = ["pDx2", "pEx2", "pEx3", "pHx2", "pKx2", "pKx3", "pVx2"];
 
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised 
 %    [pDx2 pEx2 pEx3 pHx2  pKx2  pKx3  pVx2] 
-lb = []; %[-1 -1 -1 -1 -1 -1 -1];
-ub = []; % [1 1 1 1 1 1 1];
+lb2 = []; %[-1 -1 -1 -1 -1 -1 -1];
+ub2 = []; % [1 1 1 1 1 1 1];
 
 KAPPA_vec = TDataDFz.SL;
 FX_vec    = TDataDFz.FX;
@@ -160,7 +161,7 @@ SL_vec = -0.3:0.001:0.3;
 % LSM_pure_Fx returns the residual, so minimize the residual varying X. It
 % is an unconstrained minimization problem 
 [P_dfz,fval,exitflag] = fmincon(@(P)resid_pure_Fx_varFz(P,FX_vec, KAPPA_vec, 0, FZ_vec, tyre_coeffs),...
-                               P0,[],[],[],[],lb,ub);
+                               P2,[],[],[],[],lb2,ub2);
 res_Fx0_varFz = fval
 P_dfz                        
 RMS_Fx0_varFz = sqrt(res_Fx0_varFz*sum(FX_vec.^2)/length(FX_vec));
@@ -221,11 +222,12 @@ plot_stiffness(SL_vec,FZ_220, FZ_700, FZ_900, FZ_1120, Calfa_vec1_0, ...
 % Fit the coeffs { pDx3}
 
 % Guess values for parameters to be optimised
-P0 = [0]; 
+P3 = [0]; 
+name3 = ["pDx3"];
 
 % NOTE: many local minima => limits on parameters are fundamentals
-lb = []; %[0];
-ub = []; %[20];
+lb3 = []; %[0];
+ub3 = []; %[20];
 
 zeros_vec = zeros(size(TDataGamma.SL));
 ones_vec  = ones(size(TDataGamma.SL));
@@ -248,7 +250,7 @@ export_fig(fig_camber_FX, 'images\fig_camber_FX.png')
 % LSM_pure_Fx returns the residual, so minimize the residual varying X. It
 % is an unconstrained minimization problem 
 [P_varGamma,fval,exitflag] = fmincon(@(P)resid_pure_Fx_varGamma(P,FX_vec, KAPPA_vec, GAMMA_vec, tyre_coeffs.FZ0, tyre_coeffs),...
-                               P0,[],[],[],[],lb,ub);
+                               P3,[],[],[],[],lb3,ub3);
 res_Fx0_varGamma = fval
 P_varGamma
 RMS_Fx0_varGamma = sqrt(res_Fx0_varGamma*sum(FX_vec.^2)/length(FX_vec));
@@ -312,6 +314,12 @@ fprintf('RMS = %6.3f\n', RMS_Fx0_varFz);
 fprintf('RMS = %6.3f\n', RMS_Fx0_varGamma);
 
 
+%%
+P0 = {P1 P2 P3};
+lb = {lb1 lb2 lb3};
+ub = {ub1 ub2 ub3};
+name = {name1 name2 name3};
+table_P0("pure_longitudinal", name, P0, lb, ub)
 %% Save tyre data structure to mat file
 name = ["resFxzero", "resFxzerovarFz", "resFxzerovarGamma", "RtwoFxzero", ...
   "RtwoFxzerovarFz", "RtwoFxzerovarGamma", "RMSFxzero", "RMSFxzerovarFz", "RMSFxzerovarGamma"];

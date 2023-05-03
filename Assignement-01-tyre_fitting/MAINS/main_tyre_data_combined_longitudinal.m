@@ -68,9 +68,10 @@ end
 %% COMBINED LONGITUDINAL
 % rHx1, rBx1, rCx1 rBx2
 % -27.1725    5.5548   11.0463   -1.4499
-P0 = [-27 5.5 11 -1.5];
-lb = [-30 4 10 -2];
-ub = [-20 7 15 0];
+P1 = [-27 5.5 11 -1.5];
+lb1 = [-30 4 10 -2];
+ub1 = [-20 7 15 0];
+name1 = ["rHx1", "rBx1", "rCx1", "rBx2"];
 
 FX_vec = tyre_data.FX;
 KAPPA_vec = tyre_data.SL;
@@ -79,7 +80,7 @@ GAMMA_vec = tyre_data.IA;
 FZ_vec = tyre_data.FZ;
 
 [P_min,res_Fx,exitflag] = fmincon(@(P)resid_long(P, FX_vec, KAPPA_vec, ALPHA_vec, GAMMA_vec, FZ_vec, tyre_coeffs),...
-P0,[],[],[],[],lb,ub);
+P1,[],[],[],[],lb1,ub1);
 
 P_min
 res_Fx
@@ -216,6 +217,11 @@ plot_fitted_data_struct_combined_sigma({}, {}, kappa_var, FX_fit, kappa_var, Fx,
 '$\kappa [-]$', '$F_{x}$ [N]', data_label,leg_angle, legend_names,'combined_longitudinal_sigma' , ...
 'Combined longitudinal, $\gamma =0$ [deg]', line_width, font_size_title, colors_vect)
 
+PLON = {P1};
+lbLON = {lb1};
+ubLON = {ub1};
+nameLON = {name1};
+table_P0("combined_longitudinal", nameLON, PLON, lbLON, ubLON)
 
 %% COMBINED LATERAL
 
@@ -232,12 +238,13 @@ clc
 % rVy1, rVy4, rVy5, rVy6, rHy1, rBy1, rBy2, rBy3, rCy1
 % [ -0.23 3.76 -0.09 28.37 0.02 14.16 13.29 -0.49 0.974];
 
-P0 = 0.4*[1 1 1 1 1 1 1 1 1]; 
-lb = [];
-ub = [];
+P1 = 0.4*[1 1 1 1 1 1 1 1 1]; 
+lb1 = [];
+ub1 = [];
+name1 = ["rVy1", "rVy4", "rVy5", "rVy6", "rHy1", "rBy1", "rBy2", "rBy3", "rCy1"];
 
 [P_min,res_Fy,exitflag] = fmincon(@(P)resid_lateral_pure(P, FY_vec, KAPPA_vec, ALPHA_vec, 0 * ones_vec, FZ_vec, tyre_coeffs),...
-P0,[],[],[],[],lb,ub);
+P1,[],[],[],[],lb1,ub1);
 P_min
 res_Fy
 RMS_Fy = sqrt(res_Fy*sum(FY_vec.^2)/length(FY_vec));
@@ -289,13 +296,14 @@ FZ_vec = TDataFZ.FZ; % all FZ
 ones_vec = ones(length(FY_vec), 1);
 
 % rVy2 
-P0 = [2]; 
-lb = [];
-ub = [];
+P2 = [2]; 
+lb2 = [];
+ub2 = [];
+name2 = ["rVy2"];
 
 [P_min,res_Fy_varFz,exitflag] = fmincon(@(P)resid_lateral_varFz(P, ...
   FY_vec, KAPPA_vec, ALPHA_vec, 0 * ones_vec, FZ_vec, tyre_coeffs),...
-P0,[],[],[],[],lb,ub);
+P2,[],[],[],[],lb2,ub2);
 P_min
 res_Fy_varFz
 RMS_Fy_varFz = sqrt(res_Fy_varFz*sum(FY_vec.^2)/length(FY_vec));
@@ -339,13 +347,14 @@ GAMMA_vec = TDataGamma.IA;
 ones_vec = ones(length(FY_vec), 1);
 
 % rVy3 
-P0 = [2]; 
-lb = [];
-ub = [];
+P3 = [2]; 
+lb3 = [];
+ub3 = [];
+name3 = ["rVy3"];
 
 [P_min,res_Fy_varGamma,exitflag] = fmincon(@(P)resid_lateral_varGamma(P, ...
   FY_vec, KAPPA_vec, ALPHA_vec, GAMMA_vec, FZ_vec, tyre_coeffs),...
-P0,[],[],[],[],lb,ub);
+P3,[],[],[],[],lb3,ub3);
 P_min
 res_Fy_varGamma
 RMS_Fy_varGamma = sqrt(res_Fy_varGamma*sum(FY_vec.^2)/length(FY_vec));
@@ -477,7 +486,12 @@ fprintf("Variable load: %6.3f\n", RMS_Fy_varFz);
 fprintf("Variable camber: %6.3f\n", RMS_Fy_varGamma);
 
 
-
+%%
+PLAT = {P1 P2 P3};
+lbLAT = {lb1 lb2 lb3};
+ubLAT = {ub1 ub2 ub3}; 
+nameLAT = {name1 name2 name3};
+table_P0("combined_lateral", nameLAT, PLAT, lbLAT, ubLAT)
 %% Save tyre data structure to mat file
 name = ["resFx", "RtwoFx", "RMSFx", "resFy", "resFyvarFz", "resFyvarGamma", "RtwoFy", "RtwoFyvarFz", "RtwoFyvarGamma", "RMSFy", "RMSFyvarFz", "RMSFyvarGamma"];
 

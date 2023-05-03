@@ -103,13 +103,14 @@ ones_vec  = ones(size(TData0.SA));
 %--------------------------------------------------------------------------
 % Guess values for parameters to be optimised
 %    [qHz1, qBz1, qCz1, qDz1, qEz1, qEz4, qBz9, qDz6, qBz10]
-P0 = -0.75*ones(1, 9);
+P1 = -0.75*ones(1, 9);
+name1 = ["qHz1", "qBz1", "qCz1", "qDz1", "qEz1", "qEz4", "qBz9", "qDz6", "qBz10"];
 
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised
 %    [qHz1, qBz1, qCz1, qDz1, qEz1, qEz4, qBz9, qDz6, qBz10]
-lb = []; % lower bound
-ub = []; % upper bound
+lb1 = []; % lower bound
+ub1 = []; % upper bound
 
 ALPHA_vec = TData0.SA;  % lateral slip angle
 MZ_vec    = TData0.MZ;  % aligning moment
@@ -122,7 +123,7 @@ SA_vec = -0.3:0.001:0.3; % lateral slip to be used in the plot for check
 % resid_pure_Mz returns the residual, so minimize the residual varying Y. 
 % It is an unconstrained minimization problem 
 [P_fz_nom, res_Mz0, exitflag] = fmincon(@(P)resid_pure_Mz(P, MZ_vec, ...
-  ALPHA_vec, 0, FZ0, FY_vec, tyre_coeffs),P0,[],[],[],[],lb,ub);
+  ALPHA_vec, 0, FZ0, FY_vec, tyre_coeffs),P1,[],[],[],[],lb1,ub1);
 
 P_fz_nom
 res_Mz0
@@ -165,10 +166,11 @@ ones_vec  = ones(size(TDataDFz.SA));
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised
 %    [ qHz2, qBz2, qBz3, qDz2, qEz2, qEz3, qDz7]
-P0 = 0*ones(7,1); % [0, 0, 0, 0, 0, 0, 0];
+P2 = 0*ones(7,1); % [0, 0, 0, 0, 0, 0, 0];
+name2 = ["qHz2", "qBz2", "qBz3", "qDz2", "qEz2", "qEz3", "qDz7"];
 
-lb = []; %[0, 0, 0, 0, 0, 0, 0];
-ub = []; %[10, 10, 10, 10, 10, 10, 10];
+lb2 = []; %[0, 0, 0, 0, 0, 0, 0];
+ub2 = []; %[10, 10, 10, 10, 10, 10, 10];
 
 ALPHA_vec = TDataDFz.SA;
 MZ_vec    = TDataDFz.MZ;
@@ -182,7 +184,7 @@ SA_vec = -0.3:0.001:0.3;
 % LSM_pure_Fx returns the residual, so minimize the residual varying X. It
 % is an unconstrained minimization problem 
 [P_dfz,res_Mz0_varFz,exitflag] = fmincon(@(P)resid_pure_Mz_varFz(P, MZ_vec, ...
-  ALPHA_vec, 0, FZ_vec, tyre_coeffs),P0,[],[],[],[],lb,ub);
+  ALPHA_vec, 0, FZ_vec, tyre_coeffs),P2,[],[],[],[],lb2,ub2);
 P_dfz
 res_Mz0_varFz
 RMS_Mz0_varFz = sqrt(res_Mz0_varFz*sum(MZ_vec.^2)/length(MZ_vec));
@@ -291,11 +293,12 @@ plot_stiffness_MZ;
 
 % Guess values for parameters to be optimised
 %    [qHz3, qBz4, qBz5, qDz3, qDz4, qEz5, qDz8, qHz4, qDz9]
-P0 = 1*ones(1, 9); %[1, 1, 1, 1, 1, 1, 1, 1, 1]; 
+P3 = 1*ones(1, 9); %[1, 1, 1, 1, 1, 1, 1, 1, 1]; 
+name3 = ["qHz3", "qBz4", "qBz5", "qDz3", "qDz4", "qEz5", "qDz8", "qHz4", "qDz9"];
 
 % NOTE: many local minima => limits on parameters are fundamentals
-lb = [];
-ub = [];
+lb3 = [];
+ub3 = [];
 
 zeros_vec = zeros(size(TDataGamma.SA));
 ones_vec  = ones(size(TDataGamma.SA));
@@ -315,7 +318,7 @@ TDataGamma4 = intersect_table_data(GAMMA_4, FZ_220);
 % LSM_pure_Fx returns the residual, so minimize the residual varying X. It
 % is an unconstrained minimization problem 
 [P_varGamma, res_Mz0_varGamma, exitflag] = fmincon(@(P)resid_pure_Mz_varGamma(P, MZ_vec, ALPHA_vec, GAMMA_vec, tyre_coeffs.FZ0, FY_vec, tyre_coeffs),...
-                               P0,[],[],[],[],lb,ub);
+                               P3,[],[],[],[],lb3,ub3);
 P_varGamma
 res_Mz0_varGamma
 RMS_Mz0_varGamma = sqrt(res_Mz0_varGamma*sum(MZ_vec.^2)/length(MZ_vec));
@@ -412,7 +415,12 @@ fprintf('RMS = %6.3f\n', RMS_Mz0);
 fprintf('RMS = %6.3f\n', RMS_Mz0_varFz);
 fprintf('RMS = %6.3f\n', RMS_Mz0_varGamma); 
 
-
+%%
+P0 = {P1 P2 P3};
+lb = {lb1 lb2 lb3};
+ub = {ub1 ub2 ub3};
+name = {name1 name2 name3};
+table_P0("self_aligning", name, P0, lb, ub)
 %% Save tyre data structure to mat file
 name = ["resMzzero", "resMzzerovarFz", "resMzzerovarGamma", "RtwoMzzero", ...
   "RtwoMzzerovarFz", "RtwoMzzerovarGamma", "RMSMzzero", "RMSMzzerovarFz", "RMSMzzerovarGamma"];
