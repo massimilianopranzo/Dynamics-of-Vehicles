@@ -8,6 +8,7 @@ addpath('MAINS\..')
 addpath('tyre_lib\')
 addpath('tyre_lib\COMBINED\')
 
+
 warning('off', 'MATLAB:Figure:SetPosition')
 
 % Choice of the dataset
@@ -164,7 +165,7 @@ data_label, leg_angle, legends_name,'combined_longitudinal' , 'Combined longitud
 for i=1:length(kappa_var)
   [Gxa0(i), ~, ~] = MF96_FXFYCOMB_coeffs_eqns(kappa_var(i), 0, 0, 0, tyre_coeffs);
   [Gxa3(i), ~, ~] = MF96_FXFYCOMB_coeffs_eqns(kappa_var(i), -3*pi/180, 0, 0, tyre_coeffs);
-	[Gxa6(i), ~, ~] = MF96_FXFYCOMB_coeffs_eqns(kappa_var(i), -6*pi/180, 0, 0, tyre_coeffs);
+  [Gxa6(i), ~, ~] = MF96_FXFYCOMB_coeffs_eqns(kappa_var(i), -6*pi/180, 0, 0, tyre_coeffs);
   [Gxa8(i), ~, ~] = MF96_FXFYCOMB_coeffs_eqns(kappa_var(i), -8*pi/180, 0, 0, tyre_coeffs);
 end
 
@@ -238,9 +239,9 @@ clc
 % rVy1, rVy4, rVy5, rVy6, rHy1, rBy1, rBy2, rBy3, rCy1
 % [ -0.23 3.76 -0.09 28.37 0.02 14.16 13.29 -0.49 0.974];
 
-P1 = 0.4*[1 1 1 1 1 1 1 1 1]; 
-lb1 = [];
-ub1 = [];
+P1 = 0.4* ones(9,1);
+lb1 = [-2 -20 -2 -5 -2 -15 -15 -2 -2];
+ub1 = [2 20 2 110 2 15 15 2 2];
 name1 = ["rVy1", "rVy4", "rVy5", "rVy6", "rHy1", "rBy1", "rBy2", "rBy3", "rCy1"];
 
 [P_min,res_Fy,exitflag] = fmincon(@(P)resid_lateral_pure(P, FY_vec, KAPPA_vec, ALPHA_vec, 0 * ones_vec, FZ_vec, tyre_coeffs),...
@@ -330,7 +331,7 @@ FY_fit{3} = MF96_FYcomb(KAPPA_vec, ALPHA_vec6neg, 0*ones_vec, mean(FZ_220.FZ)*on
 
 x_raw = {TDataFZ_SA0.SL, TDataFZ_SA3neg.SL, TDataFZ_SA6neg.SL};
 y_raw = {TDataFZ_SA0.FY, TDataFZ_SA3neg.FY, TDataFZ_SA6neg.FY};
-%%
+
 plot_label = {'$\alpha = 0 [deg]$', '$\alpha = -3 [deg]$', '$\alpha = -6 [deg]$'};
 plot_fitted_data_struct(x_raw, y_raw, KAPPA_vec_struct, FY_fit, ...
   '$\kappa$ [-]', '$F_{y}$ [N]', plot_label, 'fig_fit_variable_load_FY_comb', ...
@@ -402,7 +403,7 @@ FY_fit = cell(4,1);
 [FY_fit{3}{2}(:)] = MF96_FYcomb(kappa_var, -3*pi/180*ones_vec, mean(GAMMA_4.IA)*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
 [FY_fit{3}{3}(:)] = MF96_FYcomb(kappa_var, -6*pi/180*ones_vec, mean(GAMMA_4.IA)*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
 
-
+leg_angle = ["$\alpha$=0", "$\alpha=-3$", "$\alpha=-6$"];
 data_label = ["$\gamma = 0 [deg]$", "$\gamma = 2 [deg]$", "$\gamma = 4 [deg]$"];
 legends_name = ["Fit $\alpha = 0[deg]$", "Raw $\alpha$ = 0[deg]",...
 "Fit $\alpha$ = -3[deg]", "Raw $\alpha$ = -3[deg]",...
@@ -467,10 +468,10 @@ plot_fitted_data_struct_combined_sigma(x_raw, y_raw, kappa_var, FY_fit, kappa_va
 'Combined lateral, $FZ = 220 [N]$', line_width, font_size_title, colors_vect)
 
 
-fprintf("--- Combined Fx ---\n")
-fprintf("Nominal conditions: %6.3f\n", res_Fx);
-fprintf("Nominal conditions: %6.3f\n", R2_Fx);
-fprintf("Nominal conditions: %6.3f\n", RMS_Fx);
+% fprintf("--- Combined Fx ---\n")
+% fprintf("Nominal conditions: %6.3f\n", res_Fx);
+% fprintf("Nominal conditions: %6.3f\n", R2_Fx);
+% fprintf("Nominal conditions: %6.3f\n", RMS_Fx);
 
 fprintf("--- Combined Fy ---\n")
 fprintf("Nominal conditions: %6.3f\n", res_Fy);

@@ -11,27 +11,34 @@ function table_coeffs(tyre_coeffs)
             fprintf(fid, " & ");
         end
         if i == 3
-            fprintf(fid, " \\\\\n");
+            fprintf(fid, " \\\\ \\midrule \n");
         end
     end
     name = fieldnames(tyre_coeffs);
     
     k = 1;
     for j = 1:rows
-        if name{k}(1) ~= 'L'
-        fprintf(fid, "%s & ", name{k});
-        fprintf(fid, "%.4f &", tyre_coeffs.(name{k}));
-        k = k + 1;
-        fprintf(fid, "%s & ", name{k});
-        fprintf(fid, "%.4f &", tyre_coeffs.(name{k}));
-        k = k + 1;
-        fprintf(fid, "%s & ", name{k});
-        fprintf(fid, "%.4f", tyre_coeffs.(name{k}));
-        if mod(k, 3) == 0
-            fprintf(fid, " \\\\\n");
-        end
-        k = k + 1;
+        ncol = 1;
+        while ncol <= cols/2
+            if k > n
+                break;
+            else
+                if all([(name{k} ~= "Fz01"), (name{k}(1) ~= 'L'), (name{k}(1) ~= 'Bz10')])
+                    fprintf(fid, "%s & ", name{k});
+                    if ncol == cols / 2
+                        fprintf(fid, "%.4f  \t \\\\\n", tyre_coeffs.(name{k}));
+                    else
+                        fprintf(fid, "%.4f & ", tyre_coeffs.(name{k}));
+                    end
+                    ncol = ncol + 1;
+                    
+                    k = k + 1;
+                else
+                    k = k + 1;
+                end
+            end
         end
     end
+    fprintf(fid, "\\bottomrule");
     fclose(fid);
 end
