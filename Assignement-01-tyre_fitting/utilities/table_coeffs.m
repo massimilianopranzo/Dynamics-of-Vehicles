@@ -20,13 +20,13 @@ function table_coeffs(tyre_coeffs)
     for j = 1:rows
         if name{k}(1) ~= 'L'
         fprintf(fid, "%s & ", name{k});
-        fprintf(fid, "%.3f &", tyre_coeffs.(name{k}));
+        fprintf(fid, "%.4f &", tyre_coeffs.(name{k}));
         k = k + 1;
         fprintf(fid, "%s & ", name{k});
-        fprintf(fid, "%.3f &", tyre_coeffs.(name{k}));
+        fprintf(fid, "%.4f &", tyre_coeffs.(name{k}));
         k = k + 1;
         fprintf(fid, "%s & ", name{k});
-        fprintf(fid, "%.3f", tyre_coeffs.(name{k}));
+        fprintf(fid, "%.4f", tyre_coeffs.(name{k}));
         if mod(k, 3) == 0
             fprintf(fid, " \\\\\n");
         end

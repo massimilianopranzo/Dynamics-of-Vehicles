@@ -11,9 +11,10 @@ clc
 clearvars 
 close all 
 
-% addpath('..\utilities\')
+addpath("MAINS\..") 
+addpath('utilities\')
 % addpath('..\dataset\')
-addpath('\MAINS\..') 
+
 addpath('tyre_lib\FY')
 
 % Suppress warning export_fig for docked figures
@@ -77,7 +78,7 @@ if exist(['tyre_', struct_name,'.mat'], 'file')
   tyre_coeffs.pVy3 = 0;
   tyre_coeffs.pVy4 = 0;
 else
-  tyre_coeffs = initialise_tyre_data(R0, Fz0);
+%   tyre_coeffs = initialise_tyre_data(R0, Fz0);
 end
 
 FZ0 = mean(TData0.FZ);
@@ -89,7 +90,8 @@ ones_vec  = ones(size(TData0.SA));
 %--------------------------------------------------------------------------
 % Guess values for parameters to be optimised
 %    [pCy1 pDy1 pEy1  pHy1  pKy1  pKy2, pVy1]
-P1 = [  0.7,   3.1,   -0.4,     0,   -110,     -3.2,  0]; % parametri stefano
+% P1 = [  0.7,   3.1,   -0.4,     0,   -110,     -3.2,  0]; % parametri stefano
+P1 = [  1,   2,   0,     0,   -115,     -1,  0]; 
 % P0 = [1 1 1 1 1 1 1]; 
 name1 = ["pCy1", "pDy1", "pEy1", "pHy1", "pKy1", "pKy2", "pVy1"];
 
@@ -110,9 +112,13 @@ SA_vec = -0.28:0.001:0.28; % lateral slip to be used in the plot for check the i
 [P_fz_nom, res_Fy0, exitflag] = fmincon(@(P)resid_pure_Fy(P, FY_vec, ALPHA_vec, 0, FZ0, tyre_coeffs),...
                                P1,[],[],[],[],lb1,ub1);
 P_fz_nom
+% 1.1233    2.7217    0.4444   -0.0038 -110.0048   -3.0813    0.0802
 res_Fy0
+% 0.0037
 RMS_Fy0 = sqrt(res_Fy0*sum(FY_vec.^2)/length(FY_vec));
+% 28.2338
 R2_Fy0 = 1 - res_Fy0*sum(FY_vec.^2)/sum((FY_vec - mean(FY_vec)).^2);
+% 0.9962
 
 % Update tyre data with new optimal values                             
 tyre_coeffs.pCy1 = P_fz_nom(1) ; % 1
@@ -294,7 +300,9 @@ fprintf('Ey      = %6.3f\n', Ey);
 fprintf('SVy     = %6.3f\n', SVy);
 fprintf('alpha_y = %6.3f\n', alpha__y);
 fprintf('Ky      = %6.3f\n', By*Cy*Dy/tyre_coeffs.FZ0);
-
+P_fz_nom
+P_dfz
+P_varGamma
 
 fprintf("Nominal conditions: %6.3f\n", res_Fy0);
 fprintf("Variable load: %6.3f\n", res_Fy0_varFz);
