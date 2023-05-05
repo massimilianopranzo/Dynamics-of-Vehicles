@@ -1,6 +1,6 @@
 % Pure self aligning moment MZ0
 % this function remap the scalar function to its vectorial form
-function [mz0_vec] = MF96_MZ0_vec(alpha_vec, phi_vec, Fz_vec, tyre_data)
+function [mz0_vec] = MF96_MZ0_vec_tmp(alpha_vec, phi_vec, Fz_vec, tyre_data)
   
   mz0_vec = zeros(size(alpha_vec));
   for i = 1:length(alpha_vec)

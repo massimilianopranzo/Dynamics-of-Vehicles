@@ -1,5 +1,5 @@
 % Implement the Magic formula
-function [mf_res_MZ] = magic_formula_MZ(alpha, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, Fy)
+function [mf_res_MZ] = magic_formula_MZ_tmp(alpha, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, Fy)
 
  % precode
 

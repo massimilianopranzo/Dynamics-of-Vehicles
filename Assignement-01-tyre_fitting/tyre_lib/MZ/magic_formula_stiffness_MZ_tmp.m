@@ -1,5 +1,5 @@
 % Magic formula - stiffness for self aligning moment
-function [mf_res] = magic_formula_stiffness_MZ(alpha, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, Fy)
+function [mf_res] = magic_formula_stiffness_MZ_tmp(alpha, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, Fy)
 
  % precode
 

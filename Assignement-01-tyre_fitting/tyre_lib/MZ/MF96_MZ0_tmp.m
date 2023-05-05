@@ -1,5 +1,5 @@
 % Self aligning moment MZ0
-function [mz0] = MF96_MZ0(alpha, phi, Fz, Fy, tyre_data)
+function [mz0] = MF96_MZ0_tmp(alpha, phi, Fz, Fy, tyre_data)
 
  % precode
 

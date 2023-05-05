@@ -6,6 +6,7 @@ clearvars
 close all 
 
 addpath('utilities\')
+addpath('tyre_lib\')
 addpath('tyre_lib\MZ')
 
 
@@ -86,7 +87,7 @@ if exist(['tyre_' struct_name,'.mat'], 'file')
   tyre_coeffs.qDz9 = 0;
    
 else
-  tyre_coeffs = initialise_tyre_data(R0, Fz0);
+%   tyre_coeffs = initialise_tyre_data(R0, Fz0);
 end
 tyre_coeffs.LKY = 1;
 tyre_coeffs.LT = 1;
