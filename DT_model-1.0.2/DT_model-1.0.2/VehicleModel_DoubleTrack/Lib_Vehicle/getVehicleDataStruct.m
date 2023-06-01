@@ -1,4 +1,4 @@
-function vehicle_data = getVehicleDataStruct()
+function vehicle_data_str = getVehicleDataStruct()
 
 % ----------------------------------------------------------------
 %% Function purpose: define a struct containing vehicle data. 
@@ -18,11 +18,8 @@ vehicle_data;
 tire.Vlow_long                 = 8;    % [m/s] speed threshold to use low-speed corrections in the tire longit slip and force models
 tire.Vlow_lat                  = 8;    % [m/s] speed threshold to use low-speed corrections in the tire lateral slip and force models
 
-% Load the data fitted in the previous assignment
-tmp_struct = load("tyre_Hoosier_B1464.mat");
-tyre_data_f = tmp_struct;
-tyre_data_r = tmp_struct;
-% load_MF96_tyre_data;
+% Load the data fitted in the previous assignment (Hoosier B1464)
+load_MF96_tyre_data;
 
 
 % ----------------------------------------------------------------
@@ -105,7 +102,7 @@ rear_wheel.Rr            = rr;
 rear_wheel.width         = w_wr;          
 rear_wheel.mass          = m_wr;  
 rear_wheel.iwd_r         = Jxu_r;%m_wr/12 * (3*rr^2 + w_wr^2);  % [kg*m^2] inertia of the wheel
-rear_wheel.iwa_r         = Jzu_r;  % [kg*m^2] inertia of the whole wheel assembly. IT SHOULD BE Jyu_r BUT IN VEHICLE vehicle_data.m IT IS EQUAL TO Jxu_r
+rear_wheel.iwa_r         = Jzu_r;  % [kg*m^2] inertia of the whole wheel assembly. IT SHOULD BE Jyu_r BUT IN VEHICLE vehicle_data_str.m IT IS EQUAL TO Jxu_r
 rear_wheel.static_camber = gamma_r;  % [deg] Static camber for rear wheels
 
 m_ur = 2*m_wr;                   % [kg] Rear unsprung mass 
@@ -119,7 +116,7 @@ front_wheel.Rf            = rf;
 front_wheel.width         = w_wf;                     
 front_wheel.mass          = m_wf;                     
 front_wheel.iwd_f         = Jxu_f;%m_wf/12 * (3*rf^2 + w_wf^2); % [kg*m^2] inertia of the wheel 
-front_wheel.iwa_f         = Jzu_f; % [kg*m^2] inertia of the whole wheel assembly. IT SHOULD BE Jyu_f BUT IN vehicle_data.M IT'S EQUAL TO Jxu_f
+front_wheel.iwa_f         = Jzu_f; % [kg*m^2] inertia of the whole wheel assembly. IT SHOULD BE Jyu_f BUT IN vehicle_data_str.M IT'S EQUAL TO Jxu_f
 front_wheel.static_camber = gamma_f;   % [deg] Static camber for rear wheels
 
 m_uf = 2*m_wf;                   % [kg] Front unsprung mass
@@ -172,9 +169,9 @@ vehicle.m     = vehicle.ms + m_uf + m_ur + 70;      % mass of the vehicle (sprun
 %                           |__/
 % ----------------------------------------------------------------
 
-aerodynamics.CAx  = 0.8;    % [N*s^2/m^2] Aero drag coefficient
-aerodynamics.CAzf = 0.4; % [N*s^2/m^2] Aero downforce coeff at front axle
-aerodynamics.CAzr = 0.5; % [N*s^2/m^2] Aero downforce coeff at rear axle
+aerodynamics.CAx  =0* 0.8;    % [N*s^2/m^2] Aero drag coefficient
+aerodynamics.CAzf =0* 0.4; % [N*s^2/m^2] Aero downforce coeff at front axle
+aerodynamics.CAzr =0* 0.5; % [N*s^2/m^2] Aero downforce coeff at rear axle
 
 
 % ----------------------------------------------------------------
@@ -249,36 +246,36 @@ accumulator.maxPower = 175;  % [kW] max output power for the battery pack
 
 % Store all sub-structures of sub-systems data in vehicle structure
 
-vehicle_data.chassis          = chassis;
+vehicle_data_str.chassis          = chassis;
 
-vehicle_data.aerodynamics     = aerodynamics;
+vehicle_data_str.aerodynamics     = aerodynamics;
 
-vehicle_data.transmission     = transmission;
+vehicle_data_str.transmission     = transmission;
 
-vehicle_data.steering_system  = steering_system;
+vehicle_data_str.steering_system  = steering_system;
 
-vehicle_data.rear_unsprung    = rear_unsprung;
-vehicle_data.front_unsprung   = front_unsprung;
+vehicle_data_str.rear_unsprung    = rear_unsprung;
+vehicle_data_str.front_unsprung   = front_unsprung;
 
-vehicle_data.rear_wheel       = rear_wheel;
-vehicle_data.front_wheel      = front_wheel;
+vehicle_data_str.rear_wheel       = rear_wheel;
+vehicle_data_str.front_wheel      = front_wheel;
 
-vehicle_data.suspension       = suspension;
-vehicle_data.rear_suspension  = rear_suspension;
-vehicle_data.front_suspension = front_suspension;
+vehicle_data_str.suspension       = suspension;
+vehicle_data_str.rear_suspension  = rear_suspension;
+vehicle_data_str.front_suspension = front_suspension;
 
-vehicle_data.motor            = motor;
+vehicle_data_str.motor            = motor;
 
-vehicle_data.braking          = braking;
+vehicle_data_str.braking          = braking;
 
-vehicle_data.tire             = tire;
+vehicle_data_str.tire             = tire;
 
-vehicle_data.tyre_data_f      = tyre_data_f;
-vehicle_data.tyre_data_r      = tyre_data_r;
+vehicle_data_str.tyre_data_f      = tyre_data_f;
+vehicle_data_str.tyre_data_r      = tyre_data_r;
 
-vehicle_data.accumulator      = accumulator;
+vehicle_data_str.accumulator      = accumulator;
 
-vehicle_data.vehicle          = vehicle;
+vehicle_data_str.vehicle          = vehicle;
 
 end
 

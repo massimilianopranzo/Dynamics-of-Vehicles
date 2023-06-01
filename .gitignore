@@ -4,3 +4,7 @@
 *.png
 *.xls
 *.tex
+*.mat
+*.l
+*.slxc
+*.xml
