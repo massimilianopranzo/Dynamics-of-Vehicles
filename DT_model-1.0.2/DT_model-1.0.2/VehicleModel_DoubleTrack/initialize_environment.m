@@ -16,11 +16,16 @@ set(0,'DefaultFigureWindowStyle','docked');
 set(0,'defaultAxesFontSize',18)
 set(0,'DefaultLegendFontSize',18)
 
-addpath(genpath('Lib_Vehicle'));
-addpath(genpath('Longit_Controller'));
-addpath(genpath('Utilities'));
-addpath(genpath('../tyre_model'));
-addpath(genpath('../tyre_model/tyre_lib'));
+addpath("VehicleModel_DoubleTrack\Lib_Vehicle\")
+addpath("VehicleModel_DoubleTrack\Utilities\")
+
+addpath(genpath('tyre_model'))
+
+
+% addpath(genpath('Longit_Controller'));
+% addpath(genpath('Utilities'));
+% addpath(genpath('../tyre_model'));
+% addpath(genpath('../tyre_model/tyre_lib'));
 
 % --------------------
 %% Open Simulink model
