@@ -116,7 +116,7 @@ dFzr = (extra_params.Fz_rr.Data - extra_params.Fz_rl.Data) / 2;
 dFxr = (extra_params.Fx_rr.Data - extra_params.Fx_rl.Data) / 2;
 dFxf = (extra_params.Fx_fr.Data - extra_params.Fx_fl.Data) / 2;
 TSA = extra_params.Mz_fr.Data + extra_params.Mz_fl.Data + extra_params.Mz_rr.Data + extra_params.Mz_rl.Data;
-MZtot = dFxr * Wr + dFxr * Wf + TSA;
+MZtot = dFxr * Wr + dFxf * Wf + TSA;
 
 % Measured lateral forces -----------------
 Fyf = extra_params.Fy_fr.Data + extra_params.Fy_fl.Data;

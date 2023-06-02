@@ -18,6 +18,7 @@ set(0,'DefaultLegendFontSize',18)
 
 addpath("VehicleModel_DoubleTrack\Lib_Vehicle\")
 addpath("VehicleModel_DoubleTrack\Utilities\")
+addpath("VehicleModel_DoubleTrack\")
 
 addpath(genpath('tyre_model'))
 

@@ -169,9 +169,9 @@ vehicle.m     = vehicle.ms + m_uf + m_ur + 70;      % mass of the vehicle (sprun
 %                           |__/
 % ----------------------------------------------------------------
 
-aerodynamics.CAx  =0* 0.8;    % [N*s^2/m^2] Aero drag coefficient
-aerodynamics.CAzf =0* 0.4; % [N*s^2/m^2] Aero downforce coeff at front axle
-aerodynamics.CAzr =0* 0.5; % [N*s^2/m^2] Aero downforce coeff at rear axle
+aerodynamics.CAx  = 0.8;    % [N*s^2/m^2] Aero drag coefficient
+aerodynamics.CAzf = 0.4; % [N*s^2/m^2] Aero downforce coeff at front axle
+aerodynamics.CAzr = 0.5; % [N*s^2/m^2] Aero downforce coeff at rear axle
 
 
 % ----------------------------------------------------------------

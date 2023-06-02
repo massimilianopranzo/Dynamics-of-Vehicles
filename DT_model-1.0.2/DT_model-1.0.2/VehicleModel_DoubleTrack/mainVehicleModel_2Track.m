@@ -16,7 +16,9 @@
 % TO AVOID PATH PROBLEMS, SET YOUR CURRENT FOLDER AT:
 % $PATH_TO_REACH_THE_FOLLOWING_FOLDER$\Dynamics-of-Vehicles\DT_model-1.0.2\DT_model-1.0.2
 % !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+addpath("VehicleModel_DoubleTrack\")
+addpath("VehicleModel_DoubleTrack\Lib_Vehicle\")
+addpath("VehicleModel_DoubleTrack\Utilities\")
 %% Initialization
 % ----------------------------
 initialize_environment;
@@ -35,7 +37,7 @@ vehicle_data = getVehicleDataStruct();
 %% Define initial conditions for the simulation
 % ----------------------------
 
-V0 = 100/3.6; % Initial speed
+V0 = 40/3.6; % Initial speed
 X0 = loadInitialConditions(V0);
 
 % ----------------------------
