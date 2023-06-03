@@ -36,6 +36,10 @@ X0 = loadInitialConditions(V0);
 % ----------------------------
 %% Simulation parameters
 % ----------------------------
+sim_options.sim_type = 4;
+sim_options.pedal = 0;
+sim_options.steer_angle = 10;
+
 simulationPars = getSimulationParams(); 
 Ts = simulationPars.times.step_size;  % integration step for the simulation (fixed step)
 T0 = simulationPars.times.t0;         % starting time of the simulation
@@ -55,3 +59,5 @@ fprintf('The total simulation time was %.2f seconds\n',elapsed_time_simulation)
 %% Post-Processing
 % ----------------------------
 dataAnalysis(model_sim,vehicle_data,Ts);
+
+

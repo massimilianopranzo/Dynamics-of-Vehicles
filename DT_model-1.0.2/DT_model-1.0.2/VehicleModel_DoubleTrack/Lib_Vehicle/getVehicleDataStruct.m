@@ -31,7 +31,7 @@ load_MF96_tyre_data;
 % ----------------------------------------------------------------
 
 % REAR SUSPENSIONS
-rear_suspension.Ks_r      = 1e6*k_phi_r*180/pi; % [Nm/rad] Rear suspension+tire 
+rear_suspension.Ks_r      = k_phi_r*180/pi; % [Nm/rad] Rear suspension+tire 
                                                                    % stiffness (2 springs in series)
 rear_suspension.Cs_r      = c_phi_r*180/pi;  % [N*s/rad] Rear suspension damping
 rear_suspension.Cs_r_b    = 1750;  % [N*s/m] Rear suspension damping bound
@@ -45,7 +45,7 @@ rear_suspension.z__rlx_r  = 0.175; % [m] spring free length
 rear_suspension.reg_fact  = 1e5;   % [1/m] regularized sign steepness factor (equal for front and rear)
 
 % FRONT SUSPENSIONS
-front_suspension.Ks_f     = 1e6*k_phi_f*180/pi; % [Nm/rad] Front suspension+tire stiffness (2 springs in series)
+front_suspension.Ks_f     = k_phi_f*180/pi; % [Nm/rad] Front suspension+tire stiffness (2 springs in series)
 front_suspension.Cs_f     = c_phi_f*180/pi;         % [N*s/rad] Front suspension dumping (mean for state space tuning)
 front_suspension.Cs_f_b   = 1750;         % [N*s/deg] Rear suspension damping bound
 front_suspension.Cs_f_r   = 2500;         % [N*s/m] Rear suspension damping rebound
@@ -53,7 +53,7 @@ front_suspension.Karb_f   = 0*195.4*180/pi; % [Nm/rad] anti-roll bar stiffness
 front_suspension.stroke_f = 0.06;         % [m] maximum front damper stroke
 front_suspension.K_es_f   = 50000;        % [N/m] front damper's end-stops stiffness
 front_suspension.C_es_f   = 2000;         % [N*s/m] front damper's end-stops damping
-front_suspension.h_rc_f   = h_rr;%h_rf;        % [m] front roll center height     
+front_suspension.h_rc_f   = h_rf;        % [m] front roll center height     
 front_suspension.z__rlx_f = 0.175;        % [m] spring free length
 
 suspension.camber_gain    = 0.997836;     % [-] camber gain constant (linear fitting from suspension kinematic model)
@@ -170,8 +170,8 @@ vehicle.m     = vehicle.ms + m_uf + m_ur + 70;      % mass of the vehicle (sprun
 % ----------------------------------------------------------------
 
 aerodynamics.CAx  = 0.8;    % [N*s^2/m^2] Aero drag coefficient
-aerodynamics.CAzf = 0*0.4; % [N*s^2/m^2] Aero downforce coeff at front axle
-aerodynamics.CAzr = 0*0.5; % [N*s^2/m^2] Aero downforce coeff at rear axle
+aerodynamics.CAzf = 0.4; % [N*s^2/m^2] Aero downforce coeff at front axle
+aerodynamics.CAzr = 0.5; % [N*s^2/m^2] Aero downforce coeff at rear axle
 
 
 % ----------------------------------------------------------------

@@ -1,5 +1,5 @@
 function dataAnalysis(model_sim,vehicle_data,Ts)
-
+    close all
     % ----------------------------------------------------------------
     %% Post-Processing and Data Analysis
     % ----------------------------------------------------------------
@@ -113,6 +113,43 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     rho_tran = ((dot_v.*u(1:end-1) - dot_u.*v(1:end-1)) ./ ((vG(1:end-1)).^3)) + rho_ss(1:end-1);
     % Desired sinusoidal steering angle for the equivalent single track front wheel
     desired_steer_atWheel = delta_D/tau_D;
+
+    % LATERAL LOAD TRANSFER
+    % -----------------
+    % Longitudinal load transfer
+    DFx_f = (Fx_fr - Fx_fl) / 2;
+    DFx_r = (Fx_rr - Fx_rl) / 2;
+
+    % -----------------
+    % Lateral load transfer
+    DFy_f = (Fy_fr - Fy_fl) / 2;
+    DFy_r = (Fy_rr - Fy_rl) / 2;
+
+    % -----------------
+    % Vertical load transfer
+    DFz_f = (Fz_fr - Fz_fl) / 2;
+    DFz_r = (Fz_rr - Fz_rl) / 2;
+
+    % NORMALIZED AXLE CHARACTERISTICS
+    ay_0 = rho .* u; % Fixed acceleration (to be fixed)
+    ay_0_norm = ay_0 / g;
+    % -----------------
+    % alpha rear (rear axle side slio angle)
+    alpha_r = - (v - Omega * Lr) ./ u;
+
+    % normalized rear lateral force
+    Fz_r0 = m * g * Lf / L;
+    Fy_r = Fy_rr + Fy_rl;
+    mu_r = Fy_r / Fz_r0;
+
+    % -----------------
+    % alpha front
+    alpha_f = - (v + Omega * Lf) ./ u;
+
+    % normalized front lateral force
+    Fz_f0 = m * g * Lr / L;
+    Fy_f = 0; % !!!!!!!!!!!!!!!!!!!!!!
+    mu_f = Fy_f / Fz_f0;
 
 
     % ---------------------------------
@@ -249,6 +286,7 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     % linkaxes(ax,'x')
     clear ax
 
+    
     % ---------------------------------
     %% Plot longitudinal tire slips and longitudinal forces
     % ---------------------------------
@@ -416,6 +454,7 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
 
     % linkaxes(ax,'x')
     clear ax
+
     
     % ---------------------------------
     %% Plot wheel camber
@@ -557,5 +596,57 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     grid on
     hold off
     
+    % ---------------------------------
+    %% Plot load transfer
+    % ---------------------------------
+    % --- DeltaFxf DeltaFxr -- %
+    figure('Name','Load transfer','NumberTitle','off'), clf
+    ax(1) = subplot(221);
+    plot(time_sim, DFx_f,'LineWidth',2)
+    hold on
+    plot(time_sim, DFx_r, '--', 'LineWidth',2)
+    legend('$\Delta F_{xf}$','$\Delta F_{xr}$','location','best')
+    title('$\Delta F_{xf}$ and $\Delta F_{xr}$ [N]')
+    grid on
+    % --- DeltaFyf DeltaFyr -- %
+    ax(2) = subplot(222);
+    plot(time_sim, DFy_f,'LineWidth',2)
+    hold on
+    plot(time_sim, DFy_r, '--', 'LineWidth',2)
+    legend('$\Delta F_{yf}$','$\Delta F_{yr}$','location','best')
+    title('$\Delta F_{yf}$ and $\Delta F_{yr}$ [N]')
+    grid on
+    % --- DeltaFzf DeltaFzr -- %
+    ax(3) = subplot(223);
+    plot(time_sim, DFz_f,'LineWidth',2)
+    hold on
+    plot(time_sim, DFz_r, '--', 'LineWidth',2)
+    legend('$\Delta F_{zf}$','$\Delta F_{zr}$','location','best')
+    title('$\Delta F_{zf}$ and $\Delta F_{zr}$ [N]')
+    grid on
+    sgtitle('Lateral load transfer', 'FontSize', 20)
+    
+    clear ax
+
+    % ---------------------------------
+    %% Plot normalized axle characteristics
+    % ---------------------------------
+    % --- mu_r -- %
+    figure('Name','Normalized axle characteristics','NumberTitle','off'), clf
+    hold on
+    grid on
+    plot(ay_0_norm, mu_r, 'LineWidth',2)
+    title('$\mu_r$')
+    xlabel('$a_y / g$')
+    ylabel('$\mu_r$')
+    % --- mu_f -- %
+    plot(ay_0_norm, mu_f, 'LineWidth',2)
+    title('$\mu_f$')
+    xlabel('$a_y / g$')
+    ylabel('$\mu_f$')
+    legend('$\mu_r$','$\mu_f$','location','best')
+    
+
+
 end
     
