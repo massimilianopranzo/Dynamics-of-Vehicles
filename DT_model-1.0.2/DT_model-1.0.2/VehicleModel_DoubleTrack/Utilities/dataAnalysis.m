@@ -1,5 +1,5 @@
 function dataAnalysis(model_sim,vehicle_data,Ts)
-    close all
+
     % ----------------------------------------------------------------
     %% Post-Processing and Data Analysis
     % ----------------------------------------------------------------
@@ -114,22 +114,7 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     % Desired sinusoidal steering angle for the equivalent single track front wheel
     desired_steer_atWheel = delta_D/tau_D;
 
-    % -----------------
-    % Longitudinal load transfer
-    DFx_f = (Fx_fr - Fx_fl) / 2;
-    DFx_r = (Fx_rr - Fx_rl) / 2;
 
-    % -----------------
-    % Lateral load transfer
-    DFy_f = (Fy_fr - Fy_fl) / 2;
-    DFy_r = (Fy_rr - Fy_rl) / 2;
-
-    % -----------------
-    % Vertical load transfer
-    DFz_f = (Fz_fr - Fz_fl) / 2;
-    DFz_r = (Fz_rr - Fz_rl) / 2;
-
-    
     % ---------------------------------
     %% PLOTS
     % ---------------------------------
@@ -265,18 +250,6 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     clear ax
 
     % ---------------------------------
-    %% Plot lateral load transfer
-    % ---------------------------------
-    % --- DeltaFxf DeltaFxr -- %
-    figure('Name','Lat load transfer','NumberTitle','off'), clf
-    plot(time_sim, DFy_f,'LineWidth',2)
-    hold on
-    plot(time_sim, DFy_r, '--', 'LineWidth',2)
-    legend('$\Delta F_{yf}$','$\Delta F_{yr}$','location','best')
-    title('$\Delta F_{yf}$ and $\Delta F_{yr}$ [N]')
-    grid on
-
-    % ---------------------------------
     %% Plot longitudinal tire slips and longitudinal forces
     % ---------------------------------
     figure('Name','Long slips & forces','NumberTitle','off'), clf
@@ -331,18 +304,6 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     
     % linkaxes(ax,'x')
     clear ax
-
-    % ---------------------------------
-    %% Plot longitudinal load transfer
-    % ---------------------------------
-    % --- DeltaFxf DeltaFxr -- %
-    figure('Name','Long load transfer','NumberTitle','off'), clf
-    plot(time_sim, DFx_f,'LineWidth',2)
-    hold on
-    plot(time_sim, DFx_r, '--', 'LineWidth',2)
-    legend('$\Delta F_{xf}$','$\Delta F_{xr}$','location','best')
-    title('$\Delta F_{xf}$ and $\Delta F_{xr}$ [N]')
-    grid on
 
     % ---------------------------------
     %% Plot wheel torques and wheel rates
@@ -455,18 +416,6 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
 
     % linkaxes(ax,'x')
     clear ax
-
-    % ---------------------------------
-    %% Plot vertical load transfer
-    % ---------------------------------
-    % --- DeltaFxf DeltaFxr -- %
-    figure('Name','Vert load transfer','NumberTitle','off'), clf
-    plot(time_sim, DFz_f,'LineWidth',2)
-    hold on
-    plot(time_sim, DFz_r, '--', 'LineWidth',2)
-    legend('$\Delta F_{zf}$','$\Delta F_{zr}$','location','best')
-    title('$\Delta F_{zf}$ and $\Delta F_{zr}$ [N]')
-    grid on
     
     % ---------------------------------
     %% Plot wheel camber
