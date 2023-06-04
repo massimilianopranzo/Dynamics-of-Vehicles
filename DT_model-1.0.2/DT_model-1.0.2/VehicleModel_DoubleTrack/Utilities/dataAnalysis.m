@@ -131,7 +131,7 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     DFz_r = (Fz_rr - Fz_rl) / 2;
 
     % NORMALIZED AXLE CHARACTERISTICS
-    ay_0 = rho .* u; % Fixed acceleration (to be fixed)
+    ay_0 = rho_ss .* u; % Fixed acceleration (to be fixed)
     ay_0_norm = ay_0 / g;
     % -----------------
     % alpha rear (rear axle side slio angle)
@@ -635,16 +635,16 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     figure('Name','Normalized axle characteristics','NumberTitle','off'), clf
     hold on
     grid on
-    plot(ay_0_norm, mu_r, 'LineWidth',2)
+    plot(alpha_r, mu_r, 'LineWidth',2)
     title('$\mu_r$')
-    xlabel('$a_y / g$')
+    xlabel('$\alpha_r$')
     ylabel('$\mu_r$')
-    % --- mu_f -- %
-    plot(ay_0_norm, mu_f, 'LineWidth',2)
-    title('$\mu_f$')
-    xlabel('$a_y / g$')
-    ylabel('$\mu_f$')
-    legend('$\mu_r$','$\mu_f$','location','best')
+%     % --- mu_f -- %
+%     plot(alpha_f, mu_f, 'LineWidth',2)
+%     title('$\mu_f$')
+%     xlabel('$a_y / g$')
+%     ylabel('$\mu_f$')
+%     legend('$\mu_r$','$\mu_f$','location','best')
     
 
 

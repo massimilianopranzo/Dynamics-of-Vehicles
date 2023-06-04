@@ -36,9 +36,13 @@ X0 = loadInitialConditions(V0);
 % ----------------------------
 %% Simulation parameters
 % ----------------------------
+% 1 Fixed pedal, fixed steer
+% 2 Linear pedal, fixed steer
+% 3 Linear pedal, linear steer
+% 4 Fixed pedal, linear steer
 sim_options.sim_type = 4;
 sim_options.pedal = 0;
-sim_options.steer_angle = 10;
+sim_options.steer_angle = 1;
 
 simulationPars = getSimulationParams(); 
 Ts = simulationPars.times.step_size;  % integration step for the simulation (fixed step)
