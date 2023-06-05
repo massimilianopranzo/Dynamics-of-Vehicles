@@ -30,7 +30,7 @@ vehicle_data = getVehicleDataStruct();
 % ----------------------------
 %% Define initial conditions for the simulation
 % ----------------------------
-V0 = 40/3.6; % Initial speed
+V0 = 20/3.6; % Initial speed
 X0 = loadInitialConditions(V0);
 
 % ----------------------------
@@ -41,8 +41,8 @@ X0 = loadInitialConditions(V0);
 % 3 Linear pedal, linear steer
 % 4 Fixed pedal, linear steer
 sim_options.sim_type = 4;
-sim_options.pedal = 1;
-sim_options.steer_angle = 6; % [deg]
+sim_options.pedal = .3;
+sim_options.steer_angle = 3; % [deg]
 
 simulationPars = getSimulationParams(); 
 Ts = simulationPars.times.step_size;  % integration step for the simulation (fixed step)

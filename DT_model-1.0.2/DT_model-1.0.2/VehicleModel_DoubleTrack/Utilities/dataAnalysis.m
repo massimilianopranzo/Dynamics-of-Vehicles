@@ -144,13 +144,68 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
 
     % -----------------
     % alpha front
-    alpha_f = - (v + Omega * Lf) ./ u;
+    alpha_f = delta_D/tau_D*pi/180 - (v + Omega * Lf) ./ u;
 
     % normalized front lateral force
     Fz_f0 = m * g * Lr / L;
-    Fy_f = 0; % !!!!!!!!!!!!!!!!!!!!!!
+    Fy_f = sin(delta_fl).*Fx_fl + cos(delta_fl).*Fy_fl + sin(delta_fr).*Fx_fr + cos(delta_fr).*Fy_fr;
     mu_f = Fy_f / Fz_f0;
 
+
+    % Handling diagram
+    Delta_alpha = alpha_r - alpha_f; % [rad]
+    rho = (delta_D/tau_D*pi/180 + Delta_alpha)/L; % curvature [1/m]
+    [~, idx] = sort(Ay, 'ascend'); % sort the acceleration
+    Ay_norm = Ay(idx)/g; % sort and normalize the acceleration
+    Delta_alpha = Delta_alpha(idx); % sort the slidign according to the acceleration
+    rho = rho(idx); % sort the curvature according to the acceleration
+    rho_ss_sort = rho_ss(idx);
+
+    handling = delta_D(1:end-1)/tau_D*pi/180 - rho*L; % [rad] handling metric
+    
+    % ---------------------------------
+    %% UNDERSTEERING GRADIENT
+    % ---------------------------------
+    % Cornering stiffnesses
+    C_alpha_r = diff(Fy_r) ./ diff(alpha_r);
+    C_alpha_f = diff(Fy_f) ./ diff(alpha_f);
+    C_alpha_r = C_alpha_r(idx);
+    C_alpha_f = C_alpha_f(idx);
+
+    K_US_theo = - m / (L / tau_D) * (Lf ./ C_alpha_r - Lr ./ C_alpha_f);
+    K_US_theo2 = - diff(Delta_alpha) ./ diff(Ay);
+
+    % fitting the linear part
+    ay_max_lin = 1e-4; % [-] maximum norm acceleration for whom linearity holds 
+    ay_fit = Ay_norm(Ay_norm < ay_max_lin);
+    ay_fit_lin = [0:1e-6:ay_max_lin];
+    handling_fit = handling(Ay_norm < ay_max_lin);
+    p_lin = polyfit(ay_fit,handling_fit,1); % fitting the linear part
+    K_US = p_lin(1); % understeering gradient
+    handling_fit_lin = polyval(p_lin, ay_fit_lin); % fitted handling diagram
+    % fitting the nonlinear part 
+    ay_fit = Ay_norm(Ay_norm > ay_max_lin);
+    handling_fit = handling(Ay_norm > ay_max_lin) - K_US * ay_fit;
+    poly_deg = 3;
+    A = ones(length(ay_fit), poly_deg);
+    for i = 1:poly_deg - 1 
+        A(:,i) = ay_fit.^(poly_deg - i + 1);
+    end
+    p_tmp = inv(A' * A) * A'*handling_fit; % coefficients of the regression
+    
+    ay_fit_nonlin = [ay_max_lin:0.001:Ay_norm(end)];
+    p_nl = p_tmp;
+    p_nl(end + 1) = p_nl(end);
+    p_nl(end - 1) = K_US; % add the linear term from privious fitting
+    handling_fit_nonlin = polyval(p_nl, ay_fit_nonlin); % fitted handling diagram
+
+    % ---------------------------------
+    %% YAW RATE & BETA GAIN
+    % ---------------------------------
+    yaw_rate_gain = Omega ./ (delta_D * pi / 180); % [1/s]
+    beta_gain = beta ./ (delta_D*pi/180); % [-]
+    yaw_rate_gain_theo = u / L / tau_D ./ (1 + u.^2 * K_US); % [1/s] theoretical yaw rate gain
+    beta_gain_theo = Lr ./ (tau_D * L) - m / L^2 * (Lf^2 ./ C_alpha_r + Lr^2 ./ C_alpha_f) ./ tau_D .* (u(1:end-1).^2 ./ (1 + K_US * u(1:end-1).^2)); % [-] theoretical beta gain
 
     % ---------------------------------
     %% PLOTS
@@ -657,23 +712,23 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     subplot(1,2,1)
     hold on
     grid on
-    plot(alpha_r, Fy_rr, 'LineWidth',2)
-    plot(alpha_r, Fy_rl, 'LineWidth',2)
+    plot(alpha_r, Fy_rr/Fz_r0, 'LineWidth',2)
+    plot(alpha_r, Fy_rl/Fz_r0, 'LineWidth',2)
     title('$F_{yr}$ [N]')
     xlabel('$\alpha_r$')
     ylabel('$F_{yrr}, F_{yrl}$')
     legend('$F_{yrr}$','$F_{yrl}$','location','southeast')
-    xlim([0.001 0.06])
+    % xlim([0.001 0.06])
     subplot(1,2,2)
     hold on
     grid on
-    plot(alpha_f, Fy_fr, 'LineWidth',2)
-    plot(alpha_f, Fy_fl, 'LineWidth',2)
+    plot(alpha_f, Fy_fr/Fz_f0, 'LineWidth',2)
+    plot(alpha_f, Fy_fl/Fz_f0, 'LineWidth',2)
     title('$F_{yf}$ [N]')
     xlabel('$\alpha_f$')
     ylabel('$F_{yfr}, F_{yfl}$')
     legend('$F_{yfr}$','$F_{yfl}$','location','southeast')
-    xlim([0.001 0.06])
+    % xlim([0.001 0.06])
 
     % ---------------------------------
     %% Plot normalized axle characteristics
@@ -683,17 +738,51 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     hold on
     grid on
     plot(alpha_r, mu_r, 'LineWidth',2)
-    title('$\mu_r$')
-    xlabel('$\alpha_r$')
-    ylabel('$\mu_r$')
-%     % --- mu_f -- %
-%     plot(alpha_f, mu_f, 'LineWidth',2)
-%     title('$\mu_f$')
-%     xlabel('$a_y / g$')
-%     ylabel('$\mu_f$')
-%     legend('$\mu_r$','$\mu_f$','location','best')
+    plot(alpha_f, mu_f, 'LineWidth',2)
+    title('$\mu_r, \mu_f$')
+    xlabel('$\alpha_r, \alpha_f$')
+    ylabel('$\mu_r, \mu_f$')
+    legend('$\mu_r$','$\mu_f$','location','best')
     
 
+    % ---------------------------------
+    %% Plot handling digram
+    % ---------------------------------
+    figure('Name','Handling diagram','NumberTitle','off'), clf
+    hold on
+    grid on
+    plot(Ay_norm, handling, 'LineWidth',2)
+    plot(ay_fit_lin, handling_fit_lin, '--', 'LineWidth',2)
+    plot(ay_fit_nonlin, handling_fit_nonlin, '--', 'LineWidth',2)
+    title('Handling diagram')
+    ylabel('$\delta_{D}\tau_{H} - \rho L [rad]$')
+    legend('Data', 'Fit in linear range', 'Fit in non-linear range', 'location', 'northeast')
+    
+    % ---------------------------------
+    %% Plot understeering gradient
+    % ---------------------------------
+    figure('Name','Understeering grad','NumberTitle','off'), clf
+    hold on
+    grid on
+    plot(Ay_norm, K_US_theo, 'LineWidth',2)
+    plot(Ay_norm(1:end-1), K_US_theo2, 'LineWidth',2)
+    title('Understeering gradient')
+    legend('Formula', 'Diff', 'location', 'northeast')
+    xlim("padded")
+    ylabel('$K_{US}$')
 
+
+    % ---------------------------------
+    %% PLOT BETA AND YAW RATE GAINS
+    % ---------------------------------
+    figure('Name','Yaw rate gain','NumberTitle','off'), clf
+    hold on 
+    grid on
+    plot(u, yaw_rate_gain, 'LineWidth',2)
+    plot(u, yaw_rate_gain_theo, 'LineWidth',2)
+    plot(u, beta_gain, 'LineWidth',2)
+    plot(u(1:end-1), beta_gain_theo, 'LineWidth',2)
+    title('Yaw rate and $\beta$ gain')
+    legend('Yaw gain measure', 'Yaw gain theo', '$\beta$ gain measure', '$\beta$ gain theo', 'location', 'northeast')
 end
     
