@@ -177,7 +177,7 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     % ---------------------------------
     %% Plot vehicle motion
     % ---------------------------------
-    figure('Name','veh motion','NumberTitle','off'), clf   
+    figure('Name','Motion','NumberTitle','off'), clf   
     % --- u --- %
     ax(1) = subplot(221);
     plot(time_sim,u*3.6,'LineWidth',2)
@@ -200,7 +200,7 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     % ---------------------------------
     %% Plot steering angles
     % ---------------------------------
-    figure('Name','steer','NumberTitle','off'), clf   
+    figure('Name','Steer','NumberTitle','off'), clf   
     % --- delta_0 --- %
     ax(1) = subplot(221);
     plot(time_sim,delta_D,'LineWidth',2)
@@ -233,7 +233,7 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     % -------------------------------
     %% Plot lateral tire slips and lateral forces
     % -------------------------------
-    figure('Name','Lateral slips & forces','NumberTitle','off'), clf
+    figure('Name','Lat slips & forces','NumberTitle','off'), clf
     % --- alpha_rr --- %
     ax(1) = subplot(331);
     plot(time_sim,alpha_rr,'LineWidth',2)
@@ -402,7 +402,7 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     % ---------------------------------
     %% Plot vertical tire loads and self-aligning torques
     % ---------------------------------
-    figure('Name','Vert loads & aligning torques','NumberTitle','off'), clf
+    figure('Name','Vert loads & ali torques','NumberTitle','off'), clf
     % --- Fz_rr --- %
     ax(1) = subplot(331);
     plot(time_sim,Fz_rr,'LineWidth',2)
@@ -491,7 +491,7 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     % ---------------------------------
     %% Plot accelerations, chassis side slip angle and curvature
     % ---------------------------------
-    figure('Name','Pars extra','NumberTitle','off'), clf
+    figure('Name','Extra','NumberTitle','off'), clf
     % --- ax --- %
     ax(1) = subplot(221);
     plot(time_sim(2:end),dot_u - Omega(2:end).*v(2:end),'LineWidth',2)
@@ -629,10 +629,57 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     clear ax
 
     % ---------------------------------
+    %% Plot axle characteristics
+    % ---------------------------------
+    figure('Name','Long axle char','NumberTitle','off'), clf
+    subplot(1,2,1)
+    hold on
+    grid on
+    plot(alpha_r, Fx_rr, 'LineWidth',2)
+    plot(alpha_r, Fx_rl, 'LineWidth',2)
+    title('$F_{xr}$ [N]')
+    xlabel('$\alpha_r$')
+    ylabel('$F_{xrr}, F_{xrl}$')
+    legend('$F_{xrr}$','$F_{xrl}$','location','southeast')
+    xlim([0.001 0.06])
+    subplot(1,2,2)
+    hold on
+    grid on
+    plot(alpha_f, Fx_fr, 'LineWidth',2)
+    plot(alpha_f, Fx_fl, 'LineWidth',2)
+    title('$F_{xf}$ [N]')
+    xlabel('$\alpha_f$')
+    ylabel('$F_{xfr}, F_{xfl}$')
+    legend('$F_{xfr}$','$F_{xfl}$','location','southeast')
+    xlim([0.001 0.06])
+
+    figure('Name','Lat axle char','NumberTitle','off'), clf
+    subplot(1,2,1)
+    hold on
+    grid on
+    plot(alpha_r, Fy_rr, 'LineWidth',2)
+    plot(alpha_r, Fy_rl, 'LineWidth',2)
+    title('$F_{yr}$ [N]')
+    xlabel('$\alpha_r$')
+    ylabel('$F_{yrr}, F_{yrl}$')
+    legend('$F_{yrr}$','$F_{yrl}$','location','southeast')
+    xlim([0.001 0.06])
+    subplot(1,2,2)
+    hold on
+    grid on
+    plot(alpha_f, Fy_fr, 'LineWidth',2)
+    plot(alpha_f, Fy_fl, 'LineWidth',2)
+    title('$F_{yf}$ [N]')
+    xlabel('$\alpha_f$')
+    ylabel('$F_{yfr}, F_{yfl}$')
+    legend('$F_{yfr}$','$F_{yfl}$','location','southeast')
+    xlim([0.001 0.06])
+
+    % ---------------------------------
     %% Plot normalized axle characteristics
     % ---------------------------------
     % --- mu_r -- %
-    figure('Name','Normalized axle characteristics','NumberTitle','off'), clf
+    figure('Name','Norm axle char. 2','NumberTitle','off'), clf
     hold on
     grid on
     plot(alpha_r, mu_r, 'LineWidth',2)
