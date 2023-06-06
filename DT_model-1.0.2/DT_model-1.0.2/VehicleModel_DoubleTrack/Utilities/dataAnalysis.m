@@ -15,7 +15,6 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     m  = vehicle_data.vehicle.m;   % [kg] Vehicle Mass
     g  = vehicle_data.vehicle.g;   % [m/s^2] Gravitational acceleration
     tau_D = vehicle_data.steering_system.tau_D;  % [-] steering system ratio (pinion-rack)
-
     % ---------------------------------
     %% Extract data from simulink model
     % ---------------------------------
@@ -113,6 +112,7 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     rho_tran = ((dot_v.*u(1:end-1) - dot_u.*v(1:end-1)) ./ ((vG(1:end-1)).^3)) + rho_ss(1:end-1);
     % Desired sinusoidal steering angle for the equivalent single track front wheel
     desired_steer_atWheel = delta_D/tau_D;
+    n_sim = length(model_sim);
 
     % LATERAL LOAD TRANSFER
     % -----------------
@@ -207,6 +207,9 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     yaw_rate_gain_theo = u / L / tau_D ./ (1 + u.^2 * K_US); % [1/s] theoretical yaw rate gain
     beta_gain_theo = Lr ./ (tau_D * L) - m / L^3 * (Lf^2 ./ C_alpha_r + Lr^2 ./ C_alpha_f) ./ tau_D .* (u(1:end-1).^2 ./ (1 + K_US * u(1:end-1).^2)); % [-] theoretical beta gain
 
+
+
+    
     % ---------------------------------
     %% PLOTS
     % ---------------------------------

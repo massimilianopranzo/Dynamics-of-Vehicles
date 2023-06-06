@@ -24,14 +24,11 @@ initialize_environment;
 % test_tyre_model; % some plot to visualize the curvers resulting from the
 % loaded data
 
-vehicle_data = getVehicleDataStruct();
 % pacejkaParam = loadPacejkaParam();
 
 % ----------------------------
 %% Define initial conditions for the simulation
 % ----------------------------
-V0 = 20/3.6; % Initial speed
-X0 = loadInitialConditions(V0);
 
 % ----------------------------
 %% Simulation parameters
@@ -52,16 +49,32 @@ Tf = simulationPars.times.tf;         % stop time of the simulation
 % ----------------------------
 %% Start Simulation
 % ----------------------------
-fprintf('Starting Simulation\n')
-tic;
-model_sim = sim('Vehicle_Model_2Track');
-elapsed_time_simulation = toc;
-fprintf('Simulation completed\n')
-fprintf('The total simulation time was %.2f seconds\n',elapsed_time_simulation)
+% tau_D = 12 -> delta_D / tau_D = delta, delta_D = delta * tau_D
+camber_array = [ 0 ]; % [deg]
+n_sim = 1; % number of simulations to run
+model_sim = cell(1, n_sim);
+for i=1:n_sim
+	V0 = 20/3.6; % Initial speed
+	X0 = loadInitialConditions(V0, camber_array, i);
+	vehicle_data = getVehicleDataStruct(camber_array, i);
+  fprintf('Starting Simulation\n')
+  tic;
+  model_sim{i} = sim('Vehicle_Model_2Track');
+  elapsed_time_simulation = toc;
+  fprintf('Simulation completed\n')
+  fprintf('The total simulation time was %.2f seconds\n',elapsed_time_simulation)
+end
 
 % ----------------------------
 %% Post-Processing
 % ----------------------------
-dataAnalysis(model_sim,vehicle_data,Ts);
-
-
+clc
+if n_sim == 1
+  dataAnalysis(model_sim{1}, vehicle_data, Ts);
+else 
+  analysis_store = cell(1, n_sim);  
+  for i=1:n_sim
+    analysis_store{i} = dataAnalysisMulti(model_sim{i}, vehicle_data, Ts);
+  end
+  plotMultiAnalysis(analysis_store);
+end

@@ -1,4 +1,4 @@
-function vehicle_data_str = getVehicleDataStruct()
+function vehicle_data_str = getVehicleDataStruct(camber_array, i)
 
 % ----------------------------------------------------------------
 %% Function purpose: define a struct containing vehicle data. 
@@ -107,6 +107,7 @@ rear_wheel.static_camber = gamma_r;  % [deg] Static camber for rear wheels
 
 m_ur = 2*m_wr;                   % [kg] Rear unsprung mass 
 rear_unsprung.mass = m_ur;   
+rear_wheel.delta_r0 = delta_r0 ; % [deg] Rear wheel toe-in angle
 
 % FRONT WHEELS
 m_wf = m_uf;               % [kg] Wheel mass
@@ -117,10 +118,15 @@ front_wheel.width         = w_wf;
 front_wheel.mass          = m_wf;                     
 front_wheel.iwd_f         = Jxu_f;%m_wf/12 * (3*rf^2 + w_wf^2); % [kg*m^2] inertia of the wheel 
 front_wheel.iwa_f         = Jzu_f; % [kg*m^2] inertia of the whole wheel assembly. IT SHOULD BE Jyu_f BUT IN vehicle_data_str.M IT'S EQUAL TO Jxu_f
-front_wheel.static_camber = gamma_f;   % [deg] Static camber for rear wheels
+if length(camber_array) > 1 % take the camber from the array
+    front_wheel.static_camber = camber_array(i);   % [deg] Static camber for rear wheels
+else % take teh camber from vehicle_data
+    front_wheel.static_camber = gamma_f;   % [deg] Static camber for rear wheels
+end
 
 m_uf = 2*m_wf;                   % [kg] Front unsprung mass
 front_unsprung.mass = m_uf;  
+front_wheel.delta_f0 = delta_f0; % [deg] Front wheel toe-in angle
 
 
 % ----------------------------------------------------------------
