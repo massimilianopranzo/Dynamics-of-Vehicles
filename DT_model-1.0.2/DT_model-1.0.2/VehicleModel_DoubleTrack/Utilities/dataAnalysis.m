@@ -205,7 +205,7 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     yaw_rate_gain = Omega ./ (delta_D * pi / 180); % [1/s]
     beta_gain = beta ./ (delta_D*pi/180); % [-]
     yaw_rate_gain_theo = u / L / tau_D ./ (1 + u.^2 * K_US); % [1/s] theoretical yaw rate gain
-    beta_gain_theo = Lr ./ (tau_D * L) - m / L^2 * (Lf^2 ./ C_alpha_r + Lr^2 ./ C_alpha_f) ./ tau_D .* (u(1:end-1).^2 ./ (1 + K_US * u(1:end-1).^2)); % [-] theoretical beta gain
+    beta_gain_theo = Lr ./ (tau_D * L) - m / L^3 * (Lf^2 ./ C_alpha_r + Lr^2 ./ C_alpha_f) ./ tau_D .* (u(1:end-1).^2 ./ (1 + K_US * u(1:end-1).^2)); % [-] theoretical beta gain
 
     % ---------------------------------
     %% PLOTS
