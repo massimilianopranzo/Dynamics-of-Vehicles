@@ -7,3 +7,9 @@
 - Perchè la simulazione non funziona mettendo i nostri coefficienti?
 - Il toe deve essere inserito solo come offset nel perfect akermann? Dobbiamo tenerne anche in considerazione nel calcolo di alpha_f e alpha_r?
 - Per il camber dobbiamo modificare anche il modello, oppure è già considerato dentro la funzione camberModel? 
+
+
+- Change the sign of all the alpha
+- Positive camber increases the paek of the lateral force. Signo fo the camber according to the reference frame used in the wheel (pos sx, neg dx)
+- AXLE CHARACTERISTIC: Dare input di pedale, sterzare con un certo angolo, la macchina comincerà a girare in torno. Una volta raggiunta una condizione stazionaria, estrarre lo slip corrispondente e i valori delle forze (che verranno poi plottati su un grafico). Ripetere questo test per diversi valori di pedale e sterzo in modo da ottenere una serie di punti sul grafico
+- HANDLING DIAGRAM: curvare poco, tenedo una velocità di rotazione costante (eventualmente inerendo un controllore per la velocità longitudinale), plottare poi la velocità di avanzamento contro l'handling

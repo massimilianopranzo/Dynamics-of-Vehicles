@@ -122,8 +122,8 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
 
     % -----------------
     % Lateral load transfer
-    DFy_f = (Fy_fr - Fy_fl) / 2;
-    DFy_r = (Fy_rr - Fy_rl) / 2;
+    DFy_f = (Fy_fr + Fy_fl) / 2;
+    DFy_r = (Fy_rr + Fy_rl) / 2;
 
     % -----------------
     % Vertical load transfer
@@ -787,5 +787,36 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     plot(u(1:end-1), beta_gain_theo, 'LineWidth',2)
     title('Yaw rate and $\beta$ gain')
     legend('Yaw gain measure', 'Yaw gain theo', '$\beta$ gain measure', '$\beta$ gain theo', 'location', 'northeast')
+
+    % ---
+    %% FORCE AS FUNCTION OF THE SLIP
+    % --
+     % -------------------------------
+    %% Plot lateral tire slips and lateral forces
+    % -------------------------------
+    figure('Name','Force slip','NumberTitle','off'), clf
+    % --- alpha_rr --- %
+    ax(1) = subplot(224);
+    plot(alpha_rr,Fy_rr,'LineWidth',2)
+    grid on
+    title('$\alpha_{rr}$ [deg]')
+    % --- alpha_rl --- %
+    ax(2) = subplot(223);
+    plot(alpha_rl,Fy_rl,'LineWidth',2)
+    grid on
+    title('$\alpha_{rl}$ [deg]')
+    % --- alpha_fr --- %
+    ax(3) = subplot(222);
+    plot(alpha_fr,Fy_fr,'LineWidth',2)
+    grid on
+    title('$\alpha_{fr}$ [deg]')
+    % --- alpha_fl --- %
+    ax(4) = subplot(221);
+    plot(alpha_fl,Fy_fl,'LineWidth',2)
+    grid on
+    title('$\alpha_{fl}$ [deg]')
+   
+    % linkaxes(ax,'x')
+    clear ax
 end
     

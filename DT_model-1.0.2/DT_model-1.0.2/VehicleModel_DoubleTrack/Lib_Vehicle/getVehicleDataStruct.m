@@ -19,7 +19,7 @@ tire.Vlow_long                 = 8;    % [m/s] speed threshold to use low-speed 
 tire.Vlow_lat                  = 8;    % [m/s] speed threshold to use low-speed corrections in the tire lateral slip and force models
 
 % Load the data fitted in the previous assignment (Hoosier B1464)
-load_MF96_tyre_data_GP2;
+load_MF96_tyre_data;
 
 
 % ----------------------------------------------------------------
