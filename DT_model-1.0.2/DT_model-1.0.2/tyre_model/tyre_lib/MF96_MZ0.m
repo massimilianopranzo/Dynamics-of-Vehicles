@@ -1,15 +1,13 @@
-% Pure self-aligning moment MZ0
-function [mz0] = MF96_MZ0(kappa, alpha, phi, Fz, tyre_data)
+% Self aligning moment MZ0
+function [mz0] = MF96_MZ0(alpha, phi, Fz, tyre_data)
 
  % precode
 
-  fy0 = MF96_FY0(kappa, alpha, phi, Fz, tyre_data);
-  [Br, Bt, Ct, Dr, Dt, Et, alpha__r, alpha__t, alpha__t__eq, alpha__r__eq, s] = MF96_MZ_coeffs(kappa, alpha, phi, Fz, tyre_data);
-  t = pneumatic_trail(alpha__t, alpha, Bt, Ct, Dt, Et);
-  mzr = residual_mzr(alpha__r, alpha, Br, Dr);
+  [alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr] = MF96_MZ0_coeffs(alpha, phi, Fz, tyre_data);
+  [Fy] = MF96_FY0(0, alpha, phi, Fz, tyre_data);
 
  % main code
 
-  mz0 = -fy0 * t + mzr;
+  mz0 = magic_formula_MZ(alpha, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, Fy);
   
  end
