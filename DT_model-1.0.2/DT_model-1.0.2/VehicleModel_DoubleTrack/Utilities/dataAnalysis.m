@@ -7,14 +7,19 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     % ---------------------------------
     %% Load vehicle data
     % ---------------------------------
-    Lf = vehicle_data.vehicle.Lf;  % [m] Distance between vehicle CoG and front wheels axle
-    Lr = vehicle_data.vehicle.Lr;  % [m] Distance between vehicle CoG and front wheels axle
-    L  = vehicle_data.vehicle.L;   % [m] Vehicle length
-    Wf = vehicle_data.vehicle.Wf;  % [m] Width of front wheels axle 
-    Wr = vehicle_data.vehicle.Wr;  % [m] Width of rear wheels axle                   
-    m  = vehicle_data.vehicle.m;   % [kg] Vehicle Mass
-    g  = vehicle_data.vehicle.g;   % [m/s^2] Gravitational acceleration
-    tau_D = vehicle_data.steering_system.tau_D;  % [-] steering system ratio (pinion-rack)
+    Lf      = vehicle_data.vehicle.Lf;  % [m] Distance between vehicle CoG and front wheels axle
+    Lr      = vehicle_data.vehicle.Lr;  % [m] Distance between vehicle CoG and front wheels axle
+    L       = vehicle_data.vehicle.L;   % [m] Vehicle length
+    Wf      = vehicle_data.vehicle.Wf;  % [m] Width of front wheels axle 
+    Wr      = vehicle_data.vehicle.Wr;  % [m] Width of rear wheels axle                   
+    m       = vehicle_data.vehicle.m;   % [kg] Vehicle Mass
+    g       = vehicle_data.vehicle.g;   % [m/s^2] Gravitational acceleration
+    tau_D   = vehicle_data.steering_system.tau_D;  % [-] steering system ratio (pinion-rack)
+    h_rf    = vehicle_data.front_suspension.h_rc_f;  % [m] Height of roll center of front axle
+    CAx     = vehicle_data.aerodynamics.CAx;  % [-] Longitudinal stiffness of tire
+    CAzf    = vehicle_data.aerodynamics.CAzf;  % [-] Lateral stiffness of front tire
+    CAzr    = vehicle_data.aerodynamics.CAzr;  % [-] Lateral stiffness of rear tire
+    hg      = vehicle_data.vehicle.hGs;  % [m] Height of vehicle CoG
     % ---------------------------------
     %% Extract data from simulink model
     % ---------------------------------
@@ -79,6 +84,7 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     gamma_fl   = model_sim.extra_params.gamma_fl.data;
     delta_fr   = model_sim.extra_params.delta_fr.data;
     delta_fl   = model_sim.extra_params.delta_fl.data;
+  
 
     % Chassis side slip angle beta [rad]
     beta = atan(v./u);
@@ -113,6 +119,9 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     % Desired sinusoidal steering angle for the equivalent single track front wheel
     desired_steer_atWheel = delta_D/tau_D;
     n_sim = length(model_sim);
+    FAxc      = CAx*u.^2; % long friction
+    FAz_f     = CAzf*u.^2;
+    FAz_r     = CAzr*u.^2;
 
     % LATERAL LOAD TRANSFER
     % -----------------
@@ -129,6 +138,15 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     % Vertical load transfer
     DFz_f = (Fz_fr - Fz_fl) / 2;
     DFz_r = (Fz_rr - Fz_rl) / 2;
+
+    % -----------------
+    % Vertical load
+    Fzf = m * g * Lr / L - m * Ax * hg / L + FAz_f(1:end-1); % front vertical load
+    Fzr = m * g * Lf / L + m * Ax * hg / L + FAz_r(1:end-1); % rear vertical load
+
+    % -----------------
+    % Lateral load
+
 
     % NORMALIZED AXLE CHARACTERISTICS
     ay_0 = rho_ss .* u; % Fixed acceleration (to be fixed)
@@ -686,6 +704,25 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     
     clear ax
 
+    % figure('Name', 'Vertical load', 'NumberTitle', 'off'), clf
+    % ax(1) = subplot(1,2,1);
+    % hold on
+    % grid on
+    % plot(time_sim(1:end-1), Fzf, 'LineWidth', 2) % computed with formulas
+    % plot(time_sim, Fz_fr + Fz_fl, '--', 'LineWidth', 2) % from simulation
+    % title('$F_{zf}$ [N]')
+    % legend('Theo', 'Sim.', 'location', 'northwest')
+    % ax(2) = subplot(1,2,2);
+    % hold on
+    % grid on
+    % plot(time_sim(1:end-1), Fzr, 'LineWidth', 2) % computed with formulas
+    % plot(time_sim, Fz_rr + Fz_rl, '--', 'LineWidth', 2) % from simulation
+    % title('$F_{zr}$ [N]')
+    % legend('Theo', 'Sim.', 'location', 'northeast')
+    % sgtitle('Vertical load', 'FontSize', 20)
+
+    % clear ax
+
     % ---------------------------------
     %% Plot axle characteristics
     % ---------------------------------
@@ -799,23 +836,23 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     ax(1) = subplot(224);
     plot(alpha_rr,Fy_rr,'LineWidth',2)
     grid on
-    title('$\alpha_{rr}$ [deg]')
+    title('$F_{rr}$ [deg]')
     % --- alpha_rl --- %
     ax(2) = subplot(223);
     plot(alpha_rl,Fy_rl,'LineWidth',2)
     grid on
-    title('$\alpha_{rl}$ [deg]')
+    title('$F_{rl}$ [deg]')
     % --- alpha_fr --- %
     ax(3) = subplot(222);
     plot(alpha_fr,Fy_fr,'LineWidth',2)
     grid on
-    title('$\alpha_{fr}$ [deg]')
+    title('$F_{fr}$ [deg]')
     % --- alpha_fl --- %
     ax(4) = subplot(221);
     plot(alpha_fl,Fy_fl,'LineWidth',2)
     grid on
-    title('$\alpha_{fl}$ [deg]')
-   
+    title('$F_{fl}$ [deg]')
+    sgtitle('Lateral load $F_{y}$')
     % linkaxes(ax,'x')
     clear ax
 end
