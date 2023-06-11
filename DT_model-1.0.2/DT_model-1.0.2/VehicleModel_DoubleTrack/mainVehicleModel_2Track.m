@@ -37,10 +37,10 @@ initialize_environment;
 % 2 Linear pedal, fixed steer
 % 3 Linear pedal, linear steer
 % 4 Fixed pedal, linear steer
-sim_options.sim_type = 2;
-sim_options.pedal = 0.15;
-sim_options.steer_angle = 6; % [deg]
-
+sim_options.sim_type = 1;
+sim_options.pedal = 0.3;
+sim_options.steer_angle = 3; % [deg]
+stangle = [2 4 6 8 10];
 simulationPars = getSimulationParams(); 
 Ts = simulationPars.times.step_size;  % integration step for the simulation (fixed step)
 T0 = simulationPars.times.t0;         % starting time of the simulation
@@ -53,29 +53,31 @@ Tf = simulationPars.times.tf;         % stop time of the simulation
 camber_array = [ 0 ]; % [deg]
 n_sim = 1; % number of simulations to run
 model_sim = cell(1, n_sim);
-for i=1:n_sim
+for i=1:length(stangle)
   ax_desire = 0.3;
     V0 = 55/3.6; % Initial speed
     X0 = loadInitialConditions(V0, camber_array, i);
     vehicle_data = getVehicleDataStruct(camber_array, i);
+    sim_options.steer_angle = stangle(i);
     fprintf('Starting Simulation\n')
     tic;
     model_sim{i} = sim('Vehicle_Model_2Track');
     elapsed_time_simulation = toc;
     fprintf('Simulation completed\n')
     fprintf('The total simulation time was %.2f seconds\n',elapsed_time_simulation)
+    dataAnalysisAxleChar(model_sim{i}, vehicle_data, Ts);
 end
 
 % ----------------------------
 %% Post-Processing
 % ----------------------------
-
-if n_sim == 1
-  dataAnalysis(model_sim{1}, vehicle_data, Ts);
-else 
-  analysis_store = cell(1, n_sim);  
-  for i=1:n_sim
-    analysis_store{i} = dataAnalysisMulti(model_sim{i}, vehicle_data, Ts);
-  end
-  plotMultiAnalysis(analysis_store);
-end
+% 
+% if n_sim == 1
+%   dataAnalysisAxleChar(model_sim{1}, vehicle_data, Ts);
+% else 
+%   analysis_store = cell(1, n_sim);  
+%   for i=1:n_sim
+%     analysis_store{i} = dataAnalysisMulti(model_sim{i}, vehicle_data, Ts);
+%   end
+%   plotMultiAnalysis(analysis_store);
+% end
