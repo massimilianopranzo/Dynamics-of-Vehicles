@@ -38,7 +38,7 @@ initialize_environment;
 % 3 Linear pedal, linear steer
 % 4 Fixed pedal, linear steer
 sim_options.sim_type = 1;
-sim_options.pedal = 0.3;
+sim_options.pedal = 0.2;
 sim_options.steer_angle = 3; % [deg]
 stangle = [2 4 6 8 10];
 simulationPars = getSimulationParams(); 
