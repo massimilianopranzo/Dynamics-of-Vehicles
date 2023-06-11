@@ -3,7 +3,7 @@
 %  authors: 
 %  rev. 1.0 Mattia Piccinini & Gastone Pietro Papini Rosati
 %  rev. 2.0 Edoardo Pagot
-%  date:
+%  da
 %  rev 1.0:    13/10/2020
 %  rev 2.0:    16/05/2022
 %  rev 2.1:    08/07/2022 (Biral)
@@ -38,7 +38,7 @@ initialize_environment;
 % 3 Linear pedal, linear steer
 % 4 Fixed pedal, linear steer
 sim_options.sim_type = 2;
-sim_options.pedal = 0.3;
+sim_options.pedal = 0.15;
 sim_options.steer_angle = 6; % [deg]
 
 simulationPars = getSimulationParams(); 
@@ -54,7 +54,8 @@ camber_array = [ 0 ]; % [deg]
 n_sim = 1; % number of simulations to run
 model_sim = cell(1, n_sim);
 for i=1:n_sim
-    V0 = 30/3.6; % Initial speed
+  ax_desire = 0.3;
+    V0 = 55/3.6; % Initial speed
     X0 = loadInitialConditions(V0, camber_array, i);
     vehicle_data = getVehicleDataStruct(camber_array, i);
     fprintf('Starting Simulation\n')
@@ -68,7 +69,7 @@ end
 % ----------------------------
 %% Post-Processing
 % ----------------------------
-clc
+
 if n_sim == 1
   dataAnalysis(model_sim{1}, vehicle_data, Ts);
 else 
