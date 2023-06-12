@@ -273,38 +273,38 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     title('$\Omega$ [rad/s]')
     xlim([0 time_sim(end)])
 
-    % ---------------------------------
-    %% Plot steering angles
-    % ---------------------------------
-    figure('Name','Steer','NumberTitle','off'), clf   
-    % --- delta_0 --- %
-    ax(1) = subplot(221);
-    plot(time_sim,delta_D,'LineWidth',2)
-    grid on
-    title('$\delta_0$ [deg]')
-    xlim([0 time_sim(end)])
-    % --- delta_fr --- %
-    ax(2) = subplot(222);
-    plot(time_sim,delta_fr,'LineWidth',2)
-    grid on
-    title('$\delta_{fr}$ [deg]')
-    xlim([0 time_sim(end)])
-    % --- delta_fl --- %
-    ax(3) = subplot(223);
-    hold on
-    plot(time_sim,delta_fl,'LineWidth',2)
-    grid on
-    title('$\delta_{fl}$ [deg]')
-    xlim([0 time_sim(end)])
-    % --- comparison --- %
-    ax(4) = subplot(224);
-    hold on
-    plot(time_sim,delta_D/tau_D,'LineWidth',2)
-    plot(time_sim,delta_fr,'LineWidth',2)
-    plot(time_sim,delta_fl,'LineWidth',2)
-    grid on
-    legend('$\delta_D/\tau_D$','$\delta_{fr}$','$\delta_{fl}$','location','best')
-    xlim([0 time_sim(end)])
+    % % ---------------------------------
+    % %% Plot steering angles
+    % % ---------------------------------
+    % figure('Name','Steer','NumberTitle','off'), clf   
+    % % --- delta_0 --- %
+    % ax(1) = subplot(221);
+    % plot(time_sim,delta_D,'LineWidth',2)
+    % grid on
+    % title('$\delta_0$ [deg]')
+    % xlim([0 time_sim(end)])
+    % % --- delta_fr --- %
+    % ax(2) = subplot(222);
+    % plot(time_sim,delta_fr,'LineWidth',2)
+    % grid on
+    % title('$\delta_{fr}$ [deg]')
+    % xlim([0 time_sim(end)])
+    % % --- delta_fl --- %
+    % ax(3) = subplot(223);
+    % hold on
+    % plot(time_sim,delta_fl,'LineWidth',2)
+    % grid on
+    % title('$\delta_{fl}$ [deg]')
+    % xlim([0 time_sim(end)])
+    % % --- comparison --- %
+    % ax(4) = subplot(224);
+    % hold on
+    % plot(time_sim,delta_D/tau_D,'LineWidth',2)
+    % plot(time_sim,delta_fr,'LineWidth',2)
+    % plot(time_sim,delta_fl,'LineWidth',2)
+    % grid on
+    % legend('$\delta_D/\tau_D$','$\delta_{fr}$','$\delta_{fl}$','location','best')
+    % xlim([0 time_sim(end)])
 
     % -------------------------------
     %% Plot lateral tire slips and lateral forces
@@ -363,206 +363,206 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     clear ax
 
     
-    % ---------------------------------
-    %% Plot longitudinal tire slips and longitudinal forces
-    % ---------------------------------
-    figure('Name','Long slips & forces','NumberTitle','off'), clf
-    % --- kappa_rr --- %
-    ax(1) = subplot(331);
-    plot(time_sim,kappa_rr,'LineWidth',2)
-    grid on
-    title('$\kappa_{rr}$ [-]')
-    xlim([0 time_sim(end)])
-    % --- kappa_rl --- %
-    ax(2) = subplot(332);
-    plot(time_sim,kappa_rl,'LineWidth',2)
-    grid on
-    title('$\kappa_{rl}$ [-]')
-    xlim([0 time_sim(end)])
-    % --- kappa_fr --- %
-    ax(3) = subplot(333);
-    plot(time_sim,kappa_fr,'LineWidth',2)
-    grid on
-    title('$\kappa_{fr}$ [-]')
-    xlim([0 time_sim(end)])
-    % --- kappa_fl --- %
-    ax(4) = subplot(334);
-    plot(time_sim,kappa_fl,'LineWidth',2)
-    grid on
-    title('$\kappa_{fl}$ [-]')
-    xlim([0 time_sim(end)])
-    % --- Fx_rr --- %
-    ax(5) = subplot(335);
-    plot(time_sim,Fx_rr,'LineWidth',2)
-    grid on
-    title('$Fx_{rr}$ [N]')
-    xlim([0 time_sim(end)])
-    % --- Fx_rl --- %
-    ax(6) = subplot(336);
-    plot(time_sim,Fx_rl,'LineWidth',2)
-    grid on
-    title('$Fx_{rl}$ [N]')
-    xlim([0 time_sim(end)])
-    % --- Fx_fr --- %
-    ax(7) = subplot(337);
-    plot(time_sim,Fx_fr,'LineWidth',2)
-    grid on
-    title('$Fx_{fr}$ [N]')
-    xlim([0 time_sim(end)])
-    % --- Fx_fl --- %
-    ax(8) = subplot(338);
-    plot(time_sim,Fx_fl,'LineWidth',2)
-    grid on
-    title('$Fx_{fl}$ [N]')
-    xlim([0 time_sim(end)])
+    % % ---------------------------------
+    % %% Plot longitudinal tire slips and longitudinal forces
+    % % ---------------------------------
+    % figure('Name','Long slips & forces','NumberTitle','off'), clf
+    % % --- kappa_rr --- %
+    % ax(1) = subplot(331);
+    % plot(time_sim,kappa_rr,'LineWidth',2)
+    % grid on
+    % title('$\kappa_{rr}$ [-]')
+    % xlim([0 time_sim(end)])
+    % % --- kappa_rl --- %
+    % ax(2) = subplot(332);
+    % plot(time_sim,kappa_rl,'LineWidth',2)
+    % grid on
+    % title('$\kappa_{rl}$ [-]')
+    % xlim([0 time_sim(end)])
+    % % --- kappa_fr --- %
+    % ax(3) = subplot(333);
+    % plot(time_sim,kappa_fr,'LineWidth',2)
+    % grid on
+    % title('$\kappa_{fr}$ [-]')
+    % xlim([0 time_sim(end)])
+    % % --- kappa_fl --- %
+    % ax(4) = subplot(334);
+    % plot(time_sim,kappa_fl,'LineWidth',2)
+    % grid on
+    % title('$\kappa_{fl}$ [-]')
+    % xlim([0 time_sim(end)])
+    % % --- Fx_rr --- %
+    % ax(5) = subplot(335);
+    % plot(time_sim,Fx_rr,'LineWidth',2)
+    % grid on
+    % title('$Fx_{rr}$ [N]')
+    % xlim([0 time_sim(end)])
+    % % --- Fx_rl --- %
+    % ax(6) = subplot(336);
+    % plot(time_sim,Fx_rl,'LineWidth',2)
+    % grid on
+    % title('$Fx_{rl}$ [N]')
+    % xlim([0 time_sim(end)])
+    % % --- Fx_fr --- %
+    % ax(7) = subplot(337);
+    % plot(time_sim,Fx_fr,'LineWidth',2)
+    % grid on
+    % title('$Fx_{fr}$ [N]')
+    % xlim([0 time_sim(end)])
+    % % --- Fx_fl --- %
+    % ax(8) = subplot(338);
+    % plot(time_sim,Fx_fl,'LineWidth',2)
+    % grid on
+    % title('$Fx_{fl}$ [N]')
+    % xlim([0 time_sim(end)])
     
-    % linkaxes(ax,'x')
-    clear ax
+    % % linkaxes(ax,'x')
+    % clear ax
 
-    % ---------------------------------
-    %% Plot wheel torques and wheel rates
-    % ---------------------------------
-    figure('Name','Wheel rates & torques','NumberTitle','off'), clf
-    % --- omega_rr --- %
-    ax(1) = subplot(331);
-    plot(time_sim,omega_rr,'LineWidth',2)
-    grid on
-    title('$\omega_{rr}$ [rad/s]')
-    xlim([0 time_sim(end)])
-    % --- omega_rl --- %
-    ax(2) = subplot(332);
-    plot(time_sim,omega_rl,'LineWidth',2)
-    grid on
-    title('$\omega_{rl}$ [rad/s]')
-    xlim([0 time_sim(end)])
-    % --- omega_fr --- %
-    ax(3) = subplot(333);
-    plot(time_sim,omega_fr,'LineWidth',2)
-    grid on
-    title('$\omega_{fr}$ [rad/s]')
-    xlim([0 time_sim(end)])
-    % --- omega_fl --- %
-    ax(4) = subplot(334);
-    plot(time_sim,omega_fl,'LineWidth',2)
-    grid on
-    title('$\omega_{fl}$ [rad/s]')
-    xlim([0 time_sim(end)])
-    % --- Tw_rr --- %
-    ax(5) = subplot(335);
-    plot(time_sim,Tw_rr,'LineWidth',2)
-    grid on
-    title('$Tw_{rr}$ [Nm]')
-    xlim([0 time_sim(end)])
-    % --- Tw_rl --- %
-    ax(6) = subplot(336);
-    plot(time_sim,Tw_rl,'LineWidth',2)
-    grid on
-    title('$Tw_{rl}$ [Nm]')
-    xlim([0 time_sim(end)])
-    % --- Tw_fr --- %
-    ax(7) = subplot(337);
-    plot(time_sim,Tw_fr,'LineWidth',2)
-    grid on
-    title('$Tw_{fr}$ [Nm]')
-    xlim([0 time_sim(end)])
-    % --- Tw_fl --- %
-    ax(8) = subplot(338);
-    plot(time_sim,Tw_fl,'LineWidth',2)
-    grid on
-    title('$Tw_{fl}$ [Nm]')
-    xlim([0 time_sim(end)])
+    % % ---------------------------------
+    % %% Plot wheel torques and wheel rates
+    % % ---------------------------------
+    % figure('Name','Wheel rates & torques','NumberTitle','off'), clf
+    % % --- omega_rr --- %
+    % ax(1) = subplot(331);
+    % plot(time_sim,omega_rr,'LineWidth',2)
+    % grid on
+    % title('$\omega_{rr}$ [rad/s]')
+    % xlim([0 time_sim(end)])
+    % % --- omega_rl --- %
+    % ax(2) = subplot(332);
+    % plot(time_sim,omega_rl,'LineWidth',2)
+    % grid on
+    % title('$\omega_{rl}$ [rad/s]')
+    % xlim([0 time_sim(end)])
+    % % --- omega_fr --- %
+    % ax(3) = subplot(333);
+    % plot(time_sim,omega_fr,'LineWidth',2)
+    % grid on
+    % title('$\omega_{fr}$ [rad/s]')
+    % xlim([0 time_sim(end)])
+    % % --- omega_fl --- %
+    % ax(4) = subplot(334);
+    % plot(time_sim,omega_fl,'LineWidth',2)
+    % grid on
+    % title('$\omega_{fl}$ [rad/s]')
+    % xlim([0 time_sim(end)])
+    % % --- Tw_rr --- %
+    % ax(5) = subplot(335);
+    % plot(time_sim,Tw_rr,'LineWidth',2)
+    % grid on
+    % title('$Tw_{rr}$ [Nm]')
+    % xlim([0 time_sim(end)])
+    % % --- Tw_rl --- %
+    % ax(6) = subplot(336);
+    % plot(time_sim,Tw_rl,'LineWidth',2)
+    % grid on
+    % title('$Tw_{rl}$ [Nm]')
+    % xlim([0 time_sim(end)])
+    % % --- Tw_fr --- %
+    % ax(7) = subplot(337);
+    % plot(time_sim,Tw_fr,'LineWidth',2)
+    % grid on
+    % title('$Tw_{fr}$ [Nm]')
+    % xlim([0 time_sim(end)])
+    % % --- Tw_fl --- %
+    % ax(8) = subplot(338);
+    % plot(time_sim,Tw_fl,'LineWidth',2)
+    % grid on
+    % title('$Tw_{fl}$ [Nm]')
+    % xlim([0 time_sim(end)])
 
-    % linkaxes(ax,'x')
-    clear ax
+    % % linkaxes(ax,'x')
+    % clear ax
 
-    % ---------------------------------
-    %% Plot vertical tire loads and self-aligning torques
-    % ---------------------------------
-    figure('Name','Vert loads & ali torques','NumberTitle','off'), clf
-    % --- Fz_rr --- %
-    ax(1) = subplot(331);
-    plot(time_sim,Fz_rr,'LineWidth',2)
-    grid on
-    title('$Fz_{rr}$ [N]')
-    xlim([0 time_sim(end)])
-    % --- Fz_rl --- %
-    ax(2) = subplot(332);
-    plot(time_sim,Fz_rl,'LineWidth',2)
-    grid on
-    title('$Fz_{rl}$ [N]')
-    xlim([0 time_sim(end)])
-    % --- Fz_fr --- %
-    ax(3) = subplot(333);
-    plot(time_sim,Fz_fr,'LineWidth',2)
-    grid on
-    title('$Fz_{fr}$ [N]')
-    xlim([0 time_sim(end)])
-    % --- Fz_fl --- %
-    ax(4) = subplot(334);
-    plot(time_sim,Fz_fl,'LineWidth',2)
-    grid on
-    title('$Fz_{fl}$ [N]')
-    xlim([0 time_sim(end)])
-    % --- Mz_rr --- %
-    ax(5) = subplot(335);
-    plot(time_sim,Mz_rr,'LineWidth',2)
-    grid on
-    title('$Mz_{rr}$ [Nm]')
-    xlim([0 time_sim(end)])
-    % --- Mz_rl --- %
-    ax(6) = subplot(336);
-    plot(time_sim,Mz_rl,'LineWidth',2)
-    grid on
-    title('$Mz_{rl}$ [Nm]')
-    xlim([0 time_sim(end)])
-    % --- Mz_fr --- %
-    ax(7) = subplot(337);
-    plot(time_sim,Mz_fr,'LineWidth',2)
-    grid on
-    title('$Mz_{fr}$ [Nm]')
-    xlim([0 time_sim(end)])
-    % --- Mz_fl --- %
-    ax(8) = subplot(338);
-    plot(time_sim,Mz_fl,'LineWidth',2)
-    grid on
-    title('$Mz_{fl}$ [Nm]')
-    xlim([0 time_sim(end)])
+    % % ---------------------------------
+    % %% Plot vertical tire loads and self-aligning torques
+    % % ---------------------------------
+    % figure('Name','Vert loads & ali torques','NumberTitle','off'), clf
+    % % --- Fz_rr --- %
+    % ax(1) = subplot(331);
+    % plot(time_sim,Fz_rr,'LineWidth',2)
+    % grid on
+    % title('$Fz_{rr}$ [N]')
+    % xlim([0 time_sim(end)])
+    % % --- Fz_rl --- %
+    % ax(2) = subplot(332);
+    % plot(time_sim,Fz_rl,'LineWidth',2)
+    % grid on
+    % title('$Fz_{rl}$ [N]')
+    % xlim([0 time_sim(end)])
+    % % --- Fz_fr --- %
+    % ax(3) = subplot(333);
+    % plot(time_sim,Fz_fr,'LineWidth',2)
+    % grid on
+    % title('$Fz_{fr}$ [N]')
+    % xlim([0 time_sim(end)])
+    % % --- Fz_fl --- %
+    % ax(4) = subplot(334);
+    % plot(time_sim,Fz_fl,'LineWidth',2)
+    % grid on
+    % title('$Fz_{fl}$ [N]')
+    % xlim([0 time_sim(end)])
+    % % --- Mz_rr --- %
+    % ax(5) = subplot(335);
+    % plot(time_sim,Mz_rr,'LineWidth',2)
+    % grid on
+    % title('$Mz_{rr}$ [Nm]')
+    % xlim([0 time_sim(end)])
+    % % --- Mz_rl --- %
+    % ax(6) = subplot(336);
+    % plot(time_sim,Mz_rl,'LineWidth',2)
+    % grid on
+    % title('$Mz_{rl}$ [Nm]')
+    % xlim([0 time_sim(end)])
+    % % --- Mz_fr --- %
+    % ax(7) = subplot(337);
+    % plot(time_sim,Mz_fr,'LineWidth',2)
+    % grid on
+    % title('$Mz_{fr}$ [Nm]')
+    % xlim([0 time_sim(end)])
+    % % --- Mz_fl --- %
+    % ax(8) = subplot(338);
+    % plot(time_sim,Mz_fl,'LineWidth',2)
+    % grid on
+    % title('$Mz_{fl}$ [Nm]')
+    % xlim([0 time_sim(end)])
 
-    % linkaxes(ax,'x')
-    clear ax
+    % % linkaxes(ax,'x')
+    % clear ax
 
     
-    % ---------------------------------
-    %% Plot wheel camber
-    % ---------------------------------
-    figure('Name','Wheel camber','NumberTitle','off'), clf
-    % --- gamma_rr --- %
-    ax(1) = subplot(221);
-    plot(time_sim,gamma_rr,'LineWidth',2)
-    grid on
-    title('$\gamma_{rr}$ [deg]')
-    xlim([0 time_sim(end)])
-    % --- gamma_rl --- %
-    ax(2) = subplot(222);
-    plot(time_sim,gamma_rl,'LineWidth',2)
-    grid on
-    title('$\gamma_{rl}$ [deg]')
-    xlim([0 time_sim(end)])
-    % --- gamma_fr --- %
-    ax(3) = subplot(223);
-    plot(time_sim,gamma_fr,'LineWidth',2)
-    grid on
-    title('$\gamma_{fr}$ [deg]')
-    xlim([0 time_sim(end)])
-    % --- gamma_fl --- %
-    ax(4) = subplot(224);
-    plot(time_sim,gamma_fl,'LineWidth',2)
-    grid on
-    title('$\gamma_{fl}$ [deg]')
-    xlim([0 time_sim(end)])
+    % % ---------------------------------
+    % %% Plot wheel camber
+    % % ---------------------------------
+    % figure('Name','Wheel camber','NumberTitle','off'), clf
+    % % --- gamma_rr --- %
+    % ax(1) = subplot(221);
+    % plot(time_sim,gamma_rr,'LineWidth',2)
+    % grid on
+    % title('$\gamma_{rr}$ [deg]')
+    % xlim([0 time_sim(end)])
+    % % --- gamma_rl --- %
+    % ax(2) = subplot(222);
+    % plot(time_sim,gamma_rl,'LineWidth',2)
+    % grid on
+    % title('$\gamma_{rl}$ [deg]')
+    % xlim([0 time_sim(end)])
+    % % --- gamma_fr --- %
+    % ax(3) = subplot(223);
+    % plot(time_sim,gamma_fr,'LineWidth',2)
+    % grid on
+    % title('$\gamma_{fr}$ [deg]')
+    % xlim([0 time_sim(end)])
+    % % --- gamma_fl --- %
+    % ax(4) = subplot(224);
+    % plot(time_sim,gamma_fl,'LineWidth',2)
+    % grid on
+    % title('$\gamma_{fl}$ [deg]')
+    % xlim([0 time_sim(end)])
 
-    % linkaxes(ax,'x')
-    clear ax
+    % % linkaxes(ax,'x')
+    % clear ax
     
     % ---------------------------------
     %% Plot accelerations, chassis side slip angle and curvature
@@ -607,44 +607,44 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     % linkaxes(ax,'x')
     clear ax
 
-    % ---------------------------------
-    %% Plot vehicle pose x,y,psi
-    % ---------------------------------
-    figure('Name','Pose','NumberTitle','off'), clf 
-    % --- x --- %
-    ax(1) = subplot(221);
-    plot(time_sim,x_CoM,'LineWidth',2)
-    grid on
-    title('$x$ [m]')
-    xlim([0 time_sim(end)])
-    % --- y --- %
-    ax(2) = subplot(222);
-    plot(time_sim,y_CoM,'LineWidth',2)
-    grid on
-    title('$y$ [m]')
-    xlim([0 time_sim(end)])
-    % --- psi --- %
-    ax(3) = subplot(223);
-    plot(time_sim,rad2deg(psi),'LineWidth',2)
-    grid on
-    title('$\psi$ [deg]')
-    xlim([0 time_sim(end)])
+    % % ---------------------------------
+    % %% Plot vehicle pose x,y,psi
+    % % ---------------------------------
+    % figure('Name','Pose','NumberTitle','off'), clf 
+    % % --- x --- %
+    % ax(1) = subplot(221);
+    % plot(time_sim,x_CoM,'LineWidth',2)
+    % grid on
+    % title('$x$ [m]')
+    % xlim([0 time_sim(end)])
+    % % --- y --- %
+    % ax(2) = subplot(222);
+    % plot(time_sim,y_CoM,'LineWidth',2)
+    % grid on
+    % title('$y$ [m]')
+    % xlim([0 time_sim(end)])
+    % % --- psi --- %
+    % ax(3) = subplot(223);
+    % plot(time_sim,rad2deg(psi),'LineWidth',2)
+    % grid on
+    % title('$\psi$ [deg]')
+    % xlim([0 time_sim(end)])
 
-    % linkaxes(ax,'x')
-    clear ax
+    % % linkaxes(ax,'x')
+    % clear ax
 
-    % -------------------------------
-    %% Plot G-G diagram from simulation data
-    % -------------------------------
-    figure('Name','G-G plot','NumberTitle','off'), clf
-    axis equal
-    hold on
-    plot3(Ay,Ax_filt,u(1:end-1),'Color',color('purple'),'LineWidth',3)
-    xlabel('$a_y$ [m/s$^2$]')
-    ylabel('$a_x$ [m/s$^2$]')
-    zlabel('$u$ [m/s]')
-    title('G-G diagram from simulation data','FontSize',18)
-    grid on
+    % % -------------------------------
+    % %% Plot G-G diagram from simulation data
+    % % -------------------------------
+    % figure('Name','G-G plot','NumberTitle','off'), clf
+    % axis equal
+    % hold on
+    % plot3(Ay,Ax_filt,u(1:end-1),'Color',color('purple'),'LineWidth',3)
+    % xlabel('$a_y$ [m/s$^2$]')
+    % ylabel('$a_x$ [m/s$^2$]')
+    % zlabel('$u$ [m/s]')
+    % title('G-G diagram from simulation data','FontSize',18)
+    % grid on
 
     % -------------------------------
     %% Plot vehicle path
@@ -672,189 +672,199 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     grid on
     hold off
     
-    % ---------------------------------
-    %% Plot load transfer
-    % ---------------------------------
-    % --- DeltaFxf DeltaFxr -- %
-    figure('Name','Load transfer','NumberTitle','off'), clf
-    ax(1) = subplot(221);
-    plot(time_sim, DFx_f,'LineWidth',2)
-    hold on
-    plot(time_sim, DFx_r, '--', 'LineWidth',2)
-    legend('$\Delta F_{xf}$','$\Delta F_{xr}$','location','best')
-    title('$\Delta F_{xf}$ and $\Delta F_{xr}$ [N]')
-    grid on
-    % --- DeltaFyf DeltaFyr -- %
-    ax(2) = subplot(222);
-    plot(time_sim, DFy_f,'LineWidth',2)
-    hold on
-    plot(time_sim, DFy_r, '--', 'LineWidth',2)
-    legend('$\Delta F_{yf}$','$\Delta F_{yr}$','location','best')
-    title('$\Delta F_{yf}$ and $\Delta F_{yr}$ [N]')
-    grid on
-    % --- DeltaFzf DeltaFzr -- %
-    ax(3) = subplot(223);
-    plot(time_sim, DFz_f,'LineWidth',2)
-    hold on
-    plot(time_sim, DFz_r, '--', 'LineWidth',2)
-    legend('$\Delta F_{zf}$','$\Delta F_{zr}$','location','best')
-    title('$\Delta F_{zf}$ and $\Delta F_{zr}$ [N]')
-    grid on
-    sgtitle('Lateral load transfer', 'FontSize', 20)
+    % % ---------------------------------
+    % %% Plot load transfer
+    % % ---------------------------------
+    % % --- DeltaFxf DeltaFxr -- %
+    % figure('Name','Load transfer','NumberTitle','off'), clf
+    % ax(1) = subplot(221);
+    % plot(time_sim, DFx_f,'LineWidth',2)
+    % hold on
+    % plot(time_sim, DFx_r, '--', 'LineWidth',2)
+    % legend('$\Delta F_{xf}$','$\Delta F_{xr}$','location','best')
+    % title('$\Delta F_{xf}$ and $\Delta F_{xr}$ [N]')
+    % grid on
+    % % --- DeltaFyf DeltaFyr -- %
+    % ax(2) = subplot(222);
+    % plot(time_sim, DFy_f,'LineWidth',2)
+    % hold on
+    % plot(time_sim, DFy_r, '--', 'LineWidth',2)
+    % legend('$\Delta F_{yf}$','$\Delta F_{yr}$','location','best')
+    % title('$\Delta F_{yf}$ and $\Delta F_{yr}$ [N]')
+    % grid on
+    % % --- DeltaFzf DeltaFzr -- %
+    % ax(3) = subplot(223);
+    % plot(time_sim, DFz_f,'LineWidth',2)
+    % hold on
+    % plot(time_sim, DFz_r, '--', 'LineWidth',2)
+    % legend('$\Delta F_{zf}$','$\Delta F_{zr}$','location','best')
+    % title('$\Delta F_{zf}$ and $\Delta F_{zr}$ [N]')
+    % grid on
+    % sgtitle('Lateral load transfer', 'FontSize', 20)
     
-    clear ax
-
-    % figure('Name', 'Vertical load', 'NumberTitle', 'off'), clf
-    % ax(1) = subplot(1,2,1);
-    % hold on
-    % grid on
-    % plot(time_sim(1:end-1), Fzf, 'LineWidth', 2) % computed with formulas
-    % plot(time_sim, Fz_fr + Fz_fl, '--', 'LineWidth', 2) % from simulation
-    % title('$F_{zf}$ [N]')
-    % legend('Theo', 'Sim.', 'location', 'northwest')
-    % ax(2) = subplot(1,2,2);
-    % hold on
-    % grid on
-    % plot(time_sim(1:end-1), Fzr, 'LineWidth', 2) % computed with formulas
-    % plot(time_sim, Fz_rr + Fz_rl, '--', 'LineWidth', 2) % from simulation
-    % title('$F_{zr}$ [N]')
-    % legend('Theo', 'Sim.', 'location', 'northeast')
-    % sgtitle('Vertical load', 'FontSize', 20)
-
     % clear ax
 
-    % ---------------------------------
-    %% Plot axle characteristics
-    % ---------------------------------
-    figure('Name','Long axle char','NumberTitle','off'), clf
-    subplot(1,2,1)
-    hold on
-    grid on
-    plot(alpha_r, Fx_rr, 'LineWidth',2)
-    plot(alpha_r, Fx_rl, 'LineWidth',2)
-    title('$F_{xr}$ [N]')
-    xlabel('$\alpha_r$')
-    ylabel('$F_{xrr}, F_{xrl}$')
-    legend('$F_{xrr}$','$F_{xrl}$','location','southeast')
-    xlim([0.001 0.06])
-    subplot(1,2,2)
-    hold on
-    grid on
-    plot(alpha_f, Fx_fr, 'LineWidth',2)
-    plot(alpha_f, Fx_fl, 'LineWidth',2)
-    title('$F_{xf}$ [N]')
-    xlabel('$\alpha_f$')
-    ylabel('$F_{xfr}, F_{xfl}$')
-    legend('$F_{xfr}$','$F_{xfl}$','location','southeast')
-    xlim([0.001 0.06])
+    % % figure('Name', 'Vertical load', 'NumberTitle', 'off'), clf
+    % % ax(1) = subplot(1,2,1);
+    % % hold on
+    % % grid on
+    % % plot(time_sim(1:end-1), Fzf, 'LineWidth', 2) % computed with formulas
+    % % plot(time_sim, Fz_fr + Fz_fl, '--', 'LineWidth', 2) % from simulation
+    % % title('$F_{zf}$ [N]')
+    % % legend('Theo', 'Sim.', 'location', 'northwest')
+    % % ax(2) = subplot(1,2,2);
+    % % hold on
+    % % grid on
+    % % plot(time_sim(1:end-1), Fzr, 'LineWidth', 2) % computed with formulas
+    % % plot(time_sim, Fz_rr + Fz_rl, '--', 'LineWidth', 2) % from simulation
+    % % title('$F_{zr}$ [N]')
+    % % legend('Theo', 'Sim.', 'location', 'northeast')
+    % % sgtitle('Vertical load', 'FontSize', 20)
 
-    figure('Name','Lat axle char','NumberTitle','off'), clf
-    subplot(1,2,1)
-    hold on
-    grid on
-    plot(alpha_r, Fy_rr/Fz_r0, 'LineWidth',2)
-    plot(alpha_r, Fy_rl/Fz_r0, 'LineWidth',2)
-    title('$F_{yr}$ [N]')
-    xlabel('$\alpha_r$')
-    ylabel('$F_{yrr}, F_{yrl}$')
-    legend('$F_{yrr}$','$F_{yrl}$','location','southeast')
+    % % clear ax
+
+    % % ---------------------------------
+    % %% Plot axle characteristics
+    % % ---------------------------------
+    % figure('Name','Long axle char','NumberTitle','off'), clf
+    % subplot(1,2,1)
+    % hold on
+    % grid on
+    % plot(alpha_r, Fx_rr, 'LineWidth',2)
+    % plot(alpha_r, Fx_rl, 'LineWidth',2)
+    % title('$F_{xr}$ [N]')
+    % xlabel('$\alpha_r$')
+    % ylabel('$F_{xrr}, F_{xrl}$')
+    % legend('$F_{xrr}$','$F_{xrl}$','location','southeast')
     % xlim([0.001 0.06])
-    subplot(1,2,2)
-    hold on
-    grid on
-    plot(alpha_f, Fy_fr/Fz_f0, 'LineWidth',2)
-    plot(alpha_f, Fy_fl/Fz_f0, 'LineWidth',2)
-    title('$F_{yf}$ [N]')
-    xlabel('$\alpha_f$')
-    ylabel('$F_{yfr}, F_{yfl}$')
-    legend('$F_{yfr}$','$F_{yfl}$','location','southeast')
+    % subplot(1,2,2)
+    % hold on
+    % grid on
+    % plot(alpha_f, Fx_fr, 'LineWidth',2)
+    % plot(alpha_f, Fx_fl, 'LineWidth',2)
+    % title('$F_{xf}$ [N]')
+    % xlabel('$\alpha_f$')
+    % ylabel('$F_{xfr}, F_{xfl}$')
+    % legend('$F_{xfr}$','$F_{xfl}$','location','southeast')
     % xlim([0.001 0.06])
+
+    % figure('Name','Lat axle char','NumberTitle','off'), clf
+    % subplot(1,2,1)
+    % hold on
+    % grid on
+    % plot(alpha_r, Fy_rr/Fz_r0, 'LineWidth',2)
+    % plot(alpha_r, Fy_rl/Fz_r0, 'LineWidth',2)
+    % title('$F_{yr}$ [N]')
+    % xlabel('$\alpha_r$')
+    % ylabel('$F_{yrr}, F_{yrl}$')
+    % legend('$F_{yrr}$','$F_{yrl}$','location','southeast')
+    % % xlim([0.001 0.06])
+    % subplot(1,2,2)
+    % hold on
+    % grid on
+    % plot(alpha_f, Fy_fr/Fz_f0, 'LineWidth',2)
+    % plot(alpha_f, Fy_fl/Fz_f0, 'LineWidth',2)
+    % title('$F_{yf}$ [N]')
+    % xlabel('$\alpha_f$')
+    % ylabel('$F_{yfr}, F_{yfl}$')
+    % legend('$F_{yfr}$','$F_{yfl}$','location','southeast')
+    % % xlim([0.001 0.06])
 
     % ---------------------------------
     %% Plot normalized axle characteristics
     % ---------------------------------
     % --- mu_r -- %
+    data_read = readmatrix('results_axle_char.txt');
+    ped_0_file = data_read(:,1);
+    delta_D_file = data_read(:,2);
+    mu_r_file = data_read(:,3);
+    mu_f_file = data_read(:,4);
+    alpfa_f_file = data_read(:,5);
+    alpfa_r_file = data_read(:,6);
+    Ay_file = data_read(:,7);
     idx = time_sim > 2;
     figure('Name','Norm axle char. 2','NumberTitle','off'), clf
     hold on
     grid on
-    plot(alpha_r(idx), mu_r(idx), 'LineWidth',2)
-    plot(alpha_f(idx), mu_f(idx), 'LineWidth',2)
+    plot(alpha_r(idx)*180/pi, mu_r(idx), 'LineWidth',2)
+    plot(alpha_f(idx)*180/pi, mu_f(idx), 'LineWidth',2)
+    plot(alpfa_r_file*180/pi, mu_r_file,  'o', 'LineWidth', 2)
+    plot(alpfa_f_file*180/pi, mu_f_file,  'o', 'LineWidth', 2)
     title('$\mu_r, \mu_f$')
     xlabel('$\alpha_r, \alpha_f$')
     ylabel('$\mu_r, \mu_f$')
-    legend('$\mu_r$','$\mu_f$','location','best')
+    legend('$\mu_r$','$\mu_f$','$\mu_r ss$', '$\mu_f ss$', 'location','best')
     
 
-    % ---------------------------------
-    %% Plot handling digram
-    % ---------------------------------
-    figure('Name','Handling diagram','NumberTitle','off'), clf
-    hold on
-    grid on
-    plot(Ay_norm, handling, 'LineWidth',2)
-    plot(ay_fit_lin, handling_fit_lin, '--', 'LineWidth',2)
-    plot(ay_fit_nonlin, handling_fit_nonlin, '--', 'LineWidth',2)
-    title('Handling diagram')
-    ylabel('$\delta_{D}\tau_{H} - \rho L [rad]$')
-    legend('Data', 'Fit in linear range', 'Fit in non-linear range', 'location', 'northeast')
+    % % ---------------------------------
+    % %% Plot handling digram
+    % % ---------------------------------
+    % figure('Name','Handling diagram','NumberTitle','off'), clf
+    % hold on
+    % grid on
+    % plot(Ay_norm, handling, 'LineWidth',2)
+    % plot(ay_fit_lin, handling_fit_lin, '--', 'LineWidth',2)
+    % plot(ay_fit_nonlin, handling_fit_nonlin, '--', 'LineWidth',2)
+    % title('Handling diagram')
+    % ylabel('$\delta_{D}\tau_{H} - \rho L [rad]$')
+    % legend('Data', 'Fit in linear range', 'Fit in non-linear range', 'location', 'northeast')
     
-    % ---------------------------------
-    %% Plot understeering gradient
-    % ---------------------------------
-    figure('Name','Understeering grad','NumberTitle','off'), clf
-    hold on
-    grid on
-    plot(Ay_norm, K_US_theo, 'LineWidth',2)
-    plot(Ay_norm(1:end-1), K_US_theo2, 'LineWidth',2)
-    title('Understeering gradient')
-    legend('Formula', 'Diff', 'location', 'northeast')
-    xlim("padded")
-    ylabel('$K_{US}$')
+    % % ---------------------------------
+    % %% Plot understeering gradient
+    % % ---------------------------------
+    % figure('Name','Understeering grad','NumberTitle','off'), clf
+    % hold on
+    % grid on
+    % plot(Ay_norm, K_US_theo, 'LineWidth',2)
+    % plot(Ay_norm(1:end-1), K_US_theo2, 'LineWidth',2)
+    % title('Understeering gradient')
+    % legend('Formula', 'Diff', 'location', 'northeast')
+    % xlim("padded")
+    % ylabel('$K_{US}$')
 
 
-    % ---------------------------------
-    %% PLOT BETA AND YAW RATE GAINS
-    % ---------------------------------
-    figure('Name','Yaw rate gain','NumberTitle','off'), clf
-    hold on 
-    grid on
-    plot(u, yaw_rate_gain, 'LineWidth',2)
-    plot(u, yaw_rate_gain_theo, 'LineWidth',2)
-    plot(u, beta_gain, 'LineWidth',2)
-    plot(u(1:end-1), beta_gain_theo, 'LineWidth',2)
-    title('Yaw rate and $\beta$ gain')
-    legend('Yaw gain measure', 'Yaw gain theo', '$\beta$ gain measure', '$\beta$ gain theo', 'location', 'northeast')
+    % % ---------------------------------
+    % %% PLOT BETA AND YAW RATE GAINS
+    % % ---------------------------------
+    % figure('Name','Yaw rate gain','NumberTitle','off'), clf
+    % hold on 
+    % grid on
+    % plot(u, yaw_rate_gain, 'LineWidth',2)
+    % plot(u, yaw_rate_gain_theo, 'LineWidth',2)
+    % plot(u, beta_gain, 'LineWidth',2)
+    % plot(u(1:end-1), beta_gain_theo, 'LineWidth',2)
+    % title('Yaw rate and $\beta$ gain')
+    % legend('Yaw gain measure', 'Yaw gain theo', '$\beta$ gain measure', '$\beta$ gain theo', 'location', 'northeast')
 
-    % ---
-    %% FORCE AS FUNCTION OF THE SLIP
-    % --
-     % -------------------------------
-    %% Plot lateral tire slips and lateral forces
-    % -------------------------------
-    figure('Name','Force slip','NumberTitle','off'), clf
-    % --- alpha_rr --- %
-    ax(1) = subplot(224);
-    plot(alpha_rr,Fy_rr,'LineWidth',2)
-    grid on
-    title('$F_{rr}$ [deg]')
-    % --- alpha_rl --- %
-    ax(2) = subplot(223);
-    plot(alpha_rl,Fy_rl,'LineWidth',2)
-    grid on
-    title('$F_{rl}$ [deg]')
-    % --- alpha_fr --- %
-    ax(3) = subplot(222);
-    plot(alpha_fr,Fy_fr,'LineWidth',2)
-    grid on
-    title('$F_{fr}$ [deg]')
-    % --- alpha_fl --- %
-    ax(4) = subplot(221);
-    plot(alpha_fl,Fy_fl,'LineWidth',2)
-    grid on
-    title('$F_{fl}$ [deg]')
-    sgtitle('Lateral load $F_{y}$')
-    % linkaxes(ax,'x')
-    clear ax
+    % % ---
+    % %% FORCE AS FUNCTION OF THE SLIP
+    % % --
+    %  % -------------------------------
+    % %% Plot lateral tire slips and lateral forces
+    % % -------------------------------
+    % figure('Name','Force slip','NumberTitle','off'), clf
+    % % --- alpha_rr --- %
+    % ax(1) = subplot(224);
+    % plot(alpha_rr,Fy_rr,'LineWidth',2)
+    % grid on
+    % title('$F_{rr}$ [deg]')
+    % % --- alpha_rl --- %
+    % ax(2) = subplot(223);
+    % plot(alpha_rl,Fy_rl,'LineWidth',2)
+    % grid on
+    % title('$F_{rl}$ [deg]')
+    % % --- alpha_fr --- %
+    % ax(3) = subplot(222);
+    % plot(alpha_fr,Fy_fr,'LineWidth',2)
+    % grid on
+    % title('$F_{fr}$ [deg]')
+    % % --- alpha_fl --- %
+    % ax(4) = subplot(221);
+    % plot(alpha_fl,Fy_fl,'LineWidth',2)
+    % grid on
+    % title('$F_{fl}$ [deg]')
+    % sgtitle('Lateral load $F_{y}$')
+    % % linkaxes(ax,'x')
+    % clear ax
 end
     

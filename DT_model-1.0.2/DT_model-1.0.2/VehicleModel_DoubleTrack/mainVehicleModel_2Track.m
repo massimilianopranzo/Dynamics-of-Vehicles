@@ -37,10 +37,11 @@ initialize_environment;
 % 2 Linear pedal, fixed steer
 % 3 Linear pedal, linear steer
 % 4 Fixed pedal, linear steer
-sim_options.sim_type = 1;
-sim_options.pedal = 0.2;
-sim_options.steer_angle = 3; % [deg]
-stangle = [2 4 6 8 10];
+sim_options.sim_type = 2;
+sim_options.pedal = 0.15;
+sim_options.steer_angle = 6; % [deg]
+% stangle = [2 4 6 8 10];
+stangle = [6];
 simulationPars = getSimulationParams(); 
 Ts = simulationPars.times.step_size;  % integration step for the simulation (fixed step)
 T0 = simulationPars.times.t0;         % starting time of the simulation
@@ -54,8 +55,8 @@ camber_array = [ 0 ]; % [deg]
 n_sim = 1; % number of simulations to run
 model_sim = cell(1, n_sim);
 for i=1:length(stangle)
-  ax_desire = 0.3;
-    V0 = 55/3.6; % Initial speed
+  ax_desire = 0.5;
+    V0 = 70/3.6; % Initial speed
     X0 = loadInitialConditions(V0, camber_array, i);
     vehicle_data = getVehicleDataStruct(camber_array, i);
     sim_options.steer_angle = stangle(i);
@@ -65,7 +66,8 @@ for i=1:length(stangle)
     elapsed_time_simulation = toc;
     fprintf('Simulation completed\n')
     fprintf('The total simulation time was %.2f seconds\n',elapsed_time_simulation)
-    dataAnalysisAxleChar(model_sim{i}, vehicle_data, Ts);
+    % dataAnalysisAxleChar(model_sim{i}, vehicle_data, Ts);
+    dataAnalysis(model_sim{i}, vehicle_data, Ts);
 end
 
 % ----------------------------
