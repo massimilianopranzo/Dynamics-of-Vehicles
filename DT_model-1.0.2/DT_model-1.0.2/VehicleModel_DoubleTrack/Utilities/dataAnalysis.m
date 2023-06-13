@@ -166,7 +166,7 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
 
     % normalized front lateral force
     Fz_f0 = m * g * Lr / L;
-    Fy_f = sin(delta_fl).*Fx_fl + cos(delta_fl).*Fy_fl + sin(delta_fr).*Fx_fr + cos(delta_fr).*Fy_fr;
+    Fy_f = sind(delta_fl).*Fx_fl + cosd(delta_fl).*Fy_fl + sind(delta_fr).*Fx_fr + cosd(delta_fr).*Fy_fr; % angle are in deg
     mu_f = Fy_f / Fz_f0;
 
 
@@ -774,40 +774,31 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     %% Plot normalized axle characteristics
     % ---------------------------------
     % --- mu_r -- %
-    data_read = readmatrix('results_axle_char.txt');
-    ped_0_file = data_read(:,1);
-    delta_D_file = data_read(:,2);
-    mu_r_file = data_read(:,3);
-    mu_f_file = data_read(:,4);
-    alpfa_f_file = data_read(:,5);
-    alpfa_r_file = data_read(:,6);
-    Ay_file = data_read(:,7);
     idx = time_sim > 2;
     figure('Name','Norm axle char. 2','NumberTitle','off'), clf
     hold on
     grid on
     plot(alpha_r(idx)*180/pi, mu_r(idx), 'LineWidth',2)
     plot(alpha_f(idx)*180/pi, mu_f(idx), 'LineWidth',2)
-    plot(alpfa_r_file*180/pi, mu_r_file,  'o', 'LineWidth', 2)
-    plot(alpfa_f_file*180/pi, mu_f_file,  'o', 'LineWidth', 2)
-    title('$\mu_r, \mu_f$')
-    xlabel('$\alpha_r, \alpha_f$')
-    ylabel('$\mu_r, \mu_f$')
-    legend('$\mu_r$','$\mu_f$','$\mu_r ss$', '$\mu_f ss$', 'location','best')
+    title('$\mu_r, \mu_f $')
+    xlabel('$\alpha_r, \alpha_f [deg]$')
+    ylabel('$\mu_r, \mu_f$ [-]')
+    legend('$\mu_r$','$\mu_f$','location','best')
     
 
-    % % ---------------------------------
-    % %% Plot handling digram
-    % % ---------------------------------
-    % figure('Name','Handling diagram','NumberTitle','off'), clf
-    % hold on
-    % grid on
-    % plot(Ay_norm, handling, 'LineWidth',2)
-    % plot(ay_fit_lin, handling_fit_lin, '--', 'LineWidth',2)
-    % plot(ay_fit_nonlin, handling_fit_nonlin, '--', 'LineWidth',2)
-    % title('Handling diagram')
-    % ylabel('$\delta_{D}\tau_{H} - \rho L [rad]$')
-    % legend('Data', 'Fit in linear range', 'Fit in non-linear range', 'location', 'northeast')
+    % ---------------------------------
+    %% Plot handling digram
+    % ---------------------------------
+    figure('Name','Handling diagram','NumberTitle','off'), clf
+    hold on
+    grid on
+    plot(Ay_norm, handling, 'LineWidth',2)
+    plot(ay_fit_lin, handling_fit_lin, '--', 'LineWidth',2)
+    plot(ay_fit_nonlin, handling_fit_nonlin, '--', 'LineWidth',2)
+    title('Handling diagram')
+    xlabel('$\frac{a_y}{g}$ [m/s$^2$]')
+    ylabel('$\delta_{D}\tau_{H} - \rho L \ [rad]$')
+    legend('Data', 'Fit in linear range', 'Fit in non-linear range', 'location', 'northeast')
     
     % % ---------------------------------
     % %% Plot understeering gradient
