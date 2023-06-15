@@ -179,7 +179,7 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     rho = rho(idx); % sort the curvature according to the acceleration
     rho_ss_sort = rho_ss(idx);
 
-    handling = delta_D(1:end-1)/tau_D*pi/180 - rho*L; % [rad] handling metric
+    handling = delta_D(1:end-1)/tau_D*pi/180 - rho_ss(1:end-1)*L; % [rad] handling metric
     
     % ---------------------------------
     %% UNDERSTEERING GRADIENT
@@ -194,7 +194,7 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     K_US_theo2 = - diff(Delta_alpha) ./ diff(Ay);
 
     % fitting the linear part
-    ay_max_lin = 1e-4; % [-] maximum norm acceleration for whom linearity holds 
+    ay_max_lin = 0.6; % [-] maximum norm acceleration for whom linearity holds 
     ay_fit = Ay_norm(Ay_norm < ay_max_lin);
     ay_fit_lin = [0:1e-6:ay_max_lin];
     handling_fit = handling(Ay_norm < ay_max_lin);
@@ -271,6 +271,12 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     plot(time_sim,Omega,'LineWidth',2)
     grid on
     title('$\Omega$ [rad/s]')
+    xlim([0 time_sim(end)])
+    % --- VG --- %
+    ax(3) = subplot(224);
+    plot(time_sim,sqrt(u.^2 + v.^2),'LineWidth',2)
+    grid on
+    title('$V_G$ [rad/s]')
     xlim([0 time_sim(end)])
 
     % % ---------------------------------
@@ -577,7 +583,7 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     plot(time_sim(2:end),dot_u_filt,'-.r','LineWidth',1)
     grid on
     title('$a_{x}$ $[m/s^2]$')
-    legend('$\dot{u}-\Omega v$','$\dot{u}$','filt $\dot{u}-\Omega v$','filt $\dot{u}$','Location','northeast')
+    legend('$\dot{u}-\Omega v$','$\dot{u}$','filt $\dot{u}-\Omega v$','filt $\dot{u}$','Location','southeast')
     xlim([0 time_sim(end)])
     % --- ay --- %
     ax(2) = subplot(222);

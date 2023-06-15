@@ -17,6 +17,7 @@
 % ----------------------------
 initialize_environment;
 
+
 % ----------------------------
 %% Load vehicle data
 % ----------------------------
@@ -41,12 +42,14 @@ sim_options.sim_type = 2;
 sim_options.pedal = 0.15;
 sim_options.steer_angle = 6; % [deg]
 % stangle = [2 4 6 8 10];
-stangle = [7];
+stangle = [15]; % 6 with 40s
 simulationPars = getSimulationParams(); 
 Ts = simulationPars.times.step_size;  % integration step for the simulation (fixed step)
 T0 = simulationPars.times.t0;         % starting time of the simulation
 Tf = simulationPars.times.tf;         % stop time of the simulation
 
+
+gain = 6; % Rescale pid coefficients
 % ----------------------------
 %% Start Simulation
 % ----------------------------
@@ -55,7 +58,7 @@ camber_array = [ 0 ]; % [deg]
 n_sim = 1; % number of simulations to run
 model_sim = cell(1, n_sim);
 for i=1:length(stangle)
-    V0 = 120/3.6; % Initial speed
+    V0 = 50 / 3.6; % Initial speed
     X0 = loadInitialConditions(V0, camber_array, i);
     vehicle_data = getVehicleDataStruct(camber_array, i);
     sim_options.steer_angle = stangle(i);
