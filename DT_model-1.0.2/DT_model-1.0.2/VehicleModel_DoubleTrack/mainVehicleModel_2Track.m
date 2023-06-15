@@ -41,15 +41,16 @@ initialize_environment;
 sim_options.sim_type = 2;
 sim_options.pedal = 0.15;
 sim_options.steer_angle = 6; % [deg]
+sim_options.slope = 0.05; % 4.5 slope for the angle increasing [deg/s]
 % stangle = [2 4 6 8 10];
-stangle = [15]; % 6 with 40s
+stangle = [20]; % 6 with 40s
 simulationPars = getSimulationParams(); 
 Ts = simulationPars.times.step_size;  % integration step for the simulation (fixed step)
 T0 = simulationPars.times.t0;         % starting time of the simulation
 Tf = simulationPars.times.tf;         % stop time of the simulation
 
 
-gain = 6; % Rescale pid coefficients
+gain = 5; % Rescale pid coefficients
 % ----------------------------
 %% Start Simulation
 % ----------------------------
