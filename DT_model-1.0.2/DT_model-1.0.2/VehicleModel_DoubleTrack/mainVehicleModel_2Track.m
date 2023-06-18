@@ -41,7 +41,7 @@ initialize_environment;
 sim_options.sim_type = 2;
 sim_options.pedal = 0.15;
 sim_options.steer_angle = 6; % [deg]
-sim_options.slope = 0.05; % 4.5 slope for the angle increasing [deg/s]
+sim_options.slope = 9.2/20; % 4.5 slope for the angle increasing [deg/s]
 % stangle = [2 4 6 8 10];
 stangle = [20]; % 6 with 40s
 simulationPars = getSimulationParams(); 
@@ -59,7 +59,7 @@ camber_array = [ 0 ]; % [deg]
 n_sim = 1; % number of simulations to run
 model_sim = cell(1, n_sim);
 for i=1:length(stangle)
-    V0 = 50 / 3.6; % Initial speed
+    V0 = 125 / 3.6; % Initial speed
     X0 = loadInitialConditions(V0, camber_array, i);
     vehicle_data = getVehicleDataStruct(camber_array, i);
     sim_options.steer_angle = stangle(i);

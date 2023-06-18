@@ -802,7 +802,7 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     hold on
     grid on
     plot(Ay_norm, handling, 'LineWidth',2)
-    plot(Ay_norm, Delta_alpha, 'LineWidth',2)
+    plot(Ay_norm, -Delta_alpha, 'LineWidth',2)
     plot(ay_fit_lin, handling_fit_lin, '--', 'LineWidth',2)
     plot(ay_fit_nonlin, handling_fit_nonlin, '--', 'LineWidth',2)
     title('Handling diagram')
