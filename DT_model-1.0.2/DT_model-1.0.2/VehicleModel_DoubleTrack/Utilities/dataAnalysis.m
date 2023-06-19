@@ -808,11 +808,13 @@ handling = -Delta_alpha; % [rad]
 %% UNDERSTEERING GRADIENT
 % ---------------------------------
 % Cornering stiffnesses
-C_alpha_r = diff(Fy__r) ./ diff(alpha_r);
-C_alpha_f = diff(Fy__f) ./ diff(alpha_f);
+Ky_r = diff(Fy__r) ./ diff(alpha_r);
+Ky_f = diff(Fy__f) ./ diff(alpha_f);
+C_r = diff(mu_r) ./ diff(alpha_r);
+C_f = diff(mu_f) ./ diff(alpha_f);
 
-K_US_theo = - g * m / (L / tau_D) * (Lf ./ C_alpha_r - Lr ./ C_alpha_f);
-K_US_theo2 = - g*diff(Delta_alpha) ./ diff(Ay_hand');
+K_US_theo = - m / (L / tau_D) * (Lf ./ Ky_r - Lr ./ Ky_f);
+K_US_theo2 = - diff(Delta_alpha) ./ diff(Ay_hand');
 
 % fitting the linear part
 ay_max_lin = 0.6; % [-] maximum norm acceleration for whom linearity holds 
@@ -844,7 +846,7 @@ handling_fit_nonlin = polyval(p_nl, ay_fit_nonlin); % fitted handling diagram
 yaw_rate_gain = Omega ./ (delta_D * pi / 180); % [1/s]
 beta_gain = beta ./ (delta_D*pi/180); % [-]
 yaw_rate_gain_theo = u / L / tau_D ./ (1 + u.^2 * K_US); % [1/s] theoretical yaw rate gain
-beta_gain_theo = Lr ./ (tau_D * L) - m / L^3 * (Lf^2 ./ C_alpha_r + Lr^2 ./ C_alpha_f) ./ tau_D .* (u(1:end-1).^2 ./ (1 + K_US * u(1:end-1).^2)); % [-] theoretical beta gain
+beta_gain_theo = Lr ./ (tau_D * L) - m / L^3 * (Lf^2 ./ Ky_r + Lr^2 ./ Ky_f) ./ tau_D .* (u(1:end-1).^2 ./ (1 + K_US * u(1:end-1).^2)); % [-] theoretical beta gain
 
 % ---------------------------------
 %% Plot load transfer
