@@ -241,7 +241,7 @@ figure()
 hold on
 grid on
 plot(mu_r(pos_mu_r_remap),'x', 'DisplayName', 'mu_r Remap')
-plot(mu_f(pos_mu_f_remap), 'o',  'DisplayName', 'mu_f Remap')
+plot(mu_f(pos_mu_f_remap),'o',  'DisplayName', 'mu_f Remap')
 for i=1:length(norm_acc)
       text(idx(i) - 0.5, norm_acc(i)+0.05, num2str(pos_mu_r_remap(i)));
       text(idx(i) - 0.5 , norm_acc(i)-0.05, num2str(pos_mu_f_remap(i)))

@@ -1,4 +1,4 @@
-function dataAnalysis(model_sim,vehicle_data,Ts)
+function dataAnalysis(model_sim,vehicle_data,Ts,Tinit)
     close all
     % ----------------------------------------------------------------
     %% Post-Processing and Data Analysis
@@ -25,6 +25,8 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     % ---------------------------------
     time_sim = model_sim.states.u.time;
     dt = time_sim(2)-time_sim(1);
+    
+    [~, start_time] = min(abs(time_sim - Tinit)); % time when ss starts
 
     % -----------------
     % Inputs
@@ -126,110 +128,6 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     FAz_f     = CAzf*u.^2;
     FAz_r     = CAzr*u.^2;
 
-    % LATERAL LOAD TRANSFER
-    % -----------------
-    % Longitudinal load transfer
-    DFx_f = (Fx_fr - Fx_fl) / 2;
-    DFx_r = (Fx_rr - Fx_rl) / 2;
-
-    % -----------------
-    % Lateral load transfer
-    DFy_f = (Fy_fr + Fy_fl) / 2;
-    DFy_r = (Fy_rr + Fy_rl) / 2;
-
-    % -----------------
-    % Vertical load transfer
-    DFz_f = (Fz_fr - Fz_fl) / 2;
-    DFz_r = (Fz_rr - Fz_rl) / 2;
-
-    % -----------------
-    % Vertical load
-    Fzf = m * g * Lr / L - m * Ax * hg / L + FAz_f(1:end-1); % front vertical load
-    Fzr = m * g * Lf / L + m * Ax * hg / L + FAz_r(1:end-1); % rear vertical load
-
-    % -----------------
-    % Lateral load
-
-
-    % NORMALIZED AXLE CHARACTERISTICS
-    ay_0 = rho_ss .* u; % Fixed acceleration (to be fixed)
-    ay_0_norm = ay_0 / g;
-    % -----------------
-    % alpha rear (rear axle side slio angle)
-    alpha_r = - (v - Omega * Lr) ./ u;
-
-    % normalized rear lateral force
-    Fz_r0 = m * g * Lf / L;
-    % Fy_r = Fy_rr + Fy_rl;
-    % mu_r = Fy_r / Fz_r0;
-
-    % -----------------
-    % alpha front
-    alpha_f = delta_D/tau_D*pi/180 - (v + Omega * Lf) ./ u;
-
-    % normalized front lateral force
-    Fz_f0 = m * g * Lr / L;
-    % Fy_f = sind(delta_fl).*Fx_fl + cosd(delta_fl).*Fy_fl + sind(delta_fr).*Fx_fr + cosd(delta_fr).*Fy_fr; % angle are in deg
-    % mu_f = Fy_f / Fz_f0;
-
-
-    % Handling diagram
-    Delta_alpha = alpha_r - alpha_f; % [rad]
-    rho = (delta_D/tau_D*pi/180 + Delta_alpha)/L; % curvature [1/m]
-    [~, idx] = sort(Ay, 'ascend'); % sort the acceleration
-    Ay_norm = Ay(idx)/g; % sort and normalize the acceleration
-    Delta_alpha = Delta_alpha(idx); % sort the slidign according to the acceleration
-    rho = rho(idx); % sort the curvature according to the acceleration
-    rho_ss_sort = rho_ss(idx);
-
-    handling = delta_D(1:end-1)/tau_D*pi/180 - rho_ss_sort*L; % [rad] handling metric
-    
-    % ---------------------------------
-    %% UNDERSTEERING GRADIENT
-    % ---------------------------------
-    % Cornering stiffnesses
-    C_alpha_r = diff(Fy__r) ./ diff(alpha_r);
-    C_alpha_f = diff(Fy__f) ./ diff(alpha_f);
-    C_alpha_r = C_alpha_r(idx);
-    C_alpha_f = C_alpha_f(idx);
-
-    K_US_theo = - m / (L / tau_D) * (Lf ./ C_alpha_r - Lr ./ C_alpha_f);
-    K_US_theo2 = - diff(Delta_alpha) ./ diff(Ay);
-
-    % fitting the linear part
-    ay_max_lin = 0.6; % [-] maximum norm acceleration for whom linearity holds 
-    ay_fit = Ay_norm(Ay_norm < ay_max_lin);
-    ay_fit_lin = [0:1e-6:ay_max_lin];
-    handling_fit = handling(Ay_norm < ay_max_lin);
-    p_lin = polyfit(ay_fit,handling_fit,1); % fitting the linear part
-    K_US = p_lin(1); % understeering gradient
-    handling_fit_lin = polyval(p_lin, ay_fit_lin); % fitted handling diagram
-    % fitting the nonlinear part 
-    ay_fit = Ay_norm(Ay_norm > ay_max_lin);
-    handling_fit = handling(Ay_norm > ay_max_lin) - K_US * ay_fit;
-    poly_deg = 3;
-    A = ones(length(ay_fit), poly_deg);
-    for i = 1:poly_deg - 1 
-        A(:,i) = ay_fit.^(poly_deg - i + 1);
-    end
-    p_tmp = inv(A' * A) * A'*handling_fit; % coefficients of the regression
-    
-    ay_fit_nonlin = [ay_max_lin:0.001:Ay_norm(end)];
-    p_nl = p_tmp;
-    p_nl(end + 1) = p_nl(end);
-    p_nl(end - 1) = K_US; % add the linear term from privious fitting
-    handling_fit_nonlin = polyval(p_nl, ay_fit_nonlin); % fitted handling diagram
-
-    % ---------------------------------
-    %% YAW RATE & BETA GAIN
-    % ---------------------------------
-    yaw_rate_gain = Omega ./ (delta_D * pi / 180); % [1/s]
-    beta_gain = beta ./ (delta_D*pi/180); % [-]
-    yaw_rate_gain_theo = u / L / tau_D ./ (1 + u.^2 * K_US); % [1/s] theoretical yaw rate gain
-    beta_gain_theo = Lr ./ (tau_D * L) - m / L^3 * (Lf^2 ./ C_alpha_r + Lr^2 ./ C_alpha_f) ./ tau_D .* (u(1:end-1).^2 ./ (1 + K_US * u(1:end-1).^2)); % [-] theoretical beta gain
-
-
-
     
     % ---------------------------------
     %% PLOTS
@@ -243,12 +141,14 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     ax(1) = subplot(211);
     hold on
     plot(time_sim,ped_0,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('pedal $p_0$ [-]')
     xlim([0 time_sim(end)])
     % --- delta_0 --- %
     ax(2) = subplot(212);
     plot(time_sim,delta_D,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('steering angle $\delta_D$ [deg]')
     xlim([0 time_sim(end)])
@@ -260,24 +160,28 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     % --- u --- %
     ax(1) = subplot(221);
     plot(time_sim,u*3.6,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$u$ [km/h]')
     xlim([0 time_sim(end)])
     % --- v --- %
     ax(2) = subplot(222);
     plot(time_sim,v,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$v$ [m/s]')
     xlim([0 time_sim(end)])
     % --- Omega --- %
     ax(3) = subplot(223);
     plot(time_sim,Omega,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$\Omega$ [rad/s]')
     xlim([0 time_sim(end)])
     % --- VG --- %
     ax(3) = subplot(224);
     plot(time_sim,sqrt(u.^2 + v.^2),'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$V_G$ [rad/s]')
     xlim([0 time_sim(end)])
@@ -289,12 +193,14 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     % --- delta_0 --- %
     ax(1) = subplot(221);
     plot(time_sim,delta_D,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$\delta_0$ [deg]')
     xlim([0 time_sim(end)])
     % --- delta_fr --- %
     ax(2) = subplot(222);
     plot(time_sim,delta_fr,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$\delta_{fr}$ [deg]')
     xlim([0 time_sim(end)])
@@ -302,6 +208,7 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     ax(3) = subplot(223);
     hold on
     plot(time_sim,delta_fl,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$\delta_{fl}$ [deg]')
     xlim([0 time_sim(end)])
@@ -311,6 +218,7 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     plot(time_sim,delta_D/tau_D,'LineWidth',2)
     plot(time_sim,delta_fr,'LineWidth',2)
     plot(time_sim,delta_fl,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     legend('$\delta_D/\tau_D$','$\delta_{fr}$','$\delta_{fl}$','location','best')
     xlim([0 time_sim(end)])
@@ -322,48 +230,56 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     % --- alpha_rr --- %
     ax(1) = subplot(331);
     plot(time_sim,alpha_rr,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$\alpha_{rr}$ [deg]')
     xlim([0 time_sim(end)])
     % --- alpha_rl --- %
     ax(2) = subplot(332);
     plot(time_sim,alpha_rl,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$\alpha_{rl}$ [deg]')
     xlim([0 time_sim(end)])
     % --- alpha_fr --- %
     ax(3) = subplot(333);
     plot(time_sim,alpha_fr,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$\alpha_{fr}$ [deg]')
     xlim([0 time_sim(end)])
     % --- alpha_fl --- %
     ax(4) = subplot(334);
     plot(time_sim,alpha_fl,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$\alpha_{fl}$ [deg]')
     xlim([0 time_sim(end)])
     % --- Fy_rr --- %
     ax(5) = subplot(335);
     plot(time_sim,Fy_rr,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$Fy_{rr}$ [N]')
     xlim([0 time_sim(end)])
     % --- Fy_rl --- %
     ax(6) = subplot(336);
     plot(time_sim,Fy_rl,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$Fy_{rl}$ [Nm]')
     xlim([0 time_sim(end)])
     % --- Fy_fr --- %
     ax(7) = subplot(337);
     plot(time_sim,Fy_fr,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$Fy_{fr}$ [N]')
     xlim([0 time_sim(end)])
     % --- Fy_fl --- %
     ax(8) = subplot(338);
     plot(time_sim,Fy_fl,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$Fy_{fl}$ [N]')
     xlim([0 time_sim(end)])
@@ -379,48 +295,56 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     % --- kappa_rr --- %
     ax(1) = subplot(331);
     plot(time_sim,kappa_rr,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$\kappa_{rr}$ [-]')
     xlim([0 time_sim(end)])
     % --- kappa_rl --- %
     ax(2) = subplot(332);
     plot(time_sim,kappa_rl,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$\kappa_{rl}$ [-]')
     xlim([0 time_sim(end)])
     % --- kappa_fr --- %
     ax(3) = subplot(333);
     plot(time_sim,kappa_fr,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$\kappa_{fr}$ [-]')
     xlim([0 time_sim(end)])
     % --- kappa_fl --- %
     ax(4) = subplot(334);
     plot(time_sim,kappa_fl,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$\kappa_{fl}$ [-]')
     xlim([0 time_sim(end)])
     % --- Fx_rr --- %
     ax(5) = subplot(335);
     plot(time_sim,Fx_rr,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$Fx_{rr}$ [N]')
     xlim([0 time_sim(end)])
     % --- Fx_rl --- %
     ax(6) = subplot(336);
     plot(time_sim,Fx_rl,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$Fx_{rl}$ [N]')
     xlim([0 time_sim(end)])
     % --- Fx_fr --- %
     ax(7) = subplot(337);
     plot(time_sim,Fx_fr,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$Fx_{fr}$ [N]')
     xlim([0 time_sim(end)])
     % --- Fx_fl --- %
     ax(8) = subplot(338);
     plot(time_sim,Fx_fl,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$Fx_{fl}$ [N]')
     xlim([0 time_sim(end)])
@@ -491,48 +415,56 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     % --- Fz_rr --- %
     ax(1) = subplot(331);
     plot(time_sim,Fz_rr,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$Fz_{rr}$ [N]')
     xlim([0 time_sim(end)])
     % --- Fz_rl --- %
     ax(2) = subplot(332);
     plot(time_sim,Fz_rl,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$Fz_{rl}$ [N]')
     xlim([0 time_sim(end)])
     % --- Fz_fr --- %
     ax(3) = subplot(333);
     plot(time_sim,Fz_fr,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$Fz_{fr}$ [N]')
     xlim([0 time_sim(end)])
     % --- Fz_fl --- %
     ax(4) = subplot(334);
     plot(time_sim,Fz_fl,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$Fz_{fl}$ [N]')
     xlim([0 time_sim(end)])
     % --- Mz_rr --- %
     ax(5) = subplot(335);
     plot(time_sim,Mz_rr,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$Mz_{rr}$ [Nm]')
     xlim([0 time_sim(end)])
     % --- Mz_rl --- %
     ax(6) = subplot(336);
     plot(time_sim,Mz_rl,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$Mz_{rl}$ [Nm]')
     xlim([0 time_sim(end)])
     % --- Mz_fr --- %
     ax(7) = subplot(337);
     plot(time_sim,Mz_fr,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$Mz_{fr}$ [Nm]')
     xlim([0 time_sim(end)])
     % --- Mz_fl --- %
     ax(8) = subplot(338);
     plot(time_sim,Mz_fl,'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$Mz_{fl}$ [Nm]')
     xlim([0 time_sim(end)])
@@ -584,6 +516,7 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     plot(time_sim(2:end),diff(u)/Ts,'--g','LineWidth',2)
     plot(time_sim(2:end),Ax_filt,'-.b','LineWidth',1)
     plot(time_sim(2:end),dot_u_filt,'-.r','LineWidth',1)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$a_{x}$ $[m/s^2]$')
     legend('$\dot{u}-\Omega v$','$\dot{u}$','filt $\dot{u}-\Omega v$','filt $\dot{u}$','Location','southeast')
@@ -593,6 +526,7 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     plot(time_sim(2:end),dot_v + Omega(2:end).*u(2:end),'LineWidth',2)
     hold on
     plot(time_sim(2:end),Omega(2:end).*u(2:end),'--g','LineWidth',1)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$a_{y}$ $[m/s^2]$')
     legend('$\dot{v}+\Omega u$','$\Omega u$','Location','best')
@@ -600,6 +534,7 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     % --- beta --- %
     ax(3) = subplot(223);
     plot(time_sim,rad2deg(beta),'LineWidth',2)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$\beta$ [deg]')
     xlim([0 time_sim(end)])
@@ -608,6 +543,7 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     plot(time_sim,rho_ss,'LineWidth',2)
     hold on
     plot(time_sim(1:end-1),rho_tran,'--g','LineWidth',1)
+    xline(Tinit, '--r', 'LineWidth', 2);
     grid on
     title('$\rho$ [$m^{-1}$]')
     legend('$\rho_{ss}$','$\rho_{transient}$','Location','best')
@@ -681,162 +617,7 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     grid on
     hold off
     
-    % % ---------------------------------
-    % %% Plot load transfer
-    % % ---------------------------------
-    % % --- DeltaFxf DeltaFxr -- %
-    % figure('Name','Load transfer','NumberTitle','off'), clf
-    % ax(1) = subplot(221);
-    % plot(time_sim, DFx_f,'LineWidth',2)
-    % hold on
-    % plot(time_sim, DFx_r, '--', 'LineWidth',2)
-    % legend('$\Delta F_{xf}$','$\Delta F_{xr}$','location','best')
-    % title('$\Delta F_{xf}$ and $\Delta F_{xr}$ [N]')
-    % grid on
-    % % --- DeltaFyf DeltaFyr -- %
-    % ax(2) = subplot(222);
-    % plot(time_sim, DFy_f,'LineWidth',2)
-    % hold on
-    % plot(time_sim, DFy_r, '--', 'LineWidth',2)
-    % legend('$\Delta F_{yf}$','$\Delta F_{yr}$','location','best')
-    % title('$\Delta F_{yf}$ and $\Delta F_{yr}$ [N]')
-    % grid on
-    % % --- DeltaFzf DeltaFzr -- %
-    % ax(3) = subplot(223);
-    % plot(time_sim, DFz_f,'LineWidth',2)
-    % hold on
-    % plot(time_sim, DFz_r, '--', 'LineWidth',2)
-    % legend('$\Delta F_{zf}$','$\Delta F_{zr}$','location','best')
-    % title('$\Delta F_{zf}$ and $\Delta F_{zr}$ [N]')
-    % grid on
-    % sgtitle('Lateral load transfer', 'FontSize', 20)
-    
-    % clear ax
-
-    % % figure('Name', 'Vertical load', 'NumberTitle', 'off'), clf
-    % % ax(1) = subplot(1,2,1);
-    % % hold on
-    % % grid on
-    % % plot(time_sim(1:end-1), Fzf, 'LineWidth', 2) % computed with formulas
-    % % plot(time_sim, Fz_fr + Fz_fl, '--', 'LineWidth', 2) % from simulation
-    % % title('$F_{zf}$ [N]')
-    % % legend('Theo', 'Sim.', 'location', 'northwest')
-    % % ax(2) = subplot(1,2,2);
-    % % hold on
-    % % grid on
-    % % plot(time_sim(1:end-1), Fzr, 'LineWidth', 2) % computed with formulas
-    % % plot(time_sim, Fz_rr + Fz_rl, '--', 'LineWidth', 2) % from simulation
-    % % title('$F_{zr}$ [N]')
-    % % legend('Theo', 'Sim.', 'location', 'northeast')
-    % % sgtitle('Vertical load', 'FontSize', 20)
-
-    % % clear ax
-
-    % % ---------------------------------
-    % %% Plot axle characteristics
-    % % ---------------------------------
-    % figure('Name','Long axle char','NumberTitle','off'), clf
-    % subplot(1,2,1)
-    % hold on
-    % grid on
-    % plot(alpha_r, Fx_rr, 'LineWidth',2)
-    % plot(alpha_r, Fx_rl, 'LineWidth',2)
-    % title('$F_{xr}$ [N]')
-    % xlabel('$\alpha_r$')
-    % ylabel('$F_{xrr}, F_{xrl}$')
-    % legend('$F_{xrr}$','$F_{xrl}$','location','southeast')
-    % xlim([0.001 0.06])
-    % subplot(1,2,2)
-    % hold on
-    % grid on
-    % plot(alpha_f, Fx_fr, 'LineWidth',2)
-    % plot(alpha_f, Fx_fl, 'LineWidth',2)
-    % title('$F_{xf}$ [N]')
-    % xlabel('$\alpha_f$')
-    % ylabel('$F_{xfr}, F_{xfl}$')
-    % legend('$F_{xfr}$','$F_{xfl}$','location','southeast')
-    % xlim([0.001 0.06])
-
-    % figure('Name','Lat axle char','NumberTitle','off'), clf
-    % subplot(1,2,1)
-    % hold on
-    % grid on
-    % plot(alpha_r, Fy_rr/Fz_r0, 'LineWidth',2)
-    % plot(alpha_r, Fy_rl/Fz_r0, 'LineWidth',2)
-    % title('$F_{yr}$ [N]')
-    % xlabel('$\alpha_r$')
-    % ylabel('$F_{yrr}, F_{yrl}$')
-    % legend('$F_{yrr}$','$F_{yrl}$','location','southeast')
-    % % xlim([0.001 0.06])
-    % subplot(1,2,2)
-    % hold on
-    % grid on
-    % plot(alpha_f, Fy_fr/Fz_f0, 'LineWidth',2)
-    % plot(alpha_f, Fy_fl/Fz_f0, 'LineWidth',2)
-    % title('$F_{yf}$ [N]')
-    % xlabel('$\alpha_f$')
-    % ylabel('$F_{yfr}, F_{yfl}$')
-    % legend('$F_{yfr}$','$F_{yfl}$','location','southeast')
-    % % xlim([0.001 0.06])
-
-    % ---------------------------------
-    %% Plot normalized axle characteristics
-    % ---------------------------------
-    % --- mu_r -- %
-    % idx = time_sim > 2;
-    figure('Name','Norm axle char. 2','NumberTitle','off'), clf
-    hold on
-    grid on
-    plot(alpha_r(idx)*180/pi, mu_r(idx), 'LineWidth',2)
-    plot(alpha_f(idx)*180/pi, mu_f(idx), 'LineWidth',2)
-    title('$\mu_r, \mu_f $')
-    xlabel('$\alpha_r, \alpha_f [deg]$')
-    ylabel('$\mu_r, \mu_f$ [-]')
-    legend('$\mu_r$','$\mu_f$','location','best')
-    
-
-    % ---------------------------------
-    %% Plot handling digram
-    % ---------------------------------
-    figure('Name','Handling diagram','NumberTitle','off'), clf
-    hold on
-    grid on
-    plot(Ay_norm, handling, 'LineWidth',2)
-    plot(Ay_norm, -Delta_alpha, 'LineWidth',2)
-    plot(ay_fit_lin, handling_fit_lin, '--', 'LineWidth',2)
-    plot(ay_fit_nonlin, handling_fit_nonlin, '--', 'LineWidth',2)
-    title('Handling diagram')
-    xlabel('$\frac{a_y}{g}$ [m/s$^2$]')
-    ylabel('$\delta_{D}\tau_{H} - \rho L \ [rad]$')
-    legend('Data', 'Fit in linear range', 'Fit in non-linear range', 'location', 'northeast')
-    
-    % % ---------------------------------
-    % %% Plot understeering gradient
-    % % ---------------------------------
-    % figure('Name','Understeering grad','NumberTitle','off'), clf
-    % hold on
-    % grid on
-    % plot(Ay_norm, K_US_theo, 'LineWidth',2)
-    % plot(Ay_norm(1:end-1), K_US_theo2, 'LineWidth',2)
-    % title('Understeering gradient')
-    % legend('Formula', 'Diff', 'location', 'northeast')
-    % xlim("padded")
-    % ylabel('$K_{US}$')
-
-
-    % % ---------------------------------
-    % %% PLOT BETA AND YAW RATE GAINS
-    % % ---------------------------------
-    % figure('Name','Yaw rate gain','NumberTitle','off'), clf
-    % hold on 
-    % grid on
-    % plot(u, yaw_rate_gain, 'LineWidth',2)
-    % plot(u, yaw_rate_gain_theo, 'LineWidth',2)
-    % plot(u, beta_gain, 'LineWidth',2)
-    % plot(u(1:end-1), beta_gain_theo, 'LineWidth',2)
-    % title('Yaw rate and $\beta$ gain')
-    % legend('Yaw gain measure', 'Yaw gain theo', '$\beta$ gain measure', '$\beta$ gain theo', 'location', 'northeast')
-
+   
     % % ---
     % %% FORCE AS FUNCTION OF THE SLIP
     % % --
@@ -868,13 +649,373 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     % % linkaxes(ax,'x')
     % clear ax
 
-    figure()
-    hold on
-    plot(time_sim, mu_r, 'DisplayName','$\mu_r$')
-    plot(time_sim, mu_f, 'DisplayName','$\mu_f$')
-    legend('Location','southeast')
-    xlabel('Time [s]')
-    ylabel('$\mu_r$, $\mu_f$')
-    grid on
+ 
+
+
+
+%% REMOVE THE TRANSIENT
+ped_0      = model_sim.inputs.ped_0.data(start_time:end);
+delta_D    = model_sim.inputs.delta_D.data(start_time:end);
+x_CoM      = model_sim.states.x.data(start_time:end);
+y_CoM      = model_sim.states.y.data(start_time:end);
+psi        = model_sim.states.psi.data(start_time:end);
+u          = model_sim.states.u.data(start_time:end);
+v          = model_sim.states.v.data(start_time:end);
+Omega      = model_sim.states.Omega.data(start_time:end);
+Fz_rr      = model_sim.states.Fz_rr.data(start_time:end);
+Fz_rl      = model_sim.states.Fz_rl.data(start_time:end);
+Fz_fr      = model_sim.states.Fz_fr.data(start_time:end);
+Fz_fl      = model_sim.states.Fz_fl.data(start_time:end);
+delta      = model_sim.states.delta.data(start_time:end);
+omega_rr   = model_sim.states.omega_rr.data(start_time:end);
+omega_rl   = model_sim.states.omega_rl.data(start_time:end);
+omega_fr   = model_sim.states.omega_fr.data(start_time:end);
+omega_fl   = model_sim.states.omega_fl.data(start_time:end);
+alpha_rr   = model_sim.states.alpha_rr.data(start_time:end);
+alpha_rl   = model_sim.states.alpha_rl.data(start_time:end);
+alpha_fr   = model_sim.states.alpha_fr.data(start_time:end);
+alpha_fl   = model_sim.states.alpha_fl.data(start_time:end);
+kappa_rr   = model_sim.states.kappa_rr.data(start_time:end);
+kappa_rl   = model_sim.states.kappa_rl.data(start_time:end);
+kappa_fr   = model_sim.states.kappa_fr.data(start_time:end);
+kappa_fl   = model_sim.states.kappa_fl.data(start_time:end);
+Tw_rr      = model_sim.extra_params.Tw_rr.data(start_time:end);
+Tw_rl      = model_sim.extra_params.Tw_rl.data(start_time:end);
+Tw_fr      = model_sim.extra_params.Tw_fr.data(start_time:end);
+Tw_fl      = model_sim.extra_params.Tw_fl.data(start_time:end);
+Fx_rr      = model_sim.extra_params.Fx_rr.data(start_time:end);
+Fx_rl      = model_sim.extra_params.Fx_rl.data(start_time:end);
+Fx_fr      = model_sim.extra_params.Fx_fr.data(start_time:end);
+Fx_fl      = model_sim.extra_params.Fx_fl.data(start_time:end);
+Fy_rr      = model_sim.extra_params.Fy_rr.data(start_time:end);
+Fy_rl      = model_sim.extra_params.Fy_rl.data(start_time:end);
+Fy_fr      = model_sim.extra_params.Fy_fr.data(start_time:end);
+Fy_fl      = model_sim.extra_params.Fy_fl.data(start_time:end);
+Mz_rr      = model_sim.extra_params.Mz_rr.data(start_time:end);
+Mz_rl      = model_sim.extra_params.Mz_rl.data(start_time:end);
+Mz_fr      = model_sim.extra_params.Mz_fr.data(start_time:end);
+Mz_fl      = model_sim.extra_params.Mz_fl.data(start_time:end);
+gamma_rr   = model_sim.extra_params.gamma_rr.data(start_time:end);
+gamma_rl   = model_sim.extra_params.gamma_rl.data(start_time:end);
+gamma_fr   = model_sim.extra_params.gamma_fr.data(start_time:end);
+gamma_fl   = model_sim.extra_params.gamma_fl.data(start_time:end);
+delta_fr   = model_sim.extra_params.delta_fr.data(start_time:end);
+delta_fl   = model_sim.extra_params.delta_fl.data(start_time:end);
+mu_f       = model_sim.extra_params.mu_f.data(start_time:end);
+mu_r       = model_sim.extra_params.mu_r.data(start_time:end);
+Fy__f       = model_sim.extra_params.Fy__f.data(start_time:end);
+Fy__r       = model_sim.extra_params.Fy__r.data(start_time:end);
+time_sim = time_sim(start_time:end);
+
+% Chassis side slip angle beta [rad]
+beta = atan(v./u);
+
+% -----------------
+% Accelerations
+% -----------------
+% Derivatives of u, v [m/s^2]
+dot_u = diff(u)/Ts;
+dot_v = diff(v)/Ts;
+% Total longitudinal and lateral accelerations
+Ax = dot_u(1:end) - Omega(2:end).*v(2:end);
+Ay = dot_v(1:end) + Omega(2:end).*u(2:end);
+Ay_norm = Ay/g;
+% Ax low-pass filtered signal (zero-phase digital low-pass filtering)
+Wn_filter = 0.01;
+[b_butt,a_butt] = butter(4,Wn_filter,'low');
+Ax_filt = filtfilt(b_butt,a_butt,Ax);  
+dot_u_filt = filtfilt(b_butt,a_butt,dot_u);  
+% Steady state lateral acceleration
+Ay_ss = Omega.*u;
+% Longitudinal jerk [m/s^3]
+jerk_x = diff(dot_u)/Ts;
+
+% -----------------
+% Other parameters
+% -----------------
+% Total CoM speed [m/s]
+vG = sqrt(u.^2 + v.^2);
+% Steady state and transient curvature [m]
+rho_ss   = Omega./vG;
+rho_tran = ((dot_v.*u(1:end-1) - dot_u.*v(1:end-1)) ./ ((vG(1:end-1)).^3)) + rho_ss(1:end-1);
+% Desired sinusoidal steering angle for the equivalent single track front wheel
+desired_steer_atWheel = delta/tau_D;
+n_sim = length(model_sim);
+FAxc      = CAx*u.^2; % long friction
+FAz_f     = CAzf*u.^2;
+FAz_r     = CAzr*u.^2;
+
+% LATERAL LOAD TRANSFER
+% -----------------
+% Longitudinal
+DFx_f = (Fx_fr - Fx_fl) / 2;
+DFx_r = (Fx_rr - Fx_rl) / 2;
+
+% -----------------
+% Lateral
+DFy_f = (Fy_fr + Fy_fl) / 2;
+DFy_r = (Fy_rr + Fy_rl) / 2;
+
+% -----------------
+% Vertical
+DFz_f = (Fz_fr - Fz_fl) / 2;
+DFz_r = (Fz_rr - Fz_rl) / 2;
+
+% -----------------
+% Vertical load
+Fzf = m * g * Lr / L - m * Ax * hg / L + FAz_f(1:end-1); % front vertical load
+Fzr = m * g * Lf / L + m * Ax * hg / L + FAz_r(1:end-1); % rear vertical load
+
+% NORMALIZED AXLE CHARACTERISTICS
+ay_0 = rho_ss .* u; % Fixed acceleration (to be fixed)
+ay_0_norm = ay_0 / g;
+% -----------------
+% alpha rear (rear axle side slio angle)
+alpha_r = - (v - Omega * Lr) ./ u;
+
+% normalized rear lateral force
+Fz_r0 = m * g * Lf / L;
+
+% -----------------
+% alpha front
+alpha_f = delta - (v + Omega * Lf) ./ u; % /tau_D*pi/180
+figure();plot(alpha_f);hold on;plot(delta, '--');plot(- (v + Omega * Lf) ./ u, '-.')
+% normalized front lateral force
+Fz_f0 = m * g * Lr / L;
+
+
+% Handling diagram
+minmax_norm_axle_char = min(max(mu_r), max(mu_f));
+Ay_hand = 0:0.005:minmax_norm_axle_char; % nomralized acc
+for i=1:length(Ay_hand)
+  [~, pos_mu_r_remap(i)] = min(abs(mu_r - Ay_hand(i)));
+  [~, pos_mu_f_remap(i)] = min(abs(mu_f - Ay_hand(i)));
 end
-    
+Delta_alpha = alpha_r(pos_mu_r_remap) - alpha_f(pos_mu_f_remap); % [rad]
+handling = -Delta_alpha; % [rad]
+
+% Delta_alpha = alpha_r - alpha_f; % [rad]
+% rho = (delta_D/tau_D*pi/180 + Delta_alpha)/L; % curvature [1/m]
+% [~, idx] = sort(Ay, 'ascend'); % sort the acceleration
+% Ay_norm = Ay(idx)/g; % sort and normalize the acceleration
+% Delta_alpha = Delta_alpha(idx); % sort the slidign according to the acceleration
+% rho = rho(idx); % sort the curvature according to the acceleration
+% rho_ss_sort = rho_ss(idx);
+
+% handling = delta_D(1:end-1)/tau_D*pi/180 - rho_ss_sort*L; % [rad] handling metric
+
+% ---------------------------------
+%% UNDERSTEERING GRADIENT
+% ---------------------------------
+% Cornering stiffnesses
+C_alpha_r = diff(Fy__r) ./ diff(alpha_r);
+C_alpha_f = diff(Fy__f) ./ diff(alpha_f);
+
+K_US_theo = - g * m / (L / tau_D) * (Lf ./ C_alpha_r - Lr ./ C_alpha_f);
+K_US_theo2 = - g*diff(Delta_alpha) ./ diff(Ay_hand');
+
+% fitting the linear part
+ay_max_lin = 0.6; % [-] maximum norm acceleration for whom linearity holds 
+ay_fit = Ay_hand(Ay_hand < ay_max_lin);
+ay_fit_lin = [0:1e-6:ay_max_lin];
+handling_fit = handling(Ay_hand < ay_max_lin);
+p_lin = polyfit(ay_fit,handling_fit,1); % fitting the linear part
+K_US = p_lin(1); % understeering gradient
+handling_fit_lin = polyval(p_lin, ay_fit_lin); % fitted handling diagram
+% fitting the nonlinear part 
+ay_fit = Ay_hand(Ay_hand > ay_max_lin);
+handling_fit = handling(Ay_hand > ay_max_lin) - K_US * ay_fit';
+poly_deg = 3;
+A = ones(length(ay_fit), poly_deg);
+for i = 1:poly_deg - 1 
+    A(:,i) = ay_fit.^(poly_deg - i + 1);
+end
+p_tmp = inv(A' * A) * A'*handling_fit; % coefficients of the regression
+
+ay_fit_nonlin = [ay_max_lin:0.001:Ay_hand(end)];
+p_nl = p_tmp;
+p_nl(end + 1) = p_nl(end);
+p_nl(end - 1) = K_US; % add the linear term from privious fitting
+handling_fit_nonlin = polyval(p_nl, ay_fit_nonlin); % fitted handling diagram
+
+% ---------------------------------
+%% YAW RATE & BETA GAIN
+% ---------------------------------
+yaw_rate_gain = Omega ./ (delta_D * pi / 180); % [1/s]
+beta_gain = beta ./ (delta_D*pi/180); % [-]
+yaw_rate_gain_theo = u / L / tau_D ./ (1 + u.^2 * K_US); % [1/s] theoretical yaw rate gain
+beta_gain_theo = Lr ./ (tau_D * L) - m / L^3 * (Lf^2 ./ C_alpha_r + Lr^2 ./ C_alpha_f) ./ tau_D .* (u(1:end-1).^2 ./ (1 + K_US * u(1:end-1).^2)); % [-] theoretical beta gain
+
+% ---------------------------------
+%% Plot load transfer
+% ---------------------------------
+% --- DeltaFxf DeltaFxr -- %
+figure('Name','Load transfer','NumberTitle','off'), clf
+ax(1) = subplot(221);
+plot(Ay_norm, DFx_f(1:end-1),'LineWidth',2)
+hold on
+plot(Ay_norm, DFx_r(1:end-1), '--', 'LineWidth',2)
+legend('$\Delta F_{xf}$','$\Delta F_{xr}$','location','best')
+title('$\Delta F_{xf}$ and $\Delta F_{xr}$ [N]')
+xlabel('$a_y/g [-]$')
+grid on
+% --- DeltaFyf DeltaFyr -- %
+ax(2) = subplot(222);
+plot(Ay_norm, DFy_f(1:end-1),'LineWidth',2)
+hold on
+plot(Ay_norm, DFy_r(1:end-1), '--', 'LineWidth',2)
+legend('$\Delta F_{yf}$','$\Delta F_{yr}$','location','best')
+title('$\Delta F_{yf}$ and $\Delta F_{yr}$ [N]')
+xlabel('$a_y/g [-]$')
+grid on
+% --- DeltaFzf DeltaFzr -- %
+ax(3) = subplot(223);
+plot(Ay_norm, DFz_f(1:end-1),'LineWidth',2)
+hold on
+plot(Ay_norm, DFz_r(1:end-1), '--', 'LineWidth',2)
+legend('$\Delta F_{zf}$','$\Delta F_{zr}$','location','best')
+title('$\Delta F_{zf}$ and $\Delta F_{zr}$ [N]')
+xlabel('$a_y/g [-]$')
+grid on
+sgtitle('Lateral load transfer', 'FontSize', 20)
+
+clear ax
+
+  % % figure('Name', 'Vertical load', 'NumberTitle', 'off'), clf
+  % % ax(1) = subplot(1,2,1);
+  % % hold on
+  % % grid on
+  % % plot(time_sim(1:end-1), Fzf, 'LineWidth', 2) % computed with formulas
+  % % plot(time_sim, Fz_fr + Fz_fl, '--', 'LineWidth', 2) % from simulation
+  % % title('$F_{zf}$ [N]')
+  % % legend('Theo', 'Sim.', 'location', 'northwest')
+  % % ax(2) = subplot(1,2,2);
+  % % hold on
+  % % grid on
+  % % plot(time_sim(1:end-1), Fzr, 'LineWidth', 2) % computed with formulas
+  % % plot(time_sim, Fz_rr + Fz_rl, '--', 'LineWidth', 2) % from simulation
+  % % title('$F_{zr}$ [N]')
+  % % legend('Theo', 'Sim.', 'location', 'northeast')
+  % % sgtitle('Vertical load', 'FontSize', 20)
+
+  % % clear ax
+
+  % % ---------------------------------
+  % %% Plot axle characteristics
+  % % ---------------------------------
+  % figure('Name','Long axle char','NumberTitle','off'), clf
+  % subplot(1,2,1)
+  % hold on
+  % grid on
+  % plot(alpha_r, Fx_rr, 'LineWidth',2)
+  % plot(alpha_r, Fx_rl, 'LineWidth',2)
+  % title('$F_{xr}$ [N]')
+  % xlabel('$\alpha_r$')
+  % ylabel('$F_{xrr}, F_{xrl}$')
+  % legend('$F_{xrr}$','$F_{xrl}$','location','southeast')
+  % xlim([0.001 0.06])
+  % subplot(1,2,2)
+  % hold on
+  % grid on
+  % plot(alpha_f, Fx_fr, 'LineWidth',2)
+  % plot(alpha_f, Fx_fl, 'LineWidth',2)
+  % title('$F_{xf}$ [N]')
+  % xlabel('$\alpha_f$')
+  % ylabel('$F_{xfr}, F_{xfl}$')
+  % legend('$F_{xfr}$','$F_{xfl}$','location','southeast')
+  % xlim([0.001 0.06])
+
+  % figure('Name','Lat axle char','NumberTitle','off'), clf
+  % subplot(1,2,1)
+  % hold on
+  % grid on
+  % plot(alpha_r, Fy_rr/Fz_r0, 'LineWidth',2)
+  % plot(alpha_r, Fy_rl/Fz_r0, 'LineWidth',2)
+  % title('$F_{yr}$ [N]')
+  % xlabel('$\alpha_r$')
+  % ylabel('$F_{yrr}, F_{yrl}$')
+  % legend('$F_{yrr}$','$F_{yrl}$','location','southeast')
+  % % xlim([0.001 0.06])
+  % subplot(1,2,2)
+  % hold on
+  % grid on
+  % plot(alpha_f, Fy_fr/Fz_f0, 'LineWidth',2)
+  % plot(alpha_f, Fy_fl/Fz_f0, 'LineWidth',2)
+  % title('$F_{yf}$ [N]')
+  % xlabel('$\alpha_f$')
+  % ylabel('$F_{yfr}, F_{yfl}$')
+  % legend('$F_{yfr}$','$F_{yfl}$','location','southeast')
+  % % xlim([0.001 0.06])
+
+  % ---------------------------------
+  %% Plot normalized axle characteristics
+  % ---------------------------------
+  % --- mu_r -- %
+  % idx = time_sim > 2;
+  figure('Name','Norm axle char. 2','NumberTitle','off'), clf
+  hold on
+  grid on
+  plot(alpha_r*180/pi, mu_r, 'LineWidth',2)
+  plot(alpha_f*180/pi, mu_f, 'LineWidth',2)
+  title('$\mu_r, \mu_f $')
+  xlabel('$\alpha_r, \alpha_f [deg]$')
+  ylabel('$\mu_r, \mu_f$ [-]')
+  legend('$\mu_r$','$\mu_f$','location','best')
+  
+
+  % ---------------------------------
+  %% Plot handling digram
+  % ---------------------------------
+  figure('Name','Handling diagram','NumberTitle','off'), clf
+  hold on
+  grid on
+  plot(Ay_hand, handling, 'LineWidth',2)
+  plot(Ay_hand, -Delta_alpha, 'LineWidth',2)
+  plot(ay_fit_lin, handling_fit_lin, '--', 'LineWidth',2)
+  plot(ay_fit_nonlin, handling_fit_nonlin, '--', 'LineWidth',2)
+  title('Handling diagram')
+  xlabel('$\frac{a_y}{g}$ [m/s$^2$]')
+  ylabel('$\delta_{D}\tau_{H} - \rho L \ [rad]$')
+  legend('Data', 'Fit in linear range', 'Fit in non-linear range', 'location', 'northeast')
+  
+  % ---------------------------------
+  %% Plot understeering gradient
+  % ---------------------------------
+  figure('Name','Understeering grad','NumberTitle','off'), clf
+  hold on
+  grid on
+  plot(Ay_norm(1500:end), K_US_theo(1500:end), 'LineWidth',2)
+  plot(Ay_hand(1:end-1), K_US_theo2, 'LineWidth',2)
+  title('Understeering gradient')
+  legend('Formula', 'Diff', 'location', 'northeast')
+  xlim("padded")
+  ylabel('$K_{US}$')
+
+
+  % % ---------------------------------
+  % %% PLOT BETA AND YAW RATE GAINS
+  % % ---------------------------------
+  % figure('Name','Yaw rate gain','NumberTitle','off'), clf
+  % hold on 
+  % grid on
+  % plot(u, yaw_rate_gain, 'LineWidth',2)
+  % plot(u, yaw_rate_gain_theo, 'LineWidth',2)
+  % plot(u, beta_gain, 'LineWidth',2)
+  % plot(u(1:end-1), beta_gain_theo, 'LineWidth',2)
+  % title('Yaw rate and $\beta$ gain')
+  % legend('Yaw gain measure', 'Yaw gain theo', '$\beta$ gain measure', '$\beta$ gain theo', 'location', 'northeast')
+
+  % % % ---------------------------------
+  % % %% HANDLING AS FUNCTION OF THE TIME
+  % % % ---------------------------------
+  % figure()
+  % hold on
+  % plot(time_sim, mu_r, 'DisplayName','$\mu_r$')
+  % plot(time_sim, mu_f, 'DisplayName','$\mu_f$')
+  % legend('Location','southeast')
+  % xlabel('Time [s]')
+  % ylabel('$\mu_r$, $\mu_f$')
+  % grid on
+
+end
+  
