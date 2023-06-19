@@ -8,8 +8,15 @@
 *.l
 *.slxc
 *.xml
-DT_model-1.0.2/slprj/*.mat
-DT_model-1.0.2/DT_model-1.0.2/slprj/*.mat
-DT_model-1.0.2/DT_model-1.0.2/VehicleModel_DoubleTrack/slprj/*.mat
+DT_model-1.0.2/slprj/*
+DT_model-1.0.2/DT_model-1.0.2/slprj/*
+DT_model-1.0.2/DT_model-1.0.2/VehicleModel_DoubleTrack/slprj/*
 
 
+DT_model-1.0.2/DT_model-1.0.2/VehicleModel_DoubleTrack/slprj/sim/varcache/Vehicle_Model_2Track/varInfo.mat
+DT_model-1.0.2/DT_model-1.0.2/VehicleModel_DoubleTrack/slprj/sim/varcache/Vehicle_Model_2Track/checksumOfCache.mat
+DT_model-1.0.2/DT_model-1.0.2/VehicleModel_DoubleTrack/slprj/_sfprj/Vehicle_Model_2Track/_self/sfun/info/binfo.mat
+DT_model-1.0.2/DT_model-1.0.2/VehicleModel_DoubleTrack/slprj/_sfprj/Vehicle_Model_2Track/amsi_serial.mat
+DT_model-1.0.2/DT_model-1.0.2/VehicleModel_DoubleTrack/slprj/_sfprj/precompile/autoInferAccessInfo.mat
+DT_model-1.0.2/DT_model-1.0.2/VehicleModel_DoubleTrack/slprj/_sfprj/EMLReport/emlReportAccessInfo.mat
+DT_model-1.0.2/DT_model-1.0.2/VehicleModel_DoubleTrack/slprj/_jitprj/jitEngineAccessInfo.mat
