@@ -8,6 +8,8 @@
 *.l
 *.slxc
 *.xml
-/DT_model-1.0.2/slprj/*
-/DT_model-1.0.2/DT_model-1.0.2/slprj/*
-/DT_model-1.0.2/DT_model-1.0.2/VehicleModel_DoubleTrack/slprj/*
+DT_model-1.0.2/slprj/*
+DT_model-1.0.2/DT_model-1.0.2/slprj/*
+DT_model-1.0.2/DT_model-1.0.2/VehicleModel_DoubleTrack/slprj/*
+
+
