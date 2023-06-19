@@ -282,38 +282,38 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     title('$V_G$ [rad/s]')
     xlim([0 time_sim(end)])
 
-    % % ---------------------------------
-    % %% Plot steering angles
-    % % ---------------------------------
-    % figure('Name','Steer','NumberTitle','off'), clf   
-    % % --- delta_0 --- %
-    % ax(1) = subplot(221);
-    % plot(time_sim,delta_D,'LineWidth',2)
-    % grid on
-    % title('$\delta_0$ [deg]')
-    % xlim([0 time_sim(end)])
-    % % --- delta_fr --- %
-    % ax(2) = subplot(222);
-    % plot(time_sim,delta_fr,'LineWidth',2)
-    % grid on
-    % title('$\delta_{fr}$ [deg]')
-    % xlim([0 time_sim(end)])
-    % % --- delta_fl --- %
-    % ax(3) = subplot(223);
-    % hold on
-    % plot(time_sim,delta_fl,'LineWidth',2)
-    % grid on
-    % title('$\delta_{fl}$ [deg]')
-    % xlim([0 time_sim(end)])
-    % % --- comparison --- %
-    % ax(4) = subplot(224);
-    % hold on
-    % plot(time_sim,delta_D/tau_D,'LineWidth',2)
-    % plot(time_sim,delta_fr,'LineWidth',2)
-    % plot(time_sim,delta_fl,'LineWidth',2)
-    % grid on
-    % legend('$\delta_D/\tau_D$','$\delta_{fr}$','$\delta_{fl}$','location','best')
-    % xlim([0 time_sim(end)])
+    % ---------------------------------
+    %% Plot steering angles
+    % ---------------------------------
+    figure('Name','Steer','NumberTitle','off'), clf   
+    % --- delta_0 --- %
+    ax(1) = subplot(221);
+    plot(time_sim,delta_D,'LineWidth',2)
+    grid on
+    title('$\delta_0$ [deg]')
+    xlim([0 time_sim(end)])
+    % --- delta_fr --- %
+    ax(2) = subplot(222);
+    plot(time_sim,delta_fr,'LineWidth',2)
+    grid on
+    title('$\delta_{fr}$ [deg]')
+    xlim([0 time_sim(end)])
+    % --- delta_fl --- %
+    ax(3) = subplot(223);
+    hold on
+    plot(time_sim,delta_fl,'LineWidth',2)
+    grid on
+    title('$\delta_{fl}$ [deg]')
+    xlim([0 time_sim(end)])
+    % --- comparison --- %
+    ax(4) = subplot(224);
+    hold on
+    plot(time_sim,delta_D/tau_D,'LineWidth',2)
+    plot(time_sim,delta_fr,'LineWidth',2)
+    plot(time_sim,delta_fl,'LineWidth',2)
+    grid on
+    legend('$\delta_D/\tau_D$','$\delta_{fr}$','$\delta_{fl}$','location','best')
+    xlim([0 time_sim(end)])
 
     % -------------------------------
     %% Plot lateral tire slips and lateral forces
@@ -867,5 +867,14 @@ function dataAnalysis(model_sim,vehicle_data,Ts)
     % sgtitle('Lateral load $F_{y}$')
     % % linkaxes(ax,'x')
     % clear ax
+
+    figure()
+    hold on
+    plot(time_sim, mu_r, 'DisplayName','$\mu_r$')
+    plot(time_sim, mu_f, 'DisplayName','$\mu_f$')
+    legend('Location','southeast')
+    xlabel('Time [s]')
+    ylabel('$\mu_r$, $\mu_f$')
+    grid on
 end
     
