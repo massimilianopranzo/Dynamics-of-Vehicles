@@ -1,11 +1,11 @@
-function ICs = loadInitialConditions(u0, camber_array, i)
+function [ICs, vehicle_data] = loadInitialConditions(u0, stiffness_gain, camber, toe)
 
     % ----------------------------------------------------------------
     %% Function purpose: define the initial conditions for vehicle states
     % ----------------------------------------------------------------
 
     %% Load vehicle and auxiliary data
-    vehicle_data = getVehicleDataStruct(camber_array, i);
+    vehicle_data = getVehicleDataStruct(stiffness_gain, camber, toe);
     m  = vehicle_data.vehicle.m; 
     Lr = vehicle_data.vehicle.Lr; 
     Lf = vehicle_data.vehicle.Lf;   

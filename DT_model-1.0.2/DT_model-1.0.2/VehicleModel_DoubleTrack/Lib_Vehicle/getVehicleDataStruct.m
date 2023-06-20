@@ -1,4 +1,4 @@
-function vehicle_data = getVehicleDataStruct(camber_array, i)
+function vehicle_data = getVehicleDataStruct(stiffness_gain, camber, toe)
 
     % ----------------------------------------------------------------
     %% Function purpose: define a struct containing vehicle data. 
@@ -41,7 +41,7 @@ function vehicle_data = getVehicleDataStruct(camber_array, i)
     rear_suspension.reg_fact  = 1e5;   % [1/m] regularized sign steepness factor (equal for front and rear)
     
     % FRONT SUSPENSIONS
-    front_suspension.Ks_f     = ((20000)^(-1) + (100*10^3)^(-1))^(-1); % [N/m] Rear suspension+tire
+    front_suspension.Ks_f     = stiffness_gain*((20000)^(-1) + (100*10^3)^(-1))^(-1); % [N/m] Rear suspension+tire
                                                                        % stiffness (2 springs in series)
     front_suspension.Cs_f     = 2125;         % [N*s/m] Front suspension dumping (mean for state space tuning)
     front_suspension.Cs_f_b   = 1750;         % [N*s/m] Rear suspension damping bound
@@ -102,7 +102,7 @@ function vehicle_data = getVehicleDataStruct(camber_array, i)
     rear_wheel.mass          = m_wr;  
     rear_wheel.iwd_r         = m_wr/12 * (3*rr^2 + w_wr^2);  % [kg*m^2] inertia of the wheel
     rear_wheel.iwa_r         = 0.5;  % [kg*m^2] inertia of the whole wheel assembly
-    rear_wheel.static_camber = camber_array(i);  % [deg] Static camber for rear wheels
+    rear_wheel.static_camber = new_vehicle.gamma_r;  % [deg] Static camber for rear wheels
     rear_wheel.delta_r0 = new_vehicle.delta_r0 ; % [deg] Rear wheel toe-in angle
     m_ur = 2*m_wr;                   % [kg] Rear unsprung mass 
     rear_unsprung.mass = m_ur;   
@@ -116,8 +116,8 @@ function vehicle_data = getVehicleDataStruct(camber_array, i)
     front_wheel.mass          = m_wf;                     
     front_wheel.iwd_f         = m_wf/12 * (3*rf^2 + w_wf^2); % [kg*m^2] inertia of the wheel 
     front_wheel.iwa_f         = 0.5; % [kg*m^2] inertia of the whole wheel assembly
-    front_wheel.static_camber = new_vehicle.gamma_f;   % [deg] Static camber for rear wheels
-    front_wheel.delta_f0 = new_vehicle.delta_f0; % [deg] Front wheel toe-in angle
+    front_wheel.static_camber = camber;   % [deg] Static camber for rear wheels
+    front_wheel.delta_f0 = toe; % [deg] Front wheel toe-in angle
     
     m_uf = 2*m_wf;                   % [kg] Front unsprung mass
     front_unsprung.mass = m_uf;  

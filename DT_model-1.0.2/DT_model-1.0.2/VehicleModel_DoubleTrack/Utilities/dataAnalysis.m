@@ -1,4 +1,4 @@
-function dataAnalysis(model_sim,vehicle_data,Ts,Tinit)
+function dataAnalysis(model_sim{1},vehicle_data,Ts,Tinit)
     close all
     % ----------------------------------------------------------------
     %% Post-Processing and Data Analysis
@@ -591,31 +591,31 @@ function dataAnalysis(model_sim,vehicle_data,Ts,Tinit)
     % title('G-G diagram from simulation data','FontSize',18)
     % grid on
 
-    % -------------------------------
-    %% Plot vehicle path
-    % -------------------------------
-    N = length(time_sim);
-    figure('Name','Real Vehicle Path','NumberTitle','off'), clf
-    set(gca,'fontsize',16)
-    hold on
-    axis equal
-    xlabel('x-coord [m]')
-    ylabel('y-coord [m]')
-    title('Real Vehicle Path','FontSize',18)
-    plot(x_CoM,y_CoM,'Color',color('gold'),'LineWidth',2)
-    for i = 1:floor(N/20):N
-        rot_mat = [cos(psi(i)) -sin(psi(i)) ; sin(psi(i)) cos(psi(i))];
-        pos_rr = rot_mat*[-Lr -Wr/2]';
-        pos_rl = rot_mat*[-Lr +Wr/2]';
-        pos_fr = rot_mat*[+Lf -Wf/2]';
-        pos_fl = rot_mat*[+Lf +Wf/2]';
-        pos = [pos_rr pos_rl pos_fl pos_fr];
-        p = patch(x_CoM(i) + pos(1,:),y_CoM(i) + pos(2,:),'blue');
-        quiver(x_CoM(i), y_CoM(i), u(i)*cos(psi(i)), u(i)*sin(psi(i)), 'color', [1,0,0]);
-        quiver(x_CoM(i), y_CoM(i), -v(i)*sin(psi(i)), v(i)*cos(psi(i)), 'color', [0.23,0.37,0.17]);
-    end
-    grid on
-    hold off
+%     % -------------------------------
+%     %% Plot vehicle path
+%     % -------------------------------
+%     N = length(time_sim);
+%     figure('Name','Real Vehicle Path','NumberTitle','off'), clf
+%     set(gca,'fontsize',16)
+%     hold on
+%     axis equal
+%     xlabel('x-coord [m]')
+%     ylabel('y-coord [m]')
+%     title('Real Vehicle Path','FontSize',18)
+%     plot(x_CoM,y_CoM,'Color',color('gold'),'LineWidth',2)
+%     for i = 1:floor(N/20):N
+%         rot_mat = [cos(psi(i)) -sin(psi(i)) ; sin(psi(i)) cos(psi(i))];
+%         pos_rr = rot_mat*[-Lr -Wr/2]';
+%         pos_rl = rot_mat*[-Lr +Wr/2]';
+%         pos_fr = rot_mat*[+Lf -Wf/2]';
+%         pos_fl = rot_mat*[+Lf +Wf/2]';
+%         pos = [pos_rr pos_rl pos_fl pos_fr];
+%         p = patch(x_CoM(i) + pos(1,:),y_CoM(i) + pos(2,:),'blue');
+%         quiver(x_CoM(i), y_CoM(i), u(i)*cos(psi(i)), u(i)*sin(psi(i)), 'color', [1,0,0]);
+%         quiver(x_CoM(i), y_CoM(i), -v(i)*sin(psi(i)), v(i)*cos(psi(i)), 'color', [0.23,0.37,0.17]);
+%     end
+%     grid on
+%     hold off
     
    
     % % ---
@@ -779,7 +779,7 @@ Fz_r0 = m * g * Lf / L;
 % -----------------
 % alpha front
 alpha_f = delta - (v + Omega * Lf) ./ u; % /tau_D*pi/180
-figure();plot(alpha_f);hold on;plot(delta, '--');plot(- (v + Omega * Lf) ./ u, '-.')
+
 % normalized front lateral force
 Fz_f0 = m * g * Lr / L;
 
@@ -815,6 +815,7 @@ C_f = diff(mu_f) ./ diff(alpha_f);
 
 K_US_theo = - m / (L / tau_D) * (Lf ./ Ky_r - Lr ./ Ky_f);
 K_US_theo2 = - diff(Delta_alpha) ./ diff(Ay_hand');
+K_US_theo3 = diff(delta(1:end-1)/tau_D)./diff(Ay_norm) - L./u(1:end-2).^2;
 
 % fitting the linear part
 ay_max_lin = 0.6; % [-] maximum norm acceleration for whom linearity holds 
@@ -843,45 +844,45 @@ handling_fit_nonlin = polyval(p_nl, ay_fit_nonlin); % fitted handling diagram
 % ---------------------------------
 %% YAW RATE & BETA GAIN
 % ---------------------------------
-yaw_rate_gain = Omega ./ (delta_D * pi / 180); % [1/s]
+yaw_rate_gain = Omega ./ (delta / tau_D); % [1/s]
 beta_gain = beta ./ (delta_D*pi/180); % [-]
 yaw_rate_gain_theo = u / L / tau_D ./ (1 + u.^2 * K_US); % [1/s] theoretical yaw rate gain
 beta_gain_theo = Lr ./ (tau_D * L) - m / L^3 * (Lf^2 ./ Ky_r + Lr^2 ./ Ky_f) ./ tau_D .* (u(1:end-1).^2 ./ (1 + K_US * u(1:end-1).^2)); % [-] theoretical beta gain
 
-% ---------------------------------
-%% Plot load transfer
-% ---------------------------------
-% --- DeltaFxf DeltaFxr -- %
-figure('Name','Load transfer','NumberTitle','off'), clf
-ax(1) = subplot(221);
-plot(Ay_norm, DFx_f(1:end-1),'LineWidth',2)
-hold on
-plot(Ay_norm, DFx_r(1:end-1), '--', 'LineWidth',2)
-legend('$\Delta F_{xf}$','$\Delta F_{xr}$','location','best')
-title('$\Delta F_{xf}$ and $\Delta F_{xr}$ [N]')
-xlabel('$a_y/g [-]$')
-grid on
-% --- DeltaFyf DeltaFyr -- %
-ax(2) = subplot(222);
-plot(Ay_norm, DFy_f(1:end-1),'LineWidth',2)
-hold on
-plot(Ay_norm, DFy_r(1:end-1), '--', 'LineWidth',2)
-legend('$\Delta F_{yf}$','$\Delta F_{yr}$','location','best')
-title('$\Delta F_{yf}$ and $\Delta F_{yr}$ [N]')
-xlabel('$a_y/g [-]$')
-grid on
-% --- DeltaFzf DeltaFzr -- %
-ax(3) = subplot(223);
-plot(Ay_norm, DFz_f(1:end-1),'LineWidth',2)
-hold on
-plot(Ay_norm, DFz_r(1:end-1), '--', 'LineWidth',2)
-legend('$\Delta F_{zf}$','$\Delta F_{zr}$','location','best')
-title('$\Delta F_{zf}$ and $\Delta F_{zr}$ [N]')
-xlabel('$a_y/g [-]$')
-grid on
-sgtitle('Lateral load transfer', 'FontSize', 20)
-
-clear ax
+% % ---------------------------------
+% %% Plot load transfer
+% % ---------------------------------
+% % --- DeltaFxf DeltaFxr -- %
+% figure('Name','Load transfer','NumberTitle','off'), clf
+% ax(1) = subplot(221);
+% plot(Ay_norm, DFx_f(1:end-1),'LineWidth',2)
+% hold on
+% plot(Ay_norm, DFx_r(1:end-1), '--', 'LineWidth',2)
+% legend('$\Delta F_{xf}$','$\Delta F_{xr}$','location','best')
+% title('$\Delta F_{xf}$ and $\Delta F_{xr}$ [N]')
+% xlabel('$a_y/g [-]$')
+% grid on
+% % --- DeltaFyf DeltaFyr -- %
+% ax(2) = subplot(222);
+% plot(Ay_norm, DFy_f(1:end-1),'LineWidth',2)
+% hold on
+% plot(Ay_norm, DFy_r(1:end-1), '--', 'LineWidth',2)
+% legend('$\Delta F_{yf}$','$\Delta F_{yr}$','location','best')
+% title('$\Delta F_{yf}$ and $\Delta F_{yr}$ [N]')
+% xlabel('$a_y/g [-]$')
+% grid on
+% % --- DeltaFzf DeltaFzr -- %
+% ax(3) = subplot(223);
+% plot(Ay_norm, DFz_f(1:end-1),'LineWidth',2)
+% hold on
+% plot(Ay_norm, DFz_r(1:end-1), '--', 'LineWidth',2)
+% legend('$\Delta F_{zf}$','$\Delta F_{zr}$','location','best')
+% title('$\Delta F_{zf}$ and $\Delta F_{zr}$ [N]')
+% xlabel('$a_y/g [-]$')
+% grid on
+% sgtitle('Lateral load transfer', 'FontSize', 20)
+% 
+% clear ax
 
   % % figure('Name', 'Vertical load', 'NumberTitle', 'off'), clf
   % % ax(1) = subplot(1,2,1);
@@ -952,6 +953,16 @@ clear ax
   % ---------------------------------
   %% Plot normalized axle characteristics
   % ---------------------------------
+  figure('Name','Axle char. ','NumberTitle','off'), clf
+  hold on
+  grid on
+  plot(alpha_r, Fy__r, 'LineWidth',2)
+  plot(alpha_f, Fy__f, 'LineWidth',2)
+  title('$\Fy_r, \Fy_f $')
+  xlabel('$\alpha_r, \alpha_f [deg]$')
+  ylabel('[N]')
+  legend('$\Fy_r$', '$\Fy_f $','location','best')
+
   % --- mu_r -- %
   % idx = time_sim > 2;
   figure('Name','Norm axle char. 2','NumberTitle','off'), clf
@@ -988,8 +999,9 @@ clear ax
   grid on
   plot(Ay_norm(1500:end), K_US_theo(1500:end), 'LineWidth',2)
   plot(Ay_hand(1:end-1), K_US_theo2, 'LineWidth',2)
+  plot(Ay_norm(1:end-1), K_US_theo3, 'LineWidth',2)
   title('Understeering gradient')
-  legend('Formula', 'Diff', 'location', 'northeast')
+  legend('Formula', 'Diff', 'Norm.stiff', 'location', 'northeast')
   xlim("padded")
   ylabel('$K_{US}$')
 

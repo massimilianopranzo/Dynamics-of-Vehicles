@@ -13,8 +13,8 @@ function [delta__fr, delta__fl] = perfectAcker(delta,vehicle_data)
 
 
     % Perfect Ackermann steering law
-    delta__fr = -delta_f0*pi/180 + atan((2*Lr+2*Lf)*tan(delta)/(Wf*tan(delta)+2*Lr+2*Lf));
-    delta__fl = delta_f0*pi/180 - atan((2*Lr+2*Lf)*tan(delta)/(Wf*tan(delta)-2*Lr-2*Lf));
+    delta__fr = delta_f0*pi/180 + atan((2*Lr+2*Lf)*tan(delta)/(Wf*tan(delta)+2*Lr+2*Lf));
+    delta__fl = -delta_f0*pi/180 - atan((2*Lr+2*Lf)*tan(delta)/(Wf*tan(delta)-2*Lr-2*Lf));
 
 end
 
