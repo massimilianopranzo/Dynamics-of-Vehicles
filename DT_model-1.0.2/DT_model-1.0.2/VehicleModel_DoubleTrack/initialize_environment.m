@@ -20,6 +20,7 @@ addpath(genpath('Lib_Vehicle'));
 addpath(genpath('Longit_Controller'));
 addpath(genpath('Utilities'));
 addpath(genpath('../tyre_model/tyre_lib'));
+addpath(genpath('saved_test'));
 
 % --------------------
 %% Open Simulink model

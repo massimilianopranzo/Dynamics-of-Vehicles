@@ -1,5 +1,3 @@
-enable_export = 0;
-
 close all
 % ----------------------------------------------------------------
 %% Post-Processing and Data Analysis
@@ -28,7 +26,7 @@ time_sim = model_sim.states.u.time;
 dt = time_sim(2)-time_sim(1);
 
 if sim_options.test_type == 2
-  Tinit = 0;
+  Tinit = 2;
 end
 [~, start_time] = min(abs(time_sim - Tinit)); % time when ss starts
 
@@ -374,58 +372,60 @@ if enable_plot
 % ---------------------------------
 %% Plot wheel torques and wheel rates
 % ---------------------------------
-% figure('Name','Wheel rates & torques','NumberTitle','off'), clf
-% % --- omega_rr --- %
-% ax(1) = subplot(331);
-% plot(time_sim,omega_rr,'LineWidth',2)
-% grid on; box on;
-% title('$\omega_{rr}$ [rad/s]')
-% xlim([0 time_sim(end)])
-% % --- omega_rl --- %
-% ax(2) = subplot(332);
-% plot(time_sim,omega_rl,'LineWidth',2)
-% grid on; box on;
-% title('$\omega_{rl}$ [rad/s]')
-% xlim([0 time_sim(end)])
-% % --- omega_fr --- %
-% ax(3) = subplot(333);
-% plot(time_sim,omega_fr,'LineWidth',2)
-% grid on; box on;
-% title('$\omega_{fr}$ [rad/s]')
-% xlim([0 time_sim(end)])
-% % --- omega_fl --- %
-% ax(4) = subplot(334);
-% plot(time_sim,omega_fl,'LineWidth',2)
-% grid on; box on;
-% title('$\omega_{fl}$ [rad/s]')
-% xlim([0 time_sim(end)])
-% % --- Tw_rr --- %
-% ax(5) = subplot(335);
-% plot(time_sim,Tw_rr,'LineWidth',2)
-% grid on; box on;
-% title('$Tw_{rr}$ [Nm]')
-% xlim([0 time_sim(end)])
-% % --- Tw_rl --- %
-% ax(6) = subplot(336);
-% plot(time_sim,Tw_rl,'LineWidth',2)
-% grid on; box on;
-% title('$Tw_{rl}$ [Nm]')
-% xlim([0 time_sim(end)])
-% % --- Tw_fr --- %
-% ax(7) = subplot(337);
-% plot(time_sim,Tw_fr,'LineWidth',2)
-% grid on; box on;
-% title('$Tw_{fr}$ [Nm]')
-% xlim([0 time_sim(end)])
-% % --- Tw_fl --- %
-% ax(8) = subplot(338);
-% plot(time_sim,Tw_fl,'LineWidth',2)
-% grid on; box on;
-% title('$Tw_{fl}$ [Nm]')
-% xlim([0 time_sim(end)])
-
-% % linkaxes(ax,'x')
-% clear ax
+fig_wheel_rate = figure('Name','Wheel rates & torques','NumberTitle','off','Color','w'); clf
+% --- omega_rr --- %
+ax(1) = subplot(331);
+plot(time_sim,omega_rr,'LineWidth',2)
+grid on; box on;
+title('$\omega_{rr}$ [rad/s]')
+xlim([0 time_sim(end)])
+% --- omega_rl --- %
+ax(2) = subplot(332);
+plot(time_sim,omega_rl,'LineWidth',2)
+grid on; box on;
+title('$\omega_{rl}$ [rad/s]')
+xlim([0 time_sim(end)])
+% --- omega_fr --- %
+ax(3) = subplot(333);
+plot(time_sim,omega_fr,'LineWidth',2)
+grid on; box on;
+title('$\omega_{fr}$ [rad/s]')
+xlim([0 time_sim(end)])
+% --- omega_fl --- %
+ax(4) = subplot(334);
+plot(time_sim,omega_fl,'LineWidth',2)
+grid on; box on;
+title('$\omega_{fl}$ [rad/s]')
+xlim([0 time_sim(end)])
+% --- Tw_rr --- %
+ax(5) = subplot(335);
+plot(time_sim,Tw_rr,'LineWidth',2)
+grid on; box on;
+title('$Tw_{rr}$ [Nm]')
+xlim([0 time_sim(end)])
+% --- Tw_rl --- %
+ax(6) = subplot(336);
+plot(time_sim,Tw_rl,'LineWidth',2)
+grid on; box on;
+title('$Tw_{rl}$ [Nm]')
+xlim([0 time_sim(end)])
+% --- Tw_fr --- %
+ax(7) = subplot(337);
+plot(time_sim,Tw_fr,'LineWidth',2)
+grid on; box on;
+title('$Tw_{fr}$ [Nm]')
+xlim([0 time_sim(end)])
+% --- Tw_fl --- %
+ax(8) = subplot(338);
+plot(time_sim,Tw_fl,'LineWidth',2)
+grid on; box on;
+title('$Tw_{fl}$ [Nm]')
+xlim([0 time_sim(end)])
+linkaxes(ax,'x')
+  if enable_export == 1
+    export_figure(fig_wheel_rate, '\fig_wheel_rate.eps', 'images\');
+  end
+clear ax
 
 % ---------------------------------
 %% Plot vertical tire loads and self-aligning torques
@@ -582,47 +582,53 @@ clear ax
 % ---------------------------------
 %% Plot vehicle pose x,y,psi
 % ---------------------------------
-% figure('Name','Pose','NumberTitle','off'), clf 
-% % --- x --- %
-% ax(1) = subplot(221);
-% plot(time_sim,x_CoM,'LineWidth',2)
-% grid on; box on;
-% title('$x$ [m]')
-% xlim([0 time_sim(end)])
-% % --- y --- %
-% ax(2) = subplot(222);
-% plot(time_sim,y_CoM,'LineWidth',2)
-% grid on; box on;
-% title('$y$ [m]')
-% xlim([0 time_sim(end)])
-% % --- psi --- %
-% ax(3) = subplot(223);
-% plot(time_sim,rad2deg(psi),'LineWidth',2)
-% grid on; box on;
-% title('$\psi$ [deg]')
-% xlim([0 time_sim(end)])
+fig_pose = figure('Name','Pose','NumberTitle','off','Color','w'); clf 
+% --- x --- %
+ax(1) = subplot(221);
+plot(time_sim,x_CoM,'LineWidth',2)
+grid on; box on;
+title('$x$ [m]')
+xlim([0 time_sim(end)])
+% --- y --- %
+ax(2) = subplot(222);
+plot(time_sim,y_CoM,'LineWidth',2)
+grid on; box on;
+title('$y$ [m]')
+xlim([0 time_sim(end)])
+% --- psi --- %
+ax(3) = subplot(223);
+plot(time_sim,rad2deg(psi),'LineWidth',2)
+grid on; box on;
+title('$\psi$ [deg]')
+xlim([0 time_sim(end)])
 
-% % linkaxes(ax,'x')
-% clear ax
+linkaxes(ax,'x')
+if enable_export == 1
+  export_figure(fig_pose, '\fig_pose.eps', 'images\');
+end
+clear ax
 
-% % -------------------------------
-% %% Plot G-G diagram from simulation data
-% % -------------------------------
-% figure('Name','G-G plot','NumberTitle','off'), clf
-% axis equal
-% hold on
-% plot3(Ay,Ax_filt,u(1:end-1),'Color',color('purple'),'LineWidth',3)
-% xlabel('$a_y$ [m/s$^2$]')
-% ylabel('$a_x$ [m/s$^2$]')
-% zlabel('$u$ [m/s]')
-% title('G-G diagram from simulation data','FontSize',18)
-% grid on; box on;
+% -------------------------------
+%% Plot G-G diagram from simulation data
+% -------------------------------
+fig_GGplot = figure('Name','G-G plot','NumberTitle','off','Color','w'); clf
+axis equal
+hold on
+plot3(Ay,Ax_filt,u(1:end-1),'Color',color('purple'),'LineWidth',3)
+xlabel('$a_y$ [m/s$^2$]')
+ylabel('$a_x$ [m/s$^2$]')
+zlabel('$u$ [m/s]')
+title('G-G diagram from simulation data','FontSize',18)
+grid on; box on;
+if enable_export == 1
+  export_figure(fig_GGplot, '\fig_GGplot.eps', 'images\');
+end
 
 % -------------------------------
 %% Plot vehicle path
 % -------------------------------
 N = length(time_sim);
-figure('Name','Real Vehicle Path','NumberTitle','off'), clf
+fig_real_path = figure('Name','Real Vehicle Path','NumberTitle','off','Color','w'); clf
 set(gca,'fontsize',16)
 hold on
 axis equal
@@ -643,6 +649,9 @@ for i = 1:floor(N/20):N
 end
 grid on; box on;
 hold off
+if enable_export == 1
+  export_figure(fig_real_path, '\fig_real_path.eps', 'images\');
+end
 
 
 % % ---
@@ -765,6 +774,7 @@ vG = sqrt(u.^2 + v.^2);
 % Steady state and transient curvature [m]
 rho_ss   = Omega./vG;
 rho_tran = ((dot_v.*u(1:end-1) - dot_u.*v(1:end-1)) ./ ((vG(1:end-1)).^3)) + rho_ss(1:end-1);
+rho = Omega./u;
 % Desired sinusoidal steering angle for the equivalent single track front wheel
 desired_steer_atWheel = delta/tau_D;
 n_sim = length(model_sim);
@@ -805,7 +815,7 @@ Fz_r0 = m * g * Lf / L;
 
 % -----------------
 % alpha front
-alpha_f = delta - (v + Omega * Lf) ./ u; % /tau_D*pi/180
+alpha_f = delta - (v + Omega * Lf) ./ u; % [rad]
 
 % normalized front lateral force
 Fz_f0 = m * g * Lr / L;
@@ -813,16 +823,19 @@ Fz_f0 = m * g * Lr / L;
 
 % Handling diagram
 minmax_norm_axle_char = min(max(mu_r), max(mu_f));
-maxmin_norm_axle_char = max(min(mu_r), min(mu_f));
+maxmin_norm_axle_char = max(min(mu_r), min(mu_f))+2e-3;
 Ay_hand = maxmin_norm_axle_char:0.005:minmax_norm_axle_char; % nomralized acc
 pos_mu_r_remap = zeros(length(Ay_hand), 1);
 pos_mu_f_remap = zeros(length(Ay_hand), 1);
+pos_Ay_remap = zeros(length(Ay_hand), 1);
 for i=1:size(Ay_hand, 2)
-[~, pos_mu_r_remap(i)] = min(abs(mu_r - Ay_hand(i)));
-[~, pos_mu_f_remap(i)] = min(abs(mu_f - Ay_hand(i)));
+    [~, pos_mu_r_remap(i)] = min(abs(mu_r - Ay_hand(i)));
+    [~, pos_mu_f_remap(i)] = min(abs(mu_f - Ay_hand(i)));
+    [~, pos_Ay_remap(i)] = min(abs(Ay_norm - Ay_hand(i)));
 end
 Delta_alpha = alpha_r(pos_mu_r_remap) - alpha_f(pos_mu_f_remap); % [rad]
 handling = -Delta_alpha; % [rad]
+% handling2 = delta - rho*L;
 
 % Delta_alpha = alpha_r - alpha_f; % [rad]
 % rho = (delta_D/tau_D*pi/180 + Delta_alpha)/L; % curvature [1/m]
@@ -838,23 +851,34 @@ handling = -Delta_alpha; % [rad]
 %% UNDERSTEERING GRADIENT
 % ---------------------------------
 % Cornering stiffnesses
-Ky_r = diff(Fy__r) ./ diff(alpha_r);
-Ky_f = diff(Fy__f) ./ diff(alpha_f);
+Ky_r = diff(Fy__r(pos_mu_r_remap)) ./ diff(alpha_r(pos_mu_r_remap));
+Ky_f = diff(Fy__f(pos_mu_f_remap)) ./ diff(alpha_f(pos_mu_f_remap));
 C_r = diff(mu_r) ./ diff(alpha_r);
 C_f = diff(mu_f) ./ diff(alpha_f);
 
-K_US_theo = - m / (L/tau_D ) * (Lf ./ Ky_r - Lr ./ Ky_f);
-K_US_theo2 = - diff(Delta_alpha) ./ diff(Ay_hand');
-K_US_theo3 = diff(delta(1:end-1)*tau_D)./diff(Ay_norm) - L./u(1:end-2).^2;
-
+if sim_options.test_type == 1 % constant velocity
+    K_US_theo = - m*g/L*(Lf./Ky_r - Lr./Ky_f);
+    K_US_theo2 = - diff(Delta_alpha) ./ diff(Ay_hand');
+    K_US_theo3 = diff(delta(1:end-1)*tau_D)./diff(Ay_norm) - L./u(1:end-2).^2;
+elseif sim_options.test_type == 2 % constant curvature
+    K_US_theo = - m*g/L^2*(Lf./Ky_r - Lr./Ky_f);
+    K_US_theo2 = - 1/L*diff(Delta_alpha) ./ diff(Ay_hand');
+end
 % fitting the linear part
-if max(Ay_hand) < 0.6
+if sim_options.test_type == 1 % constat speed
+    Ay_lin_lim = 0.6; % norm. acc. linear limit
+elseif sim_options.test_type == 2
+    Ay_lin_lim = 0.6;
+end
+[~, pos_Ay_lin_lim] = min(abs(Ay - g*Ay_lin_lim));
+u_lin_lim = u(pos_Ay_lin_lim); % velocity at which we lost the linearity
+if max(Ay_hand) < Ay_lin_lim
   ay_max_lin = max(Ay_hand); % [-] maximum norm acceleration for whom linearity holds
 else
-  ay_max_lin = 0.6; % [-] maximum norm acceleration for whom linearity holds 
+  ay_max_lin = Ay_lin_lim; % [-] maximum norm acceleration for whom linearity holds 
 end
 ay_fit = Ay_hand(Ay_hand < ay_max_lin);
-ay_fit_lin = [0:1e-6:ay_max_lin];
+ay_fit_lin = [maxmin_norm_axle_char:1e-6:ay_max_lin];
 handling_fit = handling(Ay_hand < ay_max_lin);
 p_lin = polyfit(ay_fit,handling_fit,1); % fitting the linear part
 K_US = p_lin(1); % understeering gradient
@@ -879,13 +903,23 @@ else
   handling_fit_nonlin = 0;
   ay_fit_nonlin = 0;
 end
+
+%----------------------------------
+%% CRITICAL SPEED
+%----------------------------------
+u_cr = sqrt(Ay./rho(1:end-1)); % critical velocity
+u_cr_hand = sqrt(Ay_hand*g./rho(pos_Ay_remap)'); % critical velocity at ay resampled
+u_slide = sqrt(1/abs(K_US/g));
+
 % ---------------------------------
 %% YAW RATE & BETA GAIN
 % ---------------------------------
-yaw_rate_gain = Omega ./ (delta*tau_D); % [1/s]
-beta_gain = beta ./ (delta*tau_D); % [-]
-yaw_rate_gain_theo = u / L / tau_D ./ (1 + u.^2 * K_US / L); % [1/s] theoretical yaw rate gain
-beta_gain_theo = Lr ./ (tau_D * L) - m / L^3 * (Lf^2 ./ Ky_r + Lr^2 ./ Ky_f) ./ tau_D .* (u(1:end-1).^2 ./ (1 + K_US * u(1:end-1).^2)); % [-] theoretical beta gain
+yaw_rate_gain = Omega ./ (delta); % [1/s]
+beta_gain = beta ./ (delta); % [-]
+yaw_rate_gain_theo = u / L ./ (1 + u.^2 * K_US/g ); % [1/s] theoretical yaw rate gain
+u_tmp = u(pos_Ay_remap);
+u_tmp = u_tmp(1:end-1);
+beta_gain_theo = Lr ./ L - m / L^3 * (Lf^2 ./ Ky_r + Lr^2 ./ Ky_f) .* u_tmp.^2 ./ (1 + K_US/g * u_tmp.^2); % [-] theoretical beta gain
 
 if enable_plot
 % ---------------------------------
@@ -897,7 +931,7 @@ if enable_plot
   plot(Ay_norm, DFx_f(1:end-1),'LineWidth',2)
   hold on
   plot(Ay_norm, DFx_r(1:end-1), '--', 'LineWidth',2)
-  legend('$\Delta F_{xf}$','$\Delta F_{xr}$','location','best')
+  legend('$\Delta F_{xf}$','$\Delta F_{xr}$','location','northwest')
   title('$\Delta F_{xf}$ and $\Delta F_{xr}$ [N]')
   xlabel('$a_y/g [-]$')
   grid on; box on;
@@ -906,7 +940,7 @@ if enable_plot
   plot(Ay_norm, DFy_f(1:end-1),'LineWidth',2)
   hold on
   plot(Ay_norm, DFy_r(1:end-1), '--', 'LineWidth',2)
-  legend('$\Delta F_{yf}$','$\Delta F_{yr}$','location','best')
+  legend('$\Delta F_{yf}$','$\Delta F_{yr}$','location','northwest')
   title('$\Delta F_{yf}$ and $\Delta F_{yr}$ [N]')
   xlabel('$a_y/g [-]$')
   grid on; box on;
@@ -915,11 +949,11 @@ if enable_plot
   plot(Ay_norm, DFz_f(1:end-1),'LineWidth',2)
   hold on
   plot(Ay_norm, DFz_r(1:end-1), '--', 'LineWidth',2)
-  legend('$\Delta F_{zf}$','$\Delta F_{zr}$','location','best')
+  legend('$\Delta F_{zf}$','$\Delta F_{zr}$','location','northwest')
   title('$\Delta F_{zf}$ and $\Delta F_{zr}$ [N]')
   xlabel('$a_y/g [-]$')
   grid on; box on;
-  sgtitle('Lateral load transfer', 'FontSize', 20)
+  sgtitle('Lateral load transfer', 'FontSize', 25)
   if enable_export == 1
     export_figure(fig_load_transf, '\fig_load_transf.eps', 'images\');
   end
@@ -1007,8 +1041,7 @@ if enable_plot
   % --- mu_r -- %
   % idx = time_sim > 2;
   fig_norm_axle_char = figure('Name','Norm axle char. 2','NumberTitle','off', 'Color', 'w'); clf
-  hold on
-  grid on; box on;
+  hold on; grid on; box on;
   plot(alpha_r*180/pi, mu_r, 'LineWidth',2)
   plot(alpha_f*180/pi, mu_f, 'LineWidth',2)
   title('$\mu_r, \mu_f $')
@@ -1027,11 +1060,12 @@ if enable_plot
   hold on
   grid on; box on;
   plot(Ay_hand, handling, 'LineWidth',2, 'DisplayName','Experimental')
+%   plot(Ay_norm, handling2(1:end-1), 'LineWidth',2, 'DisplayName','Handling 2')
   %plot(Ay_hand, -Delta_alpha, 'LineWidth',2)
   plot(ay_fit_lin, handling_fit_lin, '--', 'LineWidth',2.5, 'Displayname','Fit in linear range')
   plot(ay_fit_nonlin, handling_fit_nonlin, '--', 'LineWidth',2.5, 'Displayname','Fit in non-linear range')
   title('Handling diagram')
-  xlabel('$\frac{a_y}{g}$ [m/s$^2$]')
+  xlabel('$a_{y}/g$ [m/s$^2$]')
   ylabel('$\delta_{D}\tau_{H} - \rho L \ [rad]$')
   legend('location', 'northeast')
   if enable_export == 1
@@ -1044,17 +1078,24 @@ if enable_plot
   fig_KUS = figure('Name','Understeering grad','NumberTitle','off', 'Color','w'); clf
   hold on
   grid on; box on;
-  %plot(Ay_norm(1500:end), K_US_theo(1500:end), 'LineWidth',2, 'DisplayName','Formula')
-  plot(Ay_hand(1:end-1), K_US_theo2, 'LineWidth',2, 'DisplayName','Differentiation')
+  if sim_options.test_type == 1
+    plot(Ay_hand(1:end-1), K_US_theo, 'LineWidth',2, 'DisplayName','$-\frac{mg}{L}(\frac{L_f}{K_{yr}} - \frac{Lr}{K_{yf}})$')
+    plot(Ay_hand(1:end-1), K_US_theo2, '--', 'LineWidth',2, 'DisplayName','$- \frac{d\Delta \alpha}{d ay/g}$')
+    plot(ay_fit_lin, K_US*ones(length(ay_fit_lin), 1), '--r', 'LineWidth',2, 'DisplayName', 'Linear $K_{US}$');
+  elseif sim_options.test_type == 2
+    plot(Ay_hand(1:end-1), K_US_theo, 'LineWidth',2, 'DisplayName','$-\frac{mg}{L^2}(\frac{L_f}{K_{yr}} - \frac{Lr}{K_{yf}})$')
+    plot(Ay_hand(1:end-1), K_US_theo2, '--', 'LineWidth',2, 'DisplayName','$- \frac{1}{L}\frac{d\Delta \alpha}{d ay/g}$')
+    plot(ay_fit_lin, K_US*ones(length(ay_fit_lin), 1)/L, '--r', 'LineWidth',2, 'DisplayName', 'Linear $K_{US}$');
+  end
   %plot(Ay_norm(1:end-1), K_US_theo3, 'LineWidth',2, 'DisplayName','Formula 2')
-  title('Understeering gradient')
+  title('Normalized understeering gradient')
   legend('location', 'northeast')
   xlim("padded")
-  ylabel('$K_{US}$')
+  ylabel('g$K_{US}$')
+  xlabel('ay/g [-]')
   if enable_export == 1
     export_figure(fig_KUS, '\fig_KUS.eps', 'images\');
   end
-
 
   % ---------------------------------
   %% PLOT BETA AND YAW RATE GAINS
@@ -1062,12 +1103,13 @@ if enable_plot
   fig_yaw_gain = figure('Name','Yaw rate gain','NumberTitle','off', 'Color', 'w'); clf
   hold on 
   grid on; box on;
-  plot(u*3.6, yaw_rate_gain, 'LineWidth',2, 'DisplayName','Differentiation')
-  plot(u*3.6, yaw_rate_gain_theo, 'LineWidth',2, 'DisplayName','Formula')
+  plot(u*3.6, yaw_rate_gain, 'LineWidth',2, 'DisplayName','$\frac{\Omega}{\delta}$')
+  plot(u*3.6, yaw_rate_gain_theo, 'LineWidth',2, 'DisplayName','$\frac{u}{L(1+K_{US}u^2)}$')
+  xline(u_lin_lim*3.6, '--r', 'LineWidth',2, 'DisplayName','$K_{US}$ lin limit')
   title('Yaw rate gain')
   xlabel('u [km/h]')
-  ylabel('Yaw rate gain')
-  legend('location', 'northeast')
+  ylabel('$\frac{\Omega}{\delta}$')
+  legend('location', 'northwest')
   if enable_export == 1
     export_figure(fig_yaw_gain, '\fig_yaw_gain.eps', 'images\');
   end
@@ -1075,12 +1117,13 @@ if enable_plot
   fig_beta_gain = figure('Name','Beta gain','NumberTitle','off'); clf
   hold on 
   grid on; box on;
-  plot(u*3.6, beta_gain, 'LineWidth',2, 'DisplayName','Differentiation')
-  plot(u(1:end-1)*3.6, beta_gain_theo, 'LineWidth',2, 'DisplayName','Formula')
-  title('$\beta$ rate gain')
+  plot(u*3.6, beta_gain, 'LineWidth',2, 'DisplayName','$\frac{\beta}{\delta}$')
+  plot(u_tmp*3.6, beta_gain_theo, 'LineWidth',2, 'DisplayName','Theo.')
+  xline(u_lin_lim*3.6, 'r--', 'LineWidth',2, 'DisplayName','$K_{US}$ linear limit')
+  title('Body slip angle gain')
   xlabel('u [km/h]')
-  ylabel('$\beta$ gain')
-  legend('location', 'northeast')
+  ylabel('$\frac{\beta}{\delta}$ ')
+  legend('location', 'southwest')
   if enable_export == 1
     export_figure(fig_beta_gain, '\fig_beta_gain.eps', 'images\');
   end
