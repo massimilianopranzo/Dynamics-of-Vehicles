@@ -155,7 +155,7 @@ if enable_plot
   title('steering angle $\delta_D$ [deg]')
   xlim([0 time_sim(end)])
   if enable_export == 1
-    export_figure(fig_input, '\fig_input.eps', 'images\');
+    export_figure(fig_input, strcat('\fig_input', suffix, '.eps'), 'images\');
   end
 
   % ---------------------------------
@@ -191,7 +191,7 @@ if enable_plot
   title('$V_G$ [rad/s]')
   xlim([0 time_sim(end)])
   if enable_export == 1
-    export_figure(fig_motion, '\fig_motion.eps', 'images\');
+    export_figure(fig_motion, strcat('\fig_motion', suffix, '.eps'), 'images\');
   end
 
   % ---------------------------------
@@ -231,7 +231,7 @@ if enable_plot
   legend('$\delta_D/\tau_D$','$\delta_{fr}$','$\delta_{fl}$','location','best')
   xlim([0 time_sim(end)])
   if enable_export == 1
-    export_figure(fig_steer, '\fig_steer.eps', 'images\');
+    export_figure(fig_steer, strcat('\fig_steer', suffix, '.eps'), 'images\');
   end
 
   % -------------------------------
@@ -295,7 +295,7 @@ if enable_plot
   title('$Fy_{fl}$ [N]')
   xlim([0 time_sim(end)])
   if enable_export == 1
-    export_figure(fig_lat_slip, '\fig_lat_slip.eps', 'images\');
+    export_figure(fig_lat_slip, strcat('\fig_lat_slip', suffix, '.eps'), 'images\');
   end
 
   % linkaxes(ax,'x')
@@ -363,7 +363,7 @@ if enable_plot
   title('$Fx_{fl}$ [N]')
   xlim([0 time_sim(end)])
   if enable_export == 1
-    export_figure(fig_long_slip, '\fig_long_slip.eps', 'images\');
+    export_figure(fig_long_slip, strcat('\fig_long_slip', suffix, '.eps'), 'images\');
   end
   % linkaxes(ax,'x')
   clear ax
@@ -423,7 +423,7 @@ title('$Tw_{fl}$ [Nm]')
 xlim([0 time_sim(end)])
 linkaxes(ax,'x')
   if enable_export == 1
-    export_figure(fig_wheel_rate, '\fig_wheel_rate.eps', 'images\');
+    export_figure(fig_wheel_rate, strcat('\fig_wheel_rate', suffix, '.eps'), 'images\');
   end
 clear ax
 
@@ -488,7 +488,7 @@ grid on; box on;
 title('$Mz_{fl}$ [Nm]')
 xlim([0 time_sim(end)])
 if enable_export == 1
-  export_figure(fig_vert_loads, '\fig_vert_loads.eps', 'images\');
+  export_figure(fig_vert_loads, strcat('\fig_vert_loads', suffix, '.eps'), 'images\');
 end
 
 % linkaxes(ax,'x')
@@ -524,7 +524,7 @@ grid on; box on;
 title('$\gamma_{fl}$ [deg]')
 xlim([0 time_sim(end)])
 if enable_export == 1
-  export_figure(fig_camber, '\fig_camber.eps', 'images\');
+  export_figure(fig_camber, strcat('\fig_camber', suffix, '.eps'), 'images\');
 end
 
 % linkaxes(ax,'x')
@@ -574,7 +574,7 @@ title('$\rho$ [$m^{-1}$]')
 legend('$\rho_{ss}$','$\rho_{transient}$','Location','best')
 xlim([0 time_sim(end)])
 if enable_export == 1
-  export_figure(fig_extra, '\fig_extra.eps', 'images\');
+  export_figure(fig_extra, strcat('\fig_extra', suffix, '.eps'), 'images\');
 end
 % linkaxes(ax,'x')
 clear ax
@@ -604,7 +604,7 @@ xlim([0 time_sim(end)])
 
 linkaxes(ax,'x')
 if enable_export == 1
-  export_figure(fig_pose, '\fig_pose.eps', 'images\');
+  export_figure(fig_pose, strcat('\fig_pose', suffix, '.eps'), 'images\');
 end
 clear ax
 
@@ -621,7 +621,7 @@ zlabel('$u$ [m/s]')
 title('G-G diagram from simulation data','FontSize',18)
 grid on; box on;
 if enable_export == 1
-  export_figure(fig_GGplot, '\fig_GGplot.eps', 'images\');
+  export_figure(fig_GGplot, strcat('\fig_GGplot', suffix, '.eps'), 'images\');
 end
 
 % -------------------------------
@@ -650,7 +650,7 @@ end
 grid on; box on;
 hold off
 if enable_export == 1
-  export_figure(fig_real_path, '\fig_real_path.eps', 'images\');
+  export_figure(fig_real_path, strcat('\fig_real_path', suffix, '.eps'), 'images\');
 end
 
 
@@ -822,12 +822,13 @@ Fz_f0 = m * g * Lr / L;
 
 
 % Handling diagram
-minmax_norm_axle_char = min(max(mu_r), max(mu_f));
-maxmin_norm_axle_char = max(min(mu_r), min(mu_f))+2e-3;
+minmax_norm_axle_char = min(max(mu_r), max(mu_f)); % min between the maximum norm axle char
+maxmin_norm_axle_char = max(min(mu_r), min(mu_f))+2e-3; % max between the minimum norm axle char
 Ay_hand = maxmin_norm_axle_char:0.005:minmax_norm_axle_char; % nomralized acc
 pos_mu_r_remap = zeros(length(Ay_hand), 1);
 pos_mu_f_remap = zeros(length(Ay_hand), 1);
 pos_Ay_remap = zeros(length(Ay_hand), 1);
+% Find the value of norm axle char corresponding to the resampled accelerations defined in Ay hand 
 for i=1:size(Ay_hand, 2)
     [~, pos_mu_r_remap(i)] = min(abs(mu_r - Ay_hand(i)));
     [~, pos_mu_f_remap(i)] = min(abs(mu_f - Ay_hand(i)));
@@ -853,9 +854,10 @@ handling = -Delta_alpha; % [rad]
 % Cornering stiffnesses
 Ky_r = diff(Fy__r(pos_mu_r_remap)) ./ diff(alpha_r(pos_mu_r_remap));
 Ky_f = diff(Fy__f(pos_mu_f_remap)) ./ diff(alpha_f(pos_mu_f_remap));
-C_r = diff(mu_r) ./ diff(alpha_r);
-C_f = diff(mu_f) ./ diff(alpha_f);
+C_r = diff(mu_r) ./ diff(alpha_r); % rear norm corn stiffness
+C_f = diff(mu_f) ./ diff(alpha_f); % front norm conr stiffness
 
+% Understeering gradient for the two different tests
 if sim_options.test_type == 1 % constant velocity
     K_US_theo = - m*g/L*(Lf./Ky_r - Lr./Ky_f);
     K_US_theo2 = - diff(Delta_alpha) ./ diff(Ay_hand');
@@ -864,28 +866,29 @@ elseif sim_options.test_type == 2 % constant curvature
     K_US_theo = - m*g/L^2*(Lf./Ky_r - Lr./Ky_f);
     K_US_theo2 = - 1/L*diff(Delta_alpha) ./ diff(Ay_hand');
 end
-% fitting the linear part
+
+% Define two limits for the linearity 
 if sim_options.test_type == 1 % constat speed
     Ay_lin_lim = 0.6; % norm. acc. linear limit
 elseif sim_options.test_type == 2
     Ay_lin_lim = 0.6;
 end
-[~, pos_Ay_lin_lim] = min(abs(Ay - g*Ay_lin_lim));
+[~, pos_Ay_lin_lim] = min(abs(Ay - g*Ay_lin_lim)); % position of the simulated accelerations coresponding to the resample on
 u_lin_lim = u(pos_Ay_lin_lim); % velocity at which we lost the linearity
 if max(Ay_hand) < Ay_lin_lim
   ay_max_lin = max(Ay_hand); % [-] maximum norm acceleration for whom linearity holds
 else
   ay_max_lin = Ay_lin_lim; % [-] maximum norm acceleration for whom linearity holds 
 end
-ay_fit = Ay_hand(Ay_hand < ay_max_lin);
-ay_fit_lin = [maxmin_norm_axle_char:1e-6:ay_max_lin];
-handling_fit = handling(Ay_hand < ay_max_lin);
-p_lin = polyfit(ay_fit,handling_fit,1); % fitting the linear part
-K_US = p_lin(1); % understeering gradient
-handling_fit_lin = polyval(p_lin, ay_fit_lin); % fitted handling diagram
+ay_fit = Ay_hand(Ay_hand < ay_max_lin); % extract acc. corresponding to the linear part
+ay_fit_lin = [maxmin_norm_axle_char:1e-6:ay_max_lin]; % acc for which lin. does not hold
+handling_fit = handling(Ay_hand < ay_max_lin);  % value of the linear handling 
+p_lin = polyfit(ay_fit,handling_fit,1);         % fit the linear part
+K_US = p_lin(1);                                % fitted understeering gradient
+handling_fit_lin = polyval(p_lin, ay_fit_lin);  % value of the fitted handling diagram
 % fitting the nonlinear part 
 ay_fit = Ay_hand(Ay_hand > ay_max_lin);
-handling_fit = handling(Ay_hand > ay_max_lin) - K_US * ay_fit';
+handling_fit = handling(Ay_hand > ay_max_lin) - K_US * ay_fit'; % fi the nonlinear keeping the 1st term fitted before
 poly_deg = 3;
 A = ones(length(ay_fit), poly_deg);
 for i = 1:poly_deg - 1 
@@ -893,6 +896,7 @@ A(:,i) = ay_fit.^(poly_deg - i + 1);
 end
 p_tmp = inv(A' * A) * A'*handling_fit; % coefficients of the regression
 
+% fitting in hte case the acceleration is not enough to go in the NL region
 if ay_max_lin < max(Ay_hand)
   ay_fit_nonlin = [ay_max_lin:0.001:Ay_hand(end)];
   p_nl = p_tmp;
@@ -955,7 +959,7 @@ if enable_plot
   grid on; box on;
   sgtitle('Lateral load transfer', 'FontSize', 25)
   if enable_export == 1
-    export_figure(fig_load_transf, '\fig_load_transf.eps', 'images\');
+    export_figure(fig_load_transf, strcat('\fig_load_transf', suffix, '.eps'), 'images\');
   end
   clear ax
 
@@ -1049,7 +1053,7 @@ if enable_plot
   ylabel('$\mu_r, \mu_f$ [-]')
   legend('$\mu_r$','$\mu_f$','location','best')
   if enable_export == 1
-    export_figure(fig_norm_axle_char, '\fig_norm_axle_char.eps', 'images\');
+    export_figure(fig_norm_axle_char, strcat('\fig_norm_axle_char', suffix, '.eps'), 'images\');
   end
 
 
@@ -1069,7 +1073,7 @@ if enable_plot
   ylabel('$\delta_{D}\tau_{H} - \rho L \ [rad]$')
   legend('location', 'northeast')
   if enable_export == 1
-    export_figure(fig_hand, '\fig_hand.eps', 'images\');
+    export_figure(fig_hand, strcat('\fig_hand', suffix, '.eps'), 'images\');
   end
 
   % ---------------------------------
@@ -1094,7 +1098,7 @@ if enable_plot
   ylabel('g$K_{US}$')
   xlabel('ay/g [-]')
   if enable_export == 1
-    export_figure(fig_KUS, '\fig_KUS.eps', 'images\');
+    export_figure(fig_KUS, strcat('\fig_KUS', suffix, '.eps'), 'images\');
   end
 
   % ---------------------------------
@@ -1111,7 +1115,7 @@ if enable_plot
   ylabel('$\frac{\Omega}{\delta}$')
   legend('location', 'northwest')
   if enable_export == 1
-    export_figure(fig_yaw_gain, '\fig_yaw_gain.eps', 'images\');
+    export_figure(fig_yaw_gain, strcat('\fig_yaw_gain', suffix, '.eps'), 'images\');
   end
 
   fig_beta_gain = figure('Name','Beta gain','NumberTitle','off'); clf
@@ -1125,7 +1129,7 @@ if enable_plot
   ylabel('$\frac{\beta}{\delta}$ ')
   legend('location', 'southwest')
   if enable_export == 1
-    export_figure(fig_beta_gain, '\fig_beta_gain.eps', 'images\');
+    export_figure(fig_beta_gain, strcat('\fig_beta_gain', suffix, '.eps'), 'images\');
   end
 
   % % % ---------------------------------

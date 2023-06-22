@@ -1,5 +1,5 @@
 %% PLOT HANDLING AND KUS FOR DIFFERENT CONDITIONS
-enable_export = 1; % 1 for save data, 0 for not
+enable_export = 0; % 1 for save data, 0 for not
 s0_t0_c0 = load("saved_test\s100_t0_c0_conststeer.mat").data;
 sp10_t0_c0 = load("saved_test\s110_t0_c0_conststeer.mat").data;
 sn10_t0_c0 = load("saved_test\s90_t0_c0_conststeer.mat").data;
