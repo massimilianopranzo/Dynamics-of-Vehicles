@@ -64,7 +64,7 @@ kappa_fr   = model_sim.states.kappa_fr.data;
 kappa_fl   = model_sim.states.kappa_fl.data;
 
 % -----------------
-% Extra Parameters
+% Extra Parameters'location','best'
 % -----------------
 Tw_rr      = model_sim.extra_params.Tw_rr.data;
 Tw_rl      = model_sim.extra_params.Tw_rl.data;
@@ -147,6 +147,7 @@ if enable_plot
   grid on; box on;
   title('pedal $p_0$ [-]')
   xlim([0 time_sim(end)])
+  set(gca, 'FontSize',45); 
   % --- delta_0 --- %
   ax(2) = subplot(212);
   plot(time_sim,delta_D,'LineWidth',2)
@@ -154,7 +155,8 @@ if enable_plot
   grid on; box on;
   title('steering angle $\delta_D$ [deg]')
   xlim([0 time_sim(end)])
-  if enable_export == 1
+  set(gca, 'FontSize',45); 
+  if enable_export == 1;
     export_figure(fig_input, strcat('\fig_input', suffix, '.eps'), 'images\');
   end
 
@@ -169,6 +171,7 @@ if enable_plot
   grid on; box on;
   title('$u$ [km/h]')
   xlim([0 time_sim(end)])
+  set(gca, 'FontSize',25);
   % --- v --- %
   ax(2) = subplot(222);
   plot(time_sim,v,'LineWidth',2)
@@ -176,6 +179,7 @@ if enable_plot
   grid on; box on;
   title('$v$ [m/s]')
   xlim([0 time_sim(end)])
+  set(gca, 'FontSize',25);
   % --- Omega --- %
   ax(3) = subplot(223);
   plot(time_sim,Omega,'LineWidth',2)
@@ -183,352 +187,396 @@ if enable_plot
   grid on; box on;
   title('$\Omega$ [rad/s]')
   xlim([0 time_sim(end)])
+  set(gca, 'FontSize',25);
   % --- VG --- %
-  ax(3) = subplot(224);
+  ax(4) = subplot(224);
   plot(time_sim,sqrt(u.^2 + v.^2),'LineWidth',2)
   xline(Tinit, '--r', 'LineWidth', 2);
   grid on; box on;
   title('$V_G$ [rad/s]')
-  xlim([0 time_sim(end)])
-  if enable_export == 1
+  xlim([0 time_sim(end)]) 
+  set(gca, 'FontSize',25); 
+if enable_export == 1;
     export_figure(fig_motion, strcat('\fig_motion', suffix, '.eps'), 'images\');
   end
 
-  % ---------------------------------
-  %% Plot steering angles
-  % ---------------------------------
-  fig_steer = figure('Name','Steer','NumberTitle','off'); clf   
-  % --- delta_0 --- %
-  ax(1) = subplot(221);
-  plot(time_sim,delta_D,'LineWidth',2)
-  xline(Tinit, '--r', 'LineWidth', 2);
-  grid on; box on;
-  title('$\delta_0$ [deg]')
-  xlim([0 time_sim(end)])
-  % --- delta_fr --- %
-  ax(2) = subplot(222);
-  plot(time_sim,delta_fr,'LineWidth',2)
-  xline(Tinit, '--r', 'LineWidth', 2);
-  grid on; box on;
-  title('$\delta_{fr}$ [deg]')
-  xlim([0 time_sim(end)])
-  % --- delta_fl --- %
-  ax(3) = subplot(223);
-  hold on
-  plot(time_sim,delta_fl,'LineWidth',2)
-  xline(Tinit, '--r', 'LineWidth', 2);
-  grid on; box on;
-  title('$\delta_{fl}$ [deg]')
-  xlim([0 time_sim(end)])
-  % --- comparison --- %
-  ax(4) = subplot(224);
-  hold on
-  plot(time_sim,delta_D/tau_D,'LineWidth',2)
-  plot(time_sim,delta_fr,'LineWidth',2)
-  plot(time_sim,delta_fl,'LineWidth',2)
-  xline(Tinit, '--r', 'LineWidth', 2);
-  grid on; box on;
-  legend('$\delta_D/\tau_D$','$\delta_{fr}$','$\delta_{fl}$','location','best')
-  xlim([0 time_sim(end)])
-  if enable_export == 1
-    export_figure(fig_steer, strcat('\fig_steer', suffix, '.eps'), 'images\');
-  end
+  % % ---------------------------------
+  % %% Plot steering angles
+  % % ---------------------------------
+  % fig_steer = figure('Name','Steer','NumberTitle','off'); clf   
+  % % --- delta_0 --- %
+  % ax(1) = subplot(221);
+  % plot(time_sim,delta_D,'LineWidth',2)
+  % xline(Tinit, '--r', 'LineWidth', 2);
+  % grid on; box on;
+  % title('$\delta_0$ [deg]')
+  % xlim([0 time_sim(end)])
+  % set(gca, 'FontSize',45); 
+  % % --- delta_fr --- %
+  % ax(2) = subplot(222);
+  % plot(time_sim,delta_fr,'LineWidth',2)
+  % xline(Tinit, '--r', 'LineWidth', 2);
+  % grid on; box on;
+  % title('$\delta_{fr}$ [deg]')
+  % xlim([0 time_sim(end)])
+  % set(gca, 'FontSize',45); 
+  % % --- delta_fl --- %
+  % ax(3) = subplot(223);
+  % hold on
+  % plot(time_sim,delta_fl,'LineWidth',2)
+  % xline(Tinit, '--r', 'LineWidth', 2);
+  % grid on; box on;
+  % title('$\delta_{fl}$ [deg]')
+  % set(gca, 'FontSize',45); 
+  % xlim([0 time_sim(end)])
+  % % --- comparison --- %
+  % ax(4) = subplot(224);
+  % hold on
+  % plot(time_sim,delta_D/tau_D,'LineWidth',2)
+  % plot(time_sim,delta_fr,'LineWidth',2)
+  % plot(time_sim,delta_fl,'LineWidth',2)
+  % xline(Tinit, '--r', 'LineWidth', 2);
+  % set(gca, 'FontSize',45); 
+  % grid on; box on;
+  % legend('$\delta_D/\tau_D$','$\delta_{fr}$','$\delta_{fl}$','location','best')
+  % xlim([0 time_sim(end)])
+  % if enable_export == 1;
+  %   export_figure(fig_steer, strcat('\fig_steer', suffix, '.eps'), 'images\');
+  % end
 
-  % -------------------------------
-  %% Plot lateral tire slips and lateral forces
-  % -------------------------------
-  fig_lat_slip = figure('Name','Lat slips & forces','NumberTitle','off', 'Color','w'); clf
-  % --- alpha_rr --- %
-  ax(1) = subplot(331);
-  plot(time_sim,alpha_rr,'LineWidth',2)
-  xline(Tinit, '--r', 'LineWidth', 2);
-  grid on; box on;
-  title('$\alpha_{rr}$ [deg]')
-  xlim([0 time_sim(end)])
-  % --- alpha_rl --- %
-  ax(2) = subplot(332);
-  plot(time_sim,alpha_rl,'LineWidth',2)
-  xline(Tinit, '--r', 'LineWidth', 2);
-  grid on; box on;
-  title('$\alpha_{rl}$ [deg]')
-  xlim([0 time_sim(end)])
-  % --- alpha_fr --- %
-  ax(3) = subplot(333);
-  plot(time_sim,alpha_fr,'LineWidth',2)
-  xline(Tinit, '--r', 'LineWidth', 2);
-  grid on; box on;
-  title('$\alpha_{fr}$ [deg]')
-  xlim([0 time_sim(end)])
-  % --- alpha_fl --- %
-  ax(4) = subplot(334);
-  plot(time_sim,alpha_fl,'LineWidth',2)
-  xline(Tinit, '--r', 'LineWidth', 2);
-  grid on; box on;
-  title('$\alpha_{fl}$ [deg]')
-  xlim([0 time_sim(end)])
-  % --- Fy_rr --- %
-  ax(5) = subplot(335);
-  plot(time_sim,Fy_rr,'LineWidth',2)
-  xline(Tinit, '--r', 'LineWidth', 2);
-  grid on; box on;
-  title('$Fy_{rr}$ [N]')
-  xlim([0 time_sim(end)])
-  % --- Fy_rl --- %
-  ax(6) = subplot(336);
-  plot(time_sim,Fy_rl,'LineWidth',2)
-  xline(Tinit, '--r', 'LineWidth', 2);
-  grid on; box on;
-  title('$Fy_{rl}$ [Nm]')
-  xlim([0 time_sim(end)])
-  % --- Fy_fr --- %
-  ax(7) = subplot(337);
-  plot(time_sim,Fy_fr,'LineWidth',2)
-  xline(Tinit, '--r', 'LineWidth', 2);
-  grid on; box on;
-  title('$Fy_{fr}$ [N]')
-  xlim([0 time_sim(end)])
-  % --- Fy_fl --- %
-  ax(8) = subplot(338);
-  plot(time_sim,Fy_fl,'LineWidth',2)
-  xline(Tinit, '--r', 'LineWidth', 2);
-  grid on; box on;
-  title('$Fy_{fl}$ [N]')
-  xlim([0 time_sim(end)])
-  if enable_export == 1
-    export_figure(fig_lat_slip, strcat('\fig_lat_slip', suffix, '.eps'), 'images\');
-  end
+%   % -------------------------------
+%   %% Plot lateral tire slips and lateral forces
+%   % -------------------------------
+%   fig_lat_slip = figure('Name','Lat slips & forces','NumberTitle','off', 'Color','w'); clf
+%   % --- alpha_rr --- %
+%   ax(1) = subplot(331);
+%   plot(time_sim,alpha_rr,'LineWidth',2)
+%   xline(Tinit, '--r', 'LineWidth', 2);
+%   grid on; box on;
+%   title('$\alpha_{rr}$ [deg]')
+%   xlim([0 time_sim(end)])
+%   set(gca, 'FontSize',45);
+%   % --- alpha_rl --- %
+%   ax(2) = subplot(332);
+%   plot(time_sim,alpha_rl,'LineWidth',2)
+%   xline(Tinit, '--r', 'LineWidth', 2);
+%   grid on; box on;
+%   title('$\alpha_{rl}$ [deg]')
+%   xlim([0 time_sim(end)])
+%   set(gca, 'FontSize',45);
+%   % --- alpha_fr --- %
+%   ax(3) = subplot(333);
+%   plot(time_sim,alpha_fr,'LineWidth',2)
+%   xline(Tinit, '--r', 'LineWidth', 2);
+%   grid on; box on;
+%   title('$\alpha_{fr}$ [deg]')
+%   xlim([0 time_sim(end)])
+%   set(gca, 'FontSize',45);
+%   % --- alpha_fl --- %
+%   ax(4) = subplot(334);
+%   plot(time_sim,alpha_fl,'LineWidth',2)
+%   xline(Tinit, '--r', 'LineWidth', 2);
+%   grid on; box on;
+%   title('$\alpha_{fl}$ [deg]')
+%   xlim([0 time_sim(end)])
+%   set(gca, 'FontSize',45);
+%   % --- Fy_rr --- %
+%   ax(5) = subplot(335);
+%   plot(time_sim,Fy_rr,'LineWidth',2)
+%   xline(Tinit, '--r', 'LineWidth', 2);
+%   grid on; box on;
+%   title('$Fy_{rr}$ [N]')
+%   xlim([0 time_sim(end)])
+%   set(gca, 'FontSize',45);
+%   % --- Fy_rl --- %
+%   ax(6) = subplot(336);
+%   plot(time_sim,Fy_rl,'LineWidth',2)
+%   xline(Tinit, '--r', 'LineWidth', 2);
+%   grid on; box on;
+%   title('$Fy_{rl}$ [Nm]')
+%   xlim([0 time_sim(end)])
+%   set(gca, 'FontSize',45); 
+%   % --- Fy_fr --- %
+%   ax(7) = subplot(337);
+%   plot(time_sim,Fy_fr,'LineWidth',2)
+%   xline(Tinit, '--r', 'LineWidth', 2);
+%   grid on; box on;
+%   title('$Fy_{fr}$ [N]')
+%   xlim([0 time_sim(end)])
+%   set(gca, 'FontSize',45); 
+%   % --- Fy_fl --- %
+%   ax(8) = subplot(338);
+%   plot(time_sim,Fy_fl,'LineWidth',2)
+%   xline(Tinit, '--r', 'LineWidth', 2);
+%   grid on; box on;
+%   title('$Fy_{fl}$ [N]')
+%   xlim([0 time_sim(end)])
+%   set(gca, 'FontSize',45); 
+%   if enable_export == 1;
+%     export_figure(fig_lat_slip, strcat('\fig_lat_slip', suffix, '.eps'), 'images\');
+%   end
 
-  % linkaxes(ax,'x')
-  clear ax
-
-
-  % ---------------------------------
-  %% Plot longitudinal tire slips and longitudinal forces
-  % ---------------------------------
-  fig_long_slip = figure('Name','Long slips & forces','NumberTitle','off', 'Color', 'w'); clf
-  % --- kappa_rr --- %
-  ax(1) = subplot(331);
-  plot(time_sim,kappa_rr,'LineWidth',2)
-  xline(Tinit, '--r', 'LineWidth', 2);
-  grid on; box on;
-  title('$\kappa_{rr}$ [-]')
-  xlim([0 time_sim(end)])
-  % --- kappa_rl --- %
-  ax(2) = subplot(332);
-  plot(time_sim,kappa_rl,'LineWidth',2)
-  xline(Tinit, '--r', 'LineWidth', 2);
-  grid on; box on;
-  title('$\kappa_{rl}$ [-]')
-  xlim([0 time_sim(end)])
-  % --- kappa_fr --- %
-  ax(3) = subplot(333);
-  plot(time_sim,kappa_fr,'LineWidth',2)
-  xline(Tinit, '--r', 'LineWidth', 2);
-  grid on; box on;
-  title('$\kappa_{fr}$ [-]')
-  xlim([0 time_sim(end)])
-  % --- kappa_fl --- %
-  ax(4) = subplot(334);
-  plot(time_sim,kappa_fl,'LineWidth',2)
-  xline(Tinit, '--r', 'LineWidth', 2);
-  grid on; box on;
-  title('$\kappa_{fl}$ [-]')
-  xlim([0 time_sim(end)])
-  % --- Fx_rr --- %
-  ax(5) = subplot(335);
-  plot(time_sim,Fx_rr,'LineWidth',2)
-  xline(Tinit, '--r', 'LineWidth', 2);
-  grid on; box on;
-  title('$Fx_{rr}$ [N]')
-  xlim([0 time_sim(end)])
-  % --- Fx_rl --- %
-  ax(6) = subplot(336);
-  plot(time_sim,Fx_rl,'LineWidth',2)
-  xline(Tinit, '--r', 'LineWidth', 2);
-  grid on; box on;
-  title('$Fx_{rl}$ [N]')
-  xlim([0 time_sim(end)])
-  % --- Fx_fr --- %
-  ax(7) = subplot(337);
-  plot(time_sim,Fx_fr,'LineWidth',2)
-  xline(Tinit, '--r', 'LineWidth', 2);
-  grid on; box on;
-  title('$Fx_{fr}$ [N]')
-  xlim([0 time_sim(end)])
-  % --- Fx_fl --- %
-  ax(8) = subplot(338);
-  plot(time_sim,Fx_fl,'LineWidth',2)
-  xline(Tinit, '--r', 'LineWidth', 2);
-  grid on; box on;
-  title('$Fx_{fl}$ [N]')
-  xlim([0 time_sim(end)])
-  if enable_export == 1
-    export_figure(fig_long_slip, strcat('\fig_long_slip', suffix, '.eps'), 'images\');
-  end
-  % linkaxes(ax,'x')
-  clear ax
+%   % linkaxes(ax,'x')
+%   clear ax
 
 
-% ---------------------------------
-%% Plot wheel torques and wheel rates
-% ---------------------------------
-fig_wheel_rate = figure('Name','Wheel rates & torques','NumberTitle','off','Color','w'); clf
-% --- omega_rr --- %
-ax(1) = subplot(331);
-plot(time_sim,omega_rr,'LineWidth',2)
-grid on; box on;
-title('$\omega_{rr}$ [rad/s]')
-xlim([0 time_sim(end)])
-% --- omega_rl --- %
-ax(2) = subplot(332);
-plot(time_sim,omega_rl,'LineWidth',2)
-grid on; box on;
-title('$\omega_{rl}$ [rad/s]')
-xlim([0 time_sim(end)])
-% --- omega_fr --- %
-ax(3) = subplot(333);
-plot(time_sim,omega_fr,'LineWidth',2)
-grid on; box on;
-title('$\omega_{fr}$ [rad/s]')
-xlim([0 time_sim(end)])
-% --- omega_fl --- %
-ax(4) = subplot(334);
-plot(time_sim,omega_fl,'LineWidth',2)
-grid on; box on;
-title('$\omega_{fl}$ [rad/s]')
-xlim([0 time_sim(end)])
-% --- Tw_rr --- %
-ax(5) = subplot(335);
-plot(time_sim,Tw_rr,'LineWidth',2)
-grid on; box on;
-title('$Tw_{rr}$ [Nm]')
-xlim([0 time_sim(end)])
-% --- Tw_rl --- %
-ax(6) = subplot(336);
-plot(time_sim,Tw_rl,'LineWidth',2)
-grid on; box on;
-title('$Tw_{rl}$ [Nm]')
-xlim([0 time_sim(end)])
-% --- Tw_fr --- %
-ax(7) = subplot(337);
-plot(time_sim,Tw_fr,'LineWidth',2)
-grid on; box on;
-title('$Tw_{fr}$ [Nm]')
-xlim([0 time_sim(end)])
-% --- Tw_fl --- %
-ax(8) = subplot(338);
-plot(time_sim,Tw_fl,'LineWidth',2)
-grid on; box on;
-title('$Tw_{fl}$ [Nm]')
-xlim([0 time_sim(end)])
-linkaxes(ax,'x')
-  if enable_export == 1
-    export_figure(fig_wheel_rate, strcat('\fig_wheel_rate', suffix, '.eps'), 'images\');
-  end
-clear ax
+%   % ---------------------------------
+%   %% Plot longitudinal tire slips and longitudinal forces
+%   % ---------------------------------
+%   fig_long_slip = figure('Name','Long slips & forces','NumberTitle','off', 'Color', 'w'); clf
+%   % --- kappa_rr --- %
+%   ax(1) = subplot(331);
+%   set(gca, 'FontSize',45);
+%   plot(time_sim,kappa_rr,'LineWidth',2)
+%   xline(Tinit, '--r', 'LineWidth', 2);
+%   grid on; box on;
+%   title('$\kappa_{rr}$ [-]')
+%   xlim([0 time_sim(end)])
+%   % --- kappa_rl --- %
+%   ax(2) = subplot(332);
+%   set(gca, 'FontSize',45);
+%   plot(time_sim,kappa_rl,'LineWidth',2)
+%   xline(Tinit, '--r', 'LineWidth', 2);
+%   grid on; box on;
+%   title('$\kappa_{rl}$ [-]')
+%   xlim([0 time_sim(end)])
+%   % --- kappa_fr --- %
+%   ax(3) = subplot(333);
+%   set(gca, 'FontSize',45);
+%   plot(time_sim,kappa_fr,'LineWidth',2)
+%   xline(Tinit, '--r', 'LineWidth', 2);
+%   grid on; box on;
+%   title('$\kappa_{fr}$ [-]')
+%   xlim([0 time_sim(end)])
+%   % --- kappa_fl --- %
+%   ax(4) = subplot(334);
+%   set(gca, 'FontSize',45);
+%   plot(time_sim,kappa_fl,'LineWidth',2)
+%   xline(Tinit, '--r', 'LineWidth', 2);
+%   grid on; box on;
+%   title('$\kappa_{fl}$ [-]')
+%   xlim([0 time_sim(end)])
+%   % --- Fx_rr --- %
+%   ax(5) = subplot(335);
+%   set(gca, 'FontSize',45);
+%   plot(time_sim,Fx_rr,'LineWidth',2)
+%   xline(Tinit, '--r', 'LineWidth', 2);
+%   grid on; box on;
+%   title('$Fx_{rr}$ [N]')
+%   xlim([0 time_sim(end)])
+%   % --- Fx_rl --- %
+%   ax(6) = subplot(336);
+%   set(gca, 'FontSize',45);
+%   plot(time_sim,Fx_rl,'LineWidth',2)
+%   xline(Tinit, '--r', 'LineWidth', 2);
+%   grid on; box on;
+%   title('$Fx_{rl}$ [N]')
+%   xlim([0 time_sim(end)])
+%   % --- Fx_fr --- %
+%   ax(7) = subplot(337);
+%   set(gca, 'FontSize',45);
+%   plot(time_sim,Fx_fr,'LineWidth',2)
+%   xline(Tinit, '--r', 'LineWidth', 2);
+%   grid on; box on;
+%   title('$Fx_{fr}$ [N]')
+%   xlim([0 time_sim(end)])
+%   % --- Fx_fl --- %
+%   ax(8) = subplot(338);
+%   set(gca, 'FontSize',45);
+%   plot(time_sim,Fx_fl,'LineWidth',2)
+%   xline(Tinit, '--r', 'LineWidth', 2);
+%   grid on; box on;
+%   title('$Fx_{fl}$ [N]')
+%   xlim([0 time_sim(end)])
+% set(gca, 'FontSize',45); 
+% if enable_export == 1;
+%     export_figure(fig_long_slip, strcat('\fig_long_slip', suffix, '.eps'), 'images\');
+%   end
+%   % linkaxes(ax,'x')
+%   clear ax
 
-% ---------------------------------
-%% Plot vertical tire loads and self-aligning torques
-% ---------------------------------
-fig_vert_loads = figure('Name','Vert loads & ali torques','NumberTitle','off', 'Color', 'w'); clf
-% --- Fz_rr --- %
-ax(1) = subplot(331);
-plot(time_sim,Fz_rr,'LineWidth',2)
-xline(Tinit, '--r', 'LineWidth', 2);
-grid on; box on;
-title('$Fz_{rr}$ [N]')
-xlim([0 time_sim(end)])
-% --- Fz_rl --- %
-ax(2) = subplot(332);
-plot(time_sim,Fz_rl,'LineWidth',2)
-xline(Tinit, '--r', 'LineWidth', 2);
-grid on; box on;
-title('$Fz_{rl}$ [N]')
-xlim([0 time_sim(end)])
-% --- Fz_fr --- %
-ax(3) = subplot(333);
-plot(time_sim,Fz_fr,'LineWidth',2)
-xline(Tinit, '--r', 'LineWidth', 2);
-grid on; box on;
-title('$Fz_{fr}$ [N]')
-xlim([0 time_sim(end)])
-% --- Fz_fl --- %
-ax(4) = subplot(334);
-plot(time_sim,Fz_fl,'LineWidth',2)
-xline(Tinit, '--r', 'LineWidth', 2);
-grid on; box on;
-title('$Fz_{fl}$ [N]')
-xlim([0 time_sim(end)])
-% --- Mz_rr --- %
-ax(5) = subplot(335);
-plot(time_sim,Mz_rr,'LineWidth',2)
-xline(Tinit, '--r', 'LineWidth', 2);
-grid on; box on;
-title('$Mz_{rr}$ [Nm]')
-xlim([0 time_sim(end)])
-% --- Mz_rl --- %
-ax(6) = subplot(336);
-plot(time_sim,Mz_rl,'LineWidth',2)
-xline(Tinit, '--r', 'LineWidth', 2);
-grid on; box on;
-title('$Mz_{rl}$ [Nm]')
-xlim([0 time_sim(end)])
-% --- Mz_fr --- %
-ax(7) = subplot(337);
-plot(time_sim,Mz_fr,'LineWidth',2)
-xline(Tinit, '--r', 'LineWidth', 2);
-grid on; box on;
-title('$Mz_{fr}$ [Nm]')
-xlim([0 time_sim(end)])
-% --- Mz_fl --- %
-ax(8) = subplot(338);
-plot(time_sim,Mz_fl,'LineWidth',2)
-xline(Tinit, '--r', 'LineWidth', 2);
-grid on; box on;
-title('$Mz_{fl}$ [Nm]')
-xlim([0 time_sim(end)])
-if enable_export == 1
-  export_figure(fig_vert_loads, strcat('\fig_vert_loads', suffix, '.eps'), 'images\');
-end
 
+% % ---------------------------------
+% %% Plot wheel torques and wheel rates
+% % ---------------------------------
+% fig_wheel_rate = figure('Name','Wheel rates & torques','NumberTitle','off','Color','w'); clf
+% % --- omega_rr --- %
+% ax(1) = subplot(331);
+% set(gca, 'FontSize',45);
+% plot(time_sim,omega_rr,'LineWidth',2)
+% grid on; box on;
+% title('$\omega_{rr}$ [rad/s]')
+% xlim([0 time_sim(end)])
+% % --- omega_rl --- %
+% ax(2) = subplot(332);
+% set(gca, 'FontSize',45);
+% plot(time_sim,omega_rl,'LineWidth',2)
+% grid on; box on;
+% title('$\omega_{rl}$ [rad/s]')
+% xlim([0 time_sim(end)])
+% % --- omega_fr --- %
+% ax(3) = subplot(333);
+% set(gca, 'FontSize',45);
+% plot(time_sim,omega_fr,'LineWidth',2)
+% grid on; box on;
+% title('$\omega_{fr}$ [rad/s]')
+% xlim([0 time_sim(end)])
+% % --- omega_fl --- %
+% ax(4) = subplot(334);
+% set(gca, 'FontSize',45);
+% plot(time_sim,omega_fl,'LineWidth',2)
+% grid on; box on;
+% title('$\omega_{fl}$ [rad/s]')
+% xlim([0 time_sim(end)])
+% % --- Tw_rr --- %
+% ax(5) = subplot(335);
+% set(gca, 'FontSize',45);
+% plot(time_sim,Tw_rr,'LineWidth',2)
+% grid on; box on;
+% title('$Tw_{rr}$ [Nm]')
+% xlim([0 time_sim(end)])
+% % --- Tw_rl --- %
+% ax(6) = subplot(336);
+% set(gca, 'FontSize',45);
+% plot(time_sim,Tw_rl,'LineWidth',2)
+% grid on; box on;
+% title('$Tw_{rl}$ [Nm]')
+% xlim([0 time_sim(end)])
+% % --- Tw_fr --- %
+% ax(7) = subplot(337);
+% set(gca, 'FontSize',45);
+% plot(time_sim,Tw_fr,'LineWidth',2)
+% grid on; box on;
+% title('$Tw_{fr}$ [Nm]')
+% xlim([0 time_sim(end)])
+% % --- Tw_fl --- %
+% ax(8) = subplot(338);
+% set(gca, 'FontSize',45);
+% plot(time_sim,Tw_fl,'LineWidth',2)
+% grid on; box on;
+% title('$Tw_{fl}$ [Nm]')
+% xlim([0 time_sim(end)])
 % linkaxes(ax,'x')
-clear ax
+% set(gca, 'FontSize',45); 
+% if enable_export == 1;
+%     export_figure(fig_wheel_rate, strcat('\fig_wheel_rate', suffix, '.eps'), 'images\');
+%   end
+% clear ax
+
+% % ---------------------------------
+% %% Plot vertical tire loads and self-aligning torques
+% % ---------------------------------
+% fig_vert_loads = figure('Name','Vert loads & ali torques','NumberTitle','off', 'Color', 'w'); clf
+% % --- Fz_rr --- %
+% ax(1) = subplot(331);
+% set(gca, 'FontSize',45);
+% plot(time_sim,Fz_rr,'LineWidth',2)
+% xline(Tinit, '--r', 'LineWidth', 2);
+% grid on; box on;
+% title('$Fz_{rr}$ [N]')
+% xlim([0 time_sim(end)])
+% % --- Fz_rl --- %
+% ax(2) = subplot(332);
+% set(gca, 'FontSize',45);
+% plot(time_sim,Fz_rl,'LineWidth',2)
+% xline(Tinit, '--r', 'LineWidth', 2);
+% grid on; box on;
+% title('$Fz_{rl}$ [N]')
+% xlim([0 time_sim(end)])
+% % --- Fz_fr --- %
+% ax(3) = subplot(333);
+% set(gca, 'FontSize',45);
+% plot(time_sim,Fz_fr,'LineWidth',2)
+% xline(Tinit, '--r', 'LineWidth', 2);
+% grid on; box on;
+% title('$Fz_{fr}$ [N]')
+% xlim([0 time_sim(end)])
+% % --- Fz_fl --- %
+% ax(4) = subplot(334);
+% set(gca, 'FontSize',45);
+% plot(time_sim,Fz_fl,'LineWidth',2)
+% xline(Tinit, '--r', 'LineWidth', 2);
+% grid on; box on;
+% title('$Fz_{fl}$ [N]')
+% xlim([0 time_sim(end)])
+% % --- Mz_rr --- %
+% ax(5) = subplot(335);
+% set(gca, 'FontSize',45);
+% plot(time_sim,Mz_rr,'LineWidth',2)
+% xline(Tinit, '--r', 'LineWidth', 2);
+% grid on; box on;
+% title('$Mz_{rr}$ [Nm]')
+% xlim([0 time_sim(end)])
+% % --- Mz_rl --- %
+% ax(6) = subplot(336);
+% set(gca, 'FontSize',45);
+% plot(time_sim,Mz_rl,'LineWidth',2)
+% xline(Tinit, '--r', 'LineWidth', 2);
+% grid on; box on;
+% title('$Mz_{rl}$ [Nm]')
+% xlim([0 time_sim(end)])
+% % --- Mz_fr --- %
+% ax(7) = subplot(337);
+% set(gca, 'FontSize',45);
+% plot(time_sim,Mz_fr,'LineWidth',2)
+% xline(Tinit, '--r', 'LineWidth', 2);
+% grid on; box on;
+% title('$Mz_{fr}$ [Nm]')
+% xlim([0 time_sim(end)])
+% % --- Mz_fl --- %
+% ax(8) = subplot(338);
+% set(gca, 'FontSize',45);
+% plot(time_sim,Mz_fl,'LineWidth',2)
+% xline(Tinit, '--r', 'LineWidth', 2);
+% grid on; box on;
+% title('$Mz_{fl}$ [Nm]')
+% xlim([0 time_sim(end)])
+% if enable_export == 1
+%   export_figure(fig_vert_loads, strcat('\fig_vert_loads', suffix, '.eps'), 'images\');
+% end
+
+% % linkaxes(ax,'x')
+% clear ax
 
 
-% ---------------------------------
-%% Plot wheel camber
-% ---------------------------------
-fig_camber = figure('Name','Wheel camber','NumberTitle','off', 'Color', 'w'); clf
-% --- gamma_rr --- %
-ax(1) = subplot(221);
-plot(time_sim,gamma_rr,'LineWidth',2)
-grid on; box on;
-title('$\gamma_{rr}$ [deg]')
-xlim([0 time_sim(end)])
-% --- gamma_rl --- %
-ax(2) = subplot(222);
-plot(time_sim,gamma_rl,'LineWidth',2)
-grid on; box on;
-title('$\gamma_{rl}$ [deg]')
-xlim([0 time_sim(end)])
-% --- gamma_fr --- %
-ax(3) = subplot(223);
-plot(time_sim,gamma_fr,'LineWidth',2)
-grid on; box on;
-title('$\gamma_{fr}$ [deg]')
-xlim([0 time_sim(end)])
-% --- gamma_fl --- %
-ax(4) = subplot(224);
-plot(time_sim,gamma_fl,'LineWidth',2)
-grid on; box on;
-title('$\gamma_{fl}$ [deg]')
-xlim([0 time_sim(end)])
-if enable_export == 1
-  export_figure(fig_camber, strcat('\fig_camber', suffix, '.eps'), 'images\');
-end
+% % ---------------------------------
+% %% Plot wheel camber
+% % ---------------------------------
+% fig_camber = figure('Name','Wheel camber','NumberTitle','off', 'Color', 'w'); clf
+% % --- gamma_rr --- %
+% ax(1) = subplot(221);
+% set(gca, 'FontSize',45);
+% plot(time_sim,gamma_rr,'LineWidth',2)
+% grid on; box on;
+% title('$\gamma_{rr}$ [deg]')
+% xlim([0 time_sim(end)])
+% % --- gamma_rl --- %
+% ax(2) = subplot(222);
+%   set(gca, 'FontSize',45);
+% plot(time_sim,gamma_rl,'LineWidth',2)
+% grid on; box on;
+% title('$\gamma_{rl}$ [deg]')
+% xlim([0 time_sim(end)])
+% % --- gamma_fr --- %
+% ax(3) = subplot(223);
+% set(gca, 'FontSize',45);
+% plot(time_sim,gamma_fr,'LineWidth',2)
+% grid on; box on;
+% title('$\gamma_{fr}$ [deg]')
+% xlim([0 time_sim(end)])
+% % --- gamma_fl --- %
+% ax(4) = subplot(224);
+% set(gca, 'FontSize',45);
+% plot(time_sim,gamma_fl,'LineWidth',2)
+% grid on; box on;
+% title('$\gamma_{fl}$ [deg]')
+% xlim([0 time_sim(end)])
+% if enable_export == 1
+%   export_figure(fig_camber, strcat('\fig_camber', suffix, '.eps'), 'images\');
+% end
 
-% linkaxes(ax,'x')
-clear ax
+% % linkaxes(ax,'x')
+% clear ax
 
 % ---------------------------------
 %% Plot accelerations, chassis side slip angle and curvature
@@ -544,8 +592,9 @@ plot(time_sim(2:end),dot_u_filt,'-.r','LineWidth',1)
 xline(Tinit, '--r', 'LineWidth', 2);
 grid on; box on;
 title('$a_{x}$ $[m/s^2]$')
-legend('$\dot{u}-\Omega v$','$\dot{u}$','filt $\dot{u}-\Omega v$','filt $\dot{u}$','Location','southeast')
+legend('$\dot{u}-\Omega v$','$\dot{u}$','filt $\dot{u}-\Omega v$','filt $\dot{u}$','Location','south', 'NumColumns', 2)
 xlim([0 time_sim(end)])
+set(gca, 'FontSize',25);
 % --- ay --- %
 ax(2) = subplot(222);
 plot(time_sim(2:end),dot_v + Omega(2:end).*u(2:end),'LineWidth',2)
@@ -556,6 +605,7 @@ grid on; box on;
 title('$a_{y}$ $[m/s^2]$')
 legend('$\dot{v}+\Omega u$','$\Omega u$','Location','best')
 xlim([0 time_sim(end)])
+set(gca, 'FontSize',25);
 % --- beta --- %
 ax(3) = subplot(223);
 plot(time_sim,rad2deg(beta),'LineWidth',2)
@@ -563,6 +613,7 @@ xline(Tinit, '--r', 'LineWidth', 2);
 grid on; box on;
 title('$\beta$ [deg]')
 xlim([0 time_sim(end)])
+set(gca, 'FontSize',25);
 % --- rho --- %
 ax(4) = subplot(224);
 plot(time_sim,rho_ss,'LineWidth',2)
@@ -573,85 +624,90 @@ grid on; box on;
 title('$\rho$ [$m^{-1}$]')
 legend('$\rho_{ss}$','$\rho_{transient}$','Location','best')
 xlim([0 time_sim(end)])
+set(gca, 'FontSize',25);
 if enable_export == 1
   export_figure(fig_extra, strcat('\fig_extra', suffix, '.eps'), 'images\');
 end
 % linkaxes(ax,'x')
 clear ax
 
-% ---------------------------------
-%% Plot vehicle pose x,y,psi
-% ---------------------------------
-fig_pose = figure('Name','Pose','NumberTitle','off','Color','w'); clf 
-% --- x --- %
-ax(1) = subplot(221);
-plot(time_sim,x_CoM,'LineWidth',2)
-grid on; box on;
-title('$x$ [m]')
-xlim([0 time_sim(end)])
-% --- y --- %
-ax(2) = subplot(222);
-plot(time_sim,y_CoM,'LineWidth',2)
-grid on; box on;
-title('$y$ [m]')
-xlim([0 time_sim(end)])
-% --- psi --- %
-ax(3) = subplot(223);
-plot(time_sim,rad2deg(psi),'LineWidth',2)
-grid on; box on;
-title('$\psi$ [deg]')
-xlim([0 time_sim(end)])
+% % ---------------------------------
+% %% Plot vehicle pose x,y,psi
+% % ---------------------------------
+% fig_pose = figure('Name','Pose','NumberTitle','off','Color','w'); clf 
+% % --- x --- %
+% ax(1) = subplot(221);
+% set(gca, 'FontSize',45);
+% plot(time_sim,x_CoM,'LineWidth',2)
+% grid on; box on;
+% title('$x$ [m]')
+% xlim([0 time_sim(end)])
+% % --- y --- %
+% ax(2) = subplot(222);
+% set(gca, 'FontSize',45);
+% plot(time_sim,y_CoM,'LineWidth',2)
+% grid on; box on;
+% title('$y$ [m]')
+% xlim([0 time_sim(end)])
+% % --- psi --- %
+% ax(3) = subplot(223);
+% set(gca, 'FontSize',45);
+% plot(time_sim,rad2deg(psi),'LineWidth',2)
+% grid on; box on;
+% title('$\psi$ [deg]')
+% xlim([0 time_sim(end)])
 
-linkaxes(ax,'x')
-if enable_export == 1
-  export_figure(fig_pose, strcat('\fig_pose', suffix, '.eps'), 'images\');
-end
-clear ax
+% linkaxes(ax,'x')
+% if enable_export == 1
+%   export_figure(fig_pose, strcat('\fig_pose', suffix, '.eps'), 'images\');
+% end
+% clear ax
 
-% -------------------------------
-%% Plot G-G diagram from simulation data
-% -------------------------------
-fig_GGplot = figure('Name','G-G plot','NumberTitle','off','Color','w'); clf
-axis equal
-hold on
-plot3(Ay,Ax_filt,u(1:end-1),'Color',color('purple'),'LineWidth',3)
-xlabel('$a_y$ [m/s$^2$]')
-ylabel('$a_x$ [m/s$^2$]')
-zlabel('$u$ [m/s]')
-title('G-G diagram from simulation data','FontSize',18)
-grid on; box on;
-if enable_export == 1
-  export_figure(fig_GGplot, strcat('\fig_GGplot', suffix, '.eps'), 'images\');
-end
+% % -------------------------------
+% %% Plot G-G diagram from simulation data
+% % -------------------------------
+% fig_GGplot = figure('Name','G-G plot','NumberTitle','off','Color','w'); clf
+% set(gca, 'FontSize',45);
+% axis equal
+% hold on
+% plot3(Ay,Ax_filt,u(1:end-1),'Color',color('purple'),'LineWidth',3)
+% xlabel('$a_y$ [m/s$^2$]')
+% ylabel('$a_x$ [m/s$^2$]')
+% zlabel('$u$ [m/s]')
+% title('G-G diagram from simulation data','FontSize',18)
+% grid on; box on;
+% if enable_export == 1
+%   export_figure(fig_GGplot, strcat('\fig_GGplot', suffix, '.eps'), 'images\');
+% end
 
-% -------------------------------
-%% Plot vehicle path
-% -------------------------------
-N = length(time_sim);
-fig_real_path = figure('Name','Real Vehicle Path','NumberTitle','off','Color','w'); clf
-set(gca,'fontsize',16)
-hold on
-axis equal
-xlabel('x-coord [m]')
-ylabel('y-coord [m]')
-title('Real Vehicle Path','FontSize',18)
-plot(x_CoM,y_CoM,'Color',color('gold'),'LineWidth',2)
-for i = 1:floor(N/20):N
-    rot_mat = [cos(psi(i)) -sin(psi(i)) ; sin(psi(i)) cos(psi(i))];
-    pos_rr = rot_mat*[-Lr -Wr/2]';
-    pos_rl = rot_mat*[-Lr +Wr/2]';
-    pos_fr = rot_mat*[+Lf -Wf/2]';
-    pos_fl = rot_mat*[+Lf +Wf/2]';
-    pos = [pos_rr pos_rl pos_fl pos_fr];
-    p = patch(x_CoM(i) + pos(1,:),y_CoM(i) + pos(2,:),'blue');
-    quiver(x_CoM(i), y_CoM(i), u(i)*cos(psi(i)), u(i)*sin(psi(i)), 'color', [1,0,0]);
-    quiver(x_CoM(i), y_CoM(i), -v(i)*sin(psi(i)), v(i)*cos(psi(i)), 'color', [0.23,0.37,0.17]);
-end
-grid on; box on;
-hold off
-if enable_export == 1
-  export_figure(fig_real_path, strcat('\fig_real_path', suffix, '.eps'), 'images\');
-end
+% % -------------------------------
+% %% Plot vehicle path
+% % -------------------------------
+% N = length(time_sim);
+% fig_real_path = figure('Name','Real Vehicle Path','NumberTitle','off','Color','w'); clf
+% set(gca,'fontsize',25)
+% hold on
+% axis equal
+% xlabel('x-coord [m]')
+% ylabel('y-coord [m]')
+% title('Real Vehicle Path','FontSize',18)
+% plot(x_CoM,y_CoM,'Color',color('gold'),'LineWidth',2)
+% for i = 1:floor(N/20):N
+%     rot_mat = [cos(psi(i)) -sin(psi(i)) ; sin(psi(i)) cos(psi(i))];
+%     pos_rr = rot_mat*[-Lr -Wr/2]';
+%     pos_rl = rot_mat*[-Lr +Wr/2]';
+%     pos_fr = rot_mat*[+Lf -Wf/2]';
+%     pos_fl = rot_mat*[+Lf +Wf/2]';
+%     pos = [pos_rr pos_rl pos_fl pos_fr];
+%     p = patch(x_CoM(i) + pos(1,:),y_CoM(i) + pos(2,:),'blue');
+%     quiver(x_CoM(i), y_CoM(i), u(i)*cos(psi(i)), u(i)*sin(psi(i)), 'color', [1,0,0]);
+%     quiver(x_CoM(i), y_CoM(i), -v(i)*sin(psi(i)), v(i)*cos(psi(i)), 'color', [0.23,0.37,0.17]);
+% end
+% grid on; box on;
+% hold off
+% if enable_export == 1
+%   export_figure(fig_real_path, strcat('\fig_real_path', suffix, '.eps'), 'images\');
+% end
 
 
 % % ---
@@ -939,6 +995,7 @@ if enable_plot
   title('$\Delta F_{xf}$ and $\Delta F_{xr}$ [N]')
   xlabel('$a_y/g [-]$')
   grid on; box on;
+  set(gca, 'FontSize',30);
   % --- DeltaFyf DeltaFyr -- %
   ax(2) = subplot(222);
   plot(Ay_norm, DFy_f(1:end-1),'LineWidth',2)
@@ -948,17 +1005,19 @@ if enable_plot
   title('$\Delta F_{yf}$ and $\Delta F_{yr}$ [N]')
   xlabel('$a_y/g [-]$')
   grid on; box on;
+  set(gca, 'FontSize',30);
   % --- DeltaFzf DeltaFzr -- %
-  ax(3) = subplot(223);
+  ax(3) = subplot(223.5);
   plot(Ay_norm, DFz_f(1:end-1),'LineWidth',2)
   hold on
   plot(Ay_norm, DFz_r(1:end-1), '--', 'LineWidth',2)
   legend('$\Delta F_{zf}$','$\Delta F_{zr}$','location','northwest')
   title('$\Delta F_{zf}$ and $\Delta F_{zr}$ [N]')
-  xlabel('$a_y/g [-]$')
+  % xlabel('$a_y/g [-]$')
   grid on; box on;
   sgtitle('Lateral load transfer', 'FontSize', 25)
-  if enable_export == 1
+  set(gca, 'FontSize',30); 
+  if enable_export == 1;
     export_figure(fig_load_transf, strcat('\fig_load_transf', suffix, '.eps'), 'images\');
   end
   clear ax
@@ -1045,6 +1104,7 @@ if enable_plot
   % --- mu_r -- %
   % idx = time_sim > 2;
   fig_norm_axle_char = figure('Name','Norm axle char. 2','NumberTitle','off', 'Color', 'w'); clf
+  set(gca, 'FontSize',45);
   hold on; grid on; box on;
   plot(alpha_r*180/pi, mu_r, 'LineWidth',2)
   plot(alpha_f*180/pi, mu_f, 'LineWidth',2)
@@ -1052,7 +1112,8 @@ if enable_plot
   xlabel('$\alpha_r, \alpha_f [deg]$')
   ylabel('$\mu_r, \mu_f$ [-]')
   legend('$\mu_r$','$\mu_f$','location','best')
-  if enable_export == 1
+  set(gca, 'FontSize',45); 
+  if enable_export == 1;;
     export_figure(fig_norm_axle_char, strcat('\fig_norm_axle_char', suffix, '.eps'), 'images\');
   end
 
@@ -1061,6 +1122,7 @@ if enable_plot
   %% Plot handling digram
   % ---------------------------------
   fig_hand = figure('Name','Handling diagram','NumberTitle','off', 'Color', 'w'); clf
+  set(gca, 'FontSize',45);
   hold on
   grid on; box on;
   plot(Ay_hand, handling, 'LineWidth',2, 'DisplayName','Experimental')
@@ -1071,8 +1133,9 @@ if enable_plot
   title('Handling diagram')
   xlabel('$a_{y}/g$ [m/s$^2$]')
   ylabel('$\delta_{D}\tau_{H} - \rho L \ [rad]$')
-  legend('location', 'northeast')
-  if enable_export == 1
+  legend('location', 'southwest')
+  set(gca, 'FontSize',45); 
+  if enable_export == 1;
     export_figure(fig_hand, strcat('\fig_hand', suffix, '.eps'), 'images\');
   end
 
@@ -1080,24 +1143,26 @@ if enable_plot
   %% Plot understeering gradient
   % ---------------------------------
   fig_KUS = figure('Name','Understeering grad','NumberTitle','off', 'Color','w'); clf
+  set(gca, 'FontSize',45);
   hold on
   grid on; box on;
   if sim_options.test_type == 1
     plot(Ay_hand(1:end-1), K_US_theo, 'LineWidth',2, 'DisplayName','$-\frac{mg}{L}(\frac{L_f}{K_{yr}} - \frac{Lr}{K_{yf}})$')
-    plot(Ay_hand(1:end-1), K_US_theo2, '--', 'LineWidth',2, 'DisplayName','$- \frac{d\Delta \alpha}{d ay/g}$')
+    plot(Ay_hand(1:end-1), K_US_theo2, '--', 'LineWidth',2, 'DisplayName','$- \frac{d\Delta \alpha}{d a_y / g}$')
     plot(ay_fit_lin, K_US*ones(length(ay_fit_lin), 1), '--r', 'LineWidth',2, 'DisplayName', 'Linear $K_{US}$');
   elseif sim_options.test_type == 2
     plot(Ay_hand(1:end-1), K_US_theo, 'LineWidth',2, 'DisplayName','$-\frac{mg}{L^2}(\frac{L_f}{K_{yr}} - \frac{Lr}{K_{yf}})$')
-    plot(Ay_hand(1:end-1), K_US_theo2, '--', 'LineWidth',2, 'DisplayName','$- \frac{1}{L}\frac{d\Delta \alpha}{d ay/g}$')
+    plot(Ay_hand(1:end-1), K_US_theo2, '--', 'LineWidth',2, 'DisplayName','$- \frac{1}{L}\frac{d\Delta \alpha}{d a_y / g}$')
     plot(ay_fit_lin, K_US*ones(length(ay_fit_lin), 1)/L, '--r', 'LineWidth',2, 'DisplayName', 'Linear $K_{US}$');
   end
   %plot(Ay_norm(1:end-1), K_US_theo3, 'LineWidth',2, 'DisplayName','Formula 2')
   title('Normalized understeering gradient')
-  legend('location', 'northeast')
+  legend('location', 'southwest')
   xlim("padded")
   ylabel('g$K_{US}$')
   xlabel('ay/g [-]')
-  if enable_export == 1
+  set(gca, 'FontSize',45); 
+  if enable_export == 1;
     export_figure(fig_KUS, strcat('\fig_KUS', suffix, '.eps'), 'images\');
   end
 
@@ -1105,6 +1170,7 @@ if enable_plot
   %% PLOT BETA AND YAW RATE GAINS
   % ---------------------------------
   fig_yaw_gain = figure('Name','Yaw rate gain','NumberTitle','off', 'Color', 'w'); clf
+  set(gca, 'FontSize',45);
   hold on 
   grid on; box on;
   plot(u*3.6, yaw_rate_gain, 'LineWidth',2, 'DisplayName','$\frac{\Omega}{\delta}$')
@@ -1114,11 +1180,13 @@ if enable_plot
   xlabel('u [km/h]')
   ylabel('$\frac{\Omega}{\delta}$')
   legend('location', 'northwest')
-  if enable_export == 1
-    export_figure(fig_yaw_gain, strcat('\fig_yaw_gain', suffix, '.eps'), 'images\');
+  set(gca, 'FontSize',45); 
+  if enable_export == 1;
+      export_figure(fig_yaw_gain, strcat('\fig_yaw_gain', suffix, '.eps'), 'images\');
   end
 
-  fig_beta_gain = figure('Name','Beta gain','NumberTitle','off'); clf
+  fig_beta_gain = figure('Name','Beta gain','NumberTitle','off', 'Color', 'w'); clf
+  set(gca, 'FontSize',45);
   hold on 
   grid on; box on;
   plot(u*3.6, beta_gain, 'LineWidth',2, 'DisplayName','$\frac{\beta}{\delta}$')
@@ -1128,7 +1196,8 @@ if enable_plot
   xlabel('u [km/h]')
   ylabel('$\frac{\beta}{\delta}$ ')
   legend('location', 'southwest')
-  if enable_export == 1
+set(gca, 'FontSize',45); 
+if enable_export == 1;
     export_figure(fig_beta_gain, strcat('\fig_beta_gain', suffix, '.eps'), 'images\');
   end
 

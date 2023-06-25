@@ -13,8 +13,8 @@ set(groot, 'defaultAxesTickLabelInterpreter','latex');
 set(groot, 'defaultLegendInterpreter','latex');
 
 set(0,'DefaultFigureWindowStyle','docked');
-set(0,'defaultAxesFontSize',18)
-set(0,'DefaultLegendFontSize',18)
+set(0,'defaultAxesFontSize',25)
+set(0,'DefaultLegendFontSize',30)
 
 addpath(genpath('Lib_Vehicle'));
 addpath(genpath('Longit_Controller'));
