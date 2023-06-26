@@ -592,7 +592,7 @@ plot(time_sim(2:end),dot_u_filt,'-.r','LineWidth',1)
 xline(Tinit, '--r', 'LineWidth', 2);
 grid on; box on;
 title('$a_{x}$ $[m/s^2]$')
-legend('$\dot{u}-\Omega v$','$\dot{u}$','filt $\dot{u}-\Omega v$','filt $\dot{u}$','Location','south', 'NumColumns', 2)
+legend('$\dot{u}-\Omega v$','$\dot{u}$','filt $\dot{u}-\Omega v$','filt $\dot{u}$','Location','north', 'NumColumns', 2)
 xlim([0 time_sim(end)])
 set(gca, 'FontSize',25);
 % --- ay --- %
@@ -987,41 +987,44 @@ if enable_plot
 % ---------------------------------
 % --- DeltaFxf DeltaFxr -- %
   fig_load_transf = figure('Name','Load transfer','NumberTitle','off', 'Color', 'w'); clf
-  ax(1) = subplot(221);
+  ax(1) = subplot(311);
   plot(Ay_norm, DFx_f(1:end-1),'LineWidth',2)
   hold on
   plot(Ay_norm, DFx_r(1:end-1), '--', 'LineWidth',2)
   legend('$\Delta F_{xf}$','$\Delta F_{xr}$','location','northwest')
-  title('$\Delta F_{xf}$ and $\Delta F_{xr}$ [N]')
-  xlabel('$a_y/g [-]$')
+  ylabel('$\Delta F_{xf}$, $\Delta F_{xr}$ [N]')
+  xlim([0 1.25])
+%   xlabel('$a_y/g [-]$')
   grid on; box on;
-  set(gca, 'FontSize',30);
+  set(gca, 'FontSize',18);
   % --- DeltaFyf DeltaFyr -- %
-  ax(2) = subplot(222);
+  ax(2) = subplot(312);
   plot(Ay_norm, DFy_f(1:end-1),'LineWidth',2)
   hold on
   plot(Ay_norm, DFy_r(1:end-1), '--', 'LineWidth',2)
   legend('$\Delta F_{yf}$','$\Delta F_{yr}$','location','northwest')
-  title('$\Delta F_{yf}$ and $\Delta F_{yr}$ [N]')
-  xlabel('$a_y/g [-]$')
+  ylabel('$\Delta F_{yf}$, $\Delta F_{yr}$ [N]')
+  xlim([0 1.25])
+%   xlabel('$a_y/g [-]$')
   grid on; box on;
-  set(gca, 'FontSize',30);
+  set(gca, 'FontSize',18);
   % --- DeltaFzf DeltaFzr -- %
-  ax(3) = subplot(223.5);
+  ax(3) = subplot(313);
   plot(Ay_norm, DFz_f(1:end-1),'LineWidth',2)
   hold on
   plot(Ay_norm, DFz_r(1:end-1), '--', 'LineWidth',2)
   legend('$\Delta F_{zf}$','$\Delta F_{zr}$','location','northwest')
-  title('$\Delta F_{zf}$ and $\Delta F_{zr}$ [N]')
-  % xlabel('$a_y/g [-]$')
+  ylabel('$\Delta F_{zf}$, $\Delta F_{zr}$ [N]')
+  xlabel('$a_y/g [-]$')
+  xlim([0 1.25])
   grid on; box on;
-  sgtitle('Lateral load transfer', 'FontSize', 25)
-  set(gca, 'FontSize',30); 
+%   sgtitle('Lateral load transfer', 'FontSize', 25)
+  set(gca, 'FontSize',18); 
   if enable_export == 1;
     export_figure(fig_load_transf, strcat('\fig_load_transf', suffix, '.eps'), 'images\');
   end
   clear ax
-
+%%
   % % figure('Name', 'Vertical load', 'NumberTitle', 'off'), clf
   % % ax(1) = subplot(1,2,1);
   % % hold on
@@ -1131,7 +1134,7 @@ if enable_plot
   plot(ay_fit_lin, handling_fit_lin, '--', 'LineWidth',2.5, 'Displayname','Fit in linear range')
   plot(ay_fit_nonlin, handling_fit_nonlin, '--', 'LineWidth',2.5, 'Displayname','Fit in non-linear range')
   title('Handling diagram')
-  xlabel('$a_{y}/g$ [m/s$^2$]')
+  xlabel('$a_{y}/g$ [-]')
   ylabel('$\delta_{D}\tau_{H} - \rho L \ [rad]$')
   legend('location', 'southwest')
   set(gca, 'FontSize',45); 
