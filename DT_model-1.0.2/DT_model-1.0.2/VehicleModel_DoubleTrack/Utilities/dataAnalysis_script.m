@@ -917,10 +917,11 @@ C_f = diff(mu_f) ./ diff(alpha_f); % front norm conr stiffness
 if sim_options.test_type == 1 % constant velocity
     K_US_theo = - m*g/L*(Lf./Ky_r - Lr./Ky_f);
     K_US_theo2 = - diff(Delta_alpha) ./ diff(Ay_hand');
-    K_US_theo3 = diff(delta(1:end-1)*tau_D)./diff(Ay_norm) - L./u(1:end-2).^2;
+    K_US_theo3 = diff(delta(1:end-1))./diff(Ay_norm) - L./u(1:end-2).^2;
 elseif sim_options.test_type == 2 % constant curvature
     K_US_theo = - m*g/L^2*(Lf./Ky_r - Lr./Ky_f);
     K_US_theo2 = - 1/L*diff(Delta_alpha) ./ diff(Ay_hand');
+    K_US_theo3 = -g*diff(rho(1:end-1))./diff(Ay);
 end
 
 % Define two limits for the linearity 
@@ -1133,6 +1134,8 @@ if enable_plot
   %plot(Ay_hand, -Delta_alpha, 'LineWidth',2)
   plot(ay_fit_lin, handling_fit_lin, '--', 'LineWidth',2.5, 'Displayname','Fit in linear range')
   plot(ay_fit_nonlin, handling_fit_nonlin, '--', 'LineWidth',2.5, 'Displayname','Fit in non-linear range')
+  plot(Ay/g, delta(1:end-1) - rho(1:end-1)*L)
+ plot(Ay/g, delta_D(1:end-1)*3.14/180/tau_D - rho(1:end-1)*L)
   title('Handling diagram')
   xlabel('$a_{y}/g$ [-]')
   ylabel('$\delta_{D}\tau_{H} - \rho L \ [rad]$')
@@ -1156,6 +1159,7 @@ if enable_plot
   elseif sim_options.test_type == 2
     plot(Ay_hand(1:end-1), K_US_theo, 'LineWidth',2, 'DisplayName','$-\frac{mg}{L^2}(\frac{L_f}{K_{yr}} - \frac{Lr}{K_{yf}})$')
     plot(Ay_hand(1:end-1), K_US_theo2, '--', 'LineWidth',2, 'DisplayName','$- \frac{1}{L}\frac{d\Delta \alpha}{d a_y / g}$')
+    plot(Ay(20000:end-1)/g, K_US_theo3(20000:end), '.-', 'LineWidth',2, 'DisplayName','$-\frac{d\rho}{da_y/g}$')
     plot(ay_fit_lin, K_US*ones(length(ay_fit_lin), 1)/L, '--r', 'LineWidth',2, 'DisplayName', 'Linear $K_{US}$');
   end
   %plot(Ay_norm(1:end-1), K_US_theo3, 'LineWidth',2, 'DisplayName','Formula 2')
