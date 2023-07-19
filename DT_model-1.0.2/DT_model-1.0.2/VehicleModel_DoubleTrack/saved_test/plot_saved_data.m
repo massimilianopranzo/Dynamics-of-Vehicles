@@ -24,7 +24,7 @@ plot(sp20_t0_c0.Ay_hand, sp20_t0_c0.handling, '--', 'LineWidth',2, 'DisplayName'
 plot(sn10_t0_c0.Ay_hand, sn10_t0_c0.handling, '--', 'LineWidth',2, 'DisplayName','$- 10\%$')
 plot(sn20_t0_c0.Ay_hand, sn20_t0_c0.handling, '--', 'LineWidth',2, 'DisplayName','$- 20\%$')
 % legend('location','southwest')
-title('Variable front stiffness, $\delta=0[^\circ]$, $\gamma=0 [^\circ]$')
+title('Var. front stiffness, $\delta=0[^\circ]$, $\gamma=0 [^\circ]$')
 %xlabel('ay/g [-]')
 ylabel('$\delta_{D}\tau_{H} - \rho L \ [rad]$')
 
@@ -36,7 +36,7 @@ plot(s0_t0_cp2.Ay_hand, s0_t0_cp2.handling, '--', 'LineWidth',2, 'DisplayName','
 plot(s0_t0_cn1.Ay_hand, s0_t0_cn1.handling, '--', 'LineWidth',2, 'DisplayName','$\gamma = -1 [^\circ]$')
 plot(s0_t0_cn2.Ay_hand, s0_t0_cn2.handling, '--', 'LineWidth',2, 'DisplayName','$\gamma = -2 [^\circ]$')
 % legend('location','northwest', 'NumColumns',3)
-title('Variable front camber, $\delta=0$ [$^\circ$]')
+title('Var. front camber, $\delta=0$ [$^\circ$]')
 %xlabel('ay/g [-]')
 ylabel('$\delta_{D}\tau_{H} - \rho L \ [rad]$')
 
@@ -48,7 +48,7 @@ plot(s0_tp2_c0.Ay_hand, s0_tp2_c0.handling, '--', 'LineWidth',2, 'DisplayName','
 plot(s0_tn1_c0.Ay_hand, s0_tn1_c0.handling, '--', 'LineWidth',2, 'DisplayName','$\delta = -1 [^\circ]$')
 plot(s0_tn2_c0.Ay_hand, s0_tn2_c0.handling, '--', 'LineWidth',2, 'DisplayName','$\delta = -2 [^\circ]$')
 % legend('location','southwest', 'NumColumns',2)
-title('Variable front toe, $\gamma = 0$ [$^\circ$]')
+title('Var. front toe, $\gamma = 0$ [$^\circ$]')
 xlabel('ay/g [-]')
 ylabel('$\delta_{D}\tau_{H} - \rho L \ [rad]$')
 % if enable_export == 1
@@ -65,7 +65,7 @@ plot(sp20_t0_c0.Ay_hand(1:end-1), sp20_t0_c0.K_US_theo2, '--', 'LineWidth',2, 'D
 plot(sn10_t0_c0.Ay_hand(1:end-1), sn10_t0_c0.K_US_theo2, '--', 'LineWidth',2, 'DisplayName','$- 10\%$')
 plot(sn20_t0_c0.Ay_hand(1:end-1), sn20_t0_c0.K_US_theo2, '--', 'LineWidth',2, 'DisplayName','$- 20\%$')
 legend('location','eastoutside', 'FontSize', 18)
-title('Variable front stiffness, $\delta=0$ [$^\circ$], $\gamma=0$ [$^\circ$]')
+title('Var. front stiffness, $\delta=0$ [$^\circ$], $\gamma=0$ [$^\circ$]')
 %xlabel('ay/g [-]')
 ylabel('$K_{US}$')
 
@@ -77,7 +77,7 @@ plot(s0_t0_cp2.Ay_hand(1:end-1), s0_t0_cp2.K_US_theo2, '--', 'LineWidth',2, 'Dis
 plot(s0_t0_cn1.Ay_hand(1:end-1), s0_t0_cn1.K_US_theo2, '--', 'LineWidth',2, 'DisplayName','$-1$ [$^\circ$]')
 plot(s0_t0_cn2.Ay_hand(1:end-1), s0_t0_cn2.K_US_theo2, '--', 'LineWidth',2, 'DisplayName','$-2$ [$^\circ$]')
 legend('location','eastoutside', 'FontSize', 18)
-title('Variable front camber, $\delta=0$ [$^\circ$]')
+title('Var. front camber, $\delta=0$ [$^\circ$]')
 %xlabel('ay/g [-]')
 ylabel('$K_{US}$')
 
@@ -89,7 +89,7 @@ plot(s0_tp2_c0.Ay_hand(1:end-1), s0_tp2_c0.K_US_theo2, '--', 'LineWidth',2, 'Dis
 plot(s0_tn1_c0.Ay_hand(1:end-1), s0_tn1_c0.K_US_theo2, '--', 'LineWidth',2, 'DisplayName','$-1$ [$^\circ$]')
 plot(s0_tn2_c0.Ay_hand(1:end-1), s0_tn2_c0.K_US_theo2, '--', 'LineWidth',2, 'DisplayName','$-2$ [$^\circ$]')
 legend('location','eastoutside', 'FontSize', 18)
-title('Variable front toe, $\gamma=0$ [$^\circ$]')
+title('Var. front toe, $\gamma=0$ [$^\circ$]')
 xlabel('ay/g [-]')
 ylabel('$K_{US}$')
 if enable_export == 1

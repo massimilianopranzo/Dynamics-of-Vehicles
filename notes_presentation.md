@@ -114,12 +114,33 @@ Suspension front stiffness increases $\Rightarrow$ lateral load transfer at the 
 
 ### Variable front camber angle
 $\gamma>0$ means negative camber $\Rightarrow$ look at what happens at the front left wheel <br>
-The camber acts as an equivalent slip  ans shifts the force to the left in the slip force plot. We can generate the same amount of force for a smaller amount of slip $\Rightarrow$ less understeering $\Rightarrow$ KUS decreases
+The camber acts as an equivalent slip and shifts the force to the right in the slip force plot. IN order to genreate the same amount of force we have to slide more $ \Rightarrow$ $\alpha_f$ increase $\Rightarrow$ more understeering $\Rightarrow$ KUS increases
 
 ### Front toe angle
 $\delta > 0$ means positive rotation for the right wheel while negative for the left. <br>
+The initial condition is that: <br>
 $$
 F_{yf} = \sin(\delta_{fl})F_{xfl} + F_{yfl} + \sin(\delta_{fr})F_{xfr} + F_{yfr}\\
+$$
+For a positive toe angle $\delta_{fl} < 0$ and $\delta_{fr} > 0$ so <br>
+ $$
+\sin(\delta_{fl}) < 0 \\
+\sin(\delta_{fr}) > 0 
+$$
+The effect of the toe on the wheel slip is that:<br>
+$$
+\alpha_{fr} increases\\
+\alpha_{fl} decreases
+$$
+The wheel forces change like this:<br>
+$$
+F_{xfr} increases\\
+F_{yfr} increases\\
+F_{xfr} decreases\\
+F_{yfl} decreases\\
+$$
+So replacing 
+$$
 \sin(\delta_{fl})F_{xfl} < 0 \\
 \sin(\delta_{fr})F_{xfr} > 0 \\
 \lvert|\sin(\delta_{fl})F_{xfl} \rvert| > \lvert| \sin(\delta_{fr})F_{xfr} \rvert|

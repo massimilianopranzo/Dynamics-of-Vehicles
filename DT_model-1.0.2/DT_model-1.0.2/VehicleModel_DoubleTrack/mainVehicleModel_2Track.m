@@ -52,12 +52,12 @@ if sim_options.test_type == 1
   % ----------------------------
   % tau_D = 12 -> delta_D / tau_D = delta, delta_D = delta * tau_D
   % For variations NOT DELATE
-  % stiffness_gain_vec = [0.8 0.9, 1, 1.1, 1.2]; % 
-  % camber_vec = [ -2, -1, 1, 2 ]; % [deg]
-  % toe_vec = [-2, -1, 1, 2 ]; % [deg]
-  % Tf_stiffness = 40; % [s]
-  % Tf_camber_vec = [ 40 40 40 40 ]; % [s]
-  % Tf_toe_vec = [ 40 40 40 40 ]; % [s]
+  stiffness_gain_vec = [0.8 0.9, 1, 1.1, 1.2]; % 
+  camber_vec = [ -2, -1, 1, 2 ]; % [deg]
+  toe_vec = [-2, -1, 1, 2 ]; % [deg]
+  Tf_stiffness = 40; % [s]
+  Tf_camber_vec = [ 40 40 40 40 ]; % [s]
+  Tf_toe_vec = [ 40 40 40 40 ]; % [s]
 
   % For single simulation 
   stiffness_gain_vec = [1]; % 
@@ -66,6 +66,7 @@ if sim_options.test_type == 1
   Tf_stiffness = 50; % [s]
   Tf_camber_vec = [ 40 40 40 40 ]; % [s]
   Tf_toe_vec = [ 40 40 40 40 ]; % [s]
+  
   speed_slope = 0;
   sim_options.angle = 0;
   Tinit = 5;
@@ -151,22 +152,28 @@ elseif sim_options.test_type == 2
   %% Start Simulation
   % ----------------------------
   % tau_D = 12 -> delta_D / tau_D = delta, delta_D = delta * tau_D
-%   stiffness_gain_vec = [0.9 1 1.1]; % 
-%   camber_vec = [-1 1]; % [deg]
-%   toe_vec = [-1 1]; % [deg]
-%   Tf_stiffness = [30 30 30]; % [s] 120
-%   Tf_camber_vec = 25*ones(2,1); % [s]
-%   Tf_toe_vec = 25*ones(2,1); % [s]
-  stiffness_gain_vec = [1]; % 
-  camber_vec = [0]; % [deg]
-  toe_vec = [0]; % [deg]
-  Tf_stiffness = [55]; % [s] 120
+  stiffness_gain_vec = [0.9 1 1.1]; % 
+  camber_vec = [-1 1]; % [deg]
+  toe_vec = [-1 1]; % [deg]
+  Tf_stiffness = [30 30 30]; % [s] 120
   Tf_camber_vec = 25*ones(2,1); % [s]
   Tf_toe_vec = 25*ones(2,1); % [s]
   V0 = 2 / 3.6; % Initial speed 5
-  speed_slope = 0.4;
+  speed_slope = 0.7;
   sim_options.angle = 30; % [deg] used for fixed angle test 30
   Tinit = 5;                            % second after which start to steer
+
+  % stiffness_gain_vec = [1]; % 
+  % camber_vec = [0]; % [deg]
+  % toe_vec = [0]; % [deg]
+  % Tf_stiffness = [55]; % [s] 120
+  % Tf_camber_vec = 25*ones(2,1); % [s]
+  % Tf_toe_vec = 25*ones(2,1); % [s]
+  % V0 = 2 / 3.6; % Initial speed 5
+  % speed_slope = 0.4;
+  % sim_options.angle = 30; % [deg] used for fixed angle test 30
+  % Tinit = 5;                            % second after which start to steer
+  
   suffix = '_conststeer';
   % 100 s simulation
   % ----------------------------
@@ -208,15 +215,15 @@ elseif sim_options.test_type == 2
     else
       sign = 'n';
     end
-    name_output = strcat('s100_','t', sign, num2str(abs(camber_vec(s))),'_c0_conststeer');
+    name_output = strcat('s100_t0_c', sign, num2str(abs(camber_vec(s))),'_conststeer');
     dataAnalysis_script
-
+    
   end
-  end
-  % ----------------------------
-  % toe variation
-  % ----------------------------
-  if length(toe_vec) > 1
+end
+% ----------------------------
+% toe variation
+% ----------------------------
+if length(toe_vec) > 1
   for s = 1:length(toe_vec)
     stiffness_gain = 1;
     camber = 0;
@@ -228,13 +235,13 @@ elseif sim_options.test_type == 2
     elapsed_time_simulation = toc;
     fprintf('Simulation completed\n')
     fprintf('The total simulation time was %.2f seconds\n',elapsed_time_simulation)
-
+    
     if toe_vec(s) > 0
       sign = 'p';
     else
       sign = 'n';
     end
-    name_output = strcat('s100_t0_c', sign, num2str(abs(toe_vec(s))),'_conststeer');
+    name_output = strcat('s100_','t', sign, num2str(abs(toe_vec(s))),'_c0_conststeer');
     dataAnalysis_script
 
   end
