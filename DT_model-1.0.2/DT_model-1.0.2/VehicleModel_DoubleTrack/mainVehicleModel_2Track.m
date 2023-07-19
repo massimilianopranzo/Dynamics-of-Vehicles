@@ -112,9 +112,9 @@ if sim_options.test_type == 1
     else
       sign = 'n';
     end
-    name_output = strcat('s100_','t', sign, num2str(abs(camber_vec(s))),'_c0');
+    name_output = strcat('s100_t0_c', sign, num2str(abs(camber_vec(s))));
     dataAnalysis_script
-
+    
   end
   end
   % ----------------------------
@@ -138,7 +138,7 @@ if sim_options.test_type == 1
     else
       sign = 'n';
     end
-    name_output = strcat('s100_t0_c', sign, num2str(abs(toe_vec(s))));
+    name_output = strcat('s100_','t', sign, num2str(abs(toe_vec(s))),'_c0');
     dataAnalysis_script
 
   end
