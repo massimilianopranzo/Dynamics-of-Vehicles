@@ -13,11 +13,11 @@ tyre_data.SL =  SL(smpl_range);             % Longitudinal slip
 
 
 
-tyre_data.SA =  SA(smpl_range)*to_rad;      % Side slip angle
+tyre_data.SA = -SA(smpl_range)*to_rad;      % Side slip angle
 tyre_data.FZ = -FZ(smpl_range);             % Vertical force                    % 0.453592  lb/kg
 tyre_data.FX =  FX(smpl_range);             % Longitudinal force
-tyre_data.MZ =  -MZ(smpl_range);             % Self aligning moment
-tyre_data.FY =  -FY(smpl_range);             % Lateral force
+tyre_data.MZ =  MZ(smpl_range);             % Self aligning moment
+tyre_data.FY =  FY(smpl_range);             % Lateral force
 tyre_data.IA =  IA(smpl_range)*to_rad;      % Camber angle
 
 % Remove all the data outside a threshold
@@ -67,9 +67,18 @@ FZ_1550 = tyre_data( idx.FZ_1550, : );
 % The slip angle is varied step wise for longitudinal slip tests
 % 0° , - 3° , -6 °
 SA_tol = 0.5*to_rad;
-idx.SA_0    =  0-SA_tol          < tyre_data.SA & tyre_data.SA < 0+SA_tol;
-idx.SA_3neg = -(3*to_rad+SA_tol) < tyre_data.SA & tyre_data.SA < -3*to_rad+SA_tol;
-idx.SA_6neg = -(6*to_rad+SA_tol) < tyre_data.SA & tyre_data.SA < -6*to_rad+SA_tol;
-SA_0     = tyre_data( idx.SA_0, : );
-SA_3neg  = tyre_data( idx.SA_3neg, : );
-SA_6neg  = tyre_data( idx.SA_6neg, : );
+if strcmp(load_type, "comb_longitudinal")
+    idx.SA_0    =  0-SA_tol        < tyre_data.SA & tyre_data.SA < 0+SA_tol;
+    idx.SA_3pos =  3*to_rad-SA_tol < tyre_data.SA & tyre_data.SA < 3*to_rad+SA_tol;
+    idx.SA_6pos =  6*to_rad-SA_tol < tyre_data.SA & tyre_data.SA < 6*to_rad+SA_tol;
+    SA_0     = tyre_data( idx.SA_0, : );
+    SA_3pos  = tyre_data( idx.SA_3pos, : );
+    SA_6pos  = tyre_data( idx.SA_6pos, : );
+else
+    idx.SA_0    =  0-SA_tol          < tyre_data.SA & tyre_data.SA < 0+SA_tol;
+    idx.SA_3neg = -(3*to_rad+SA_tol) < tyre_data.SA & tyre_data.SA < -3*to_rad+SA_tol;
+    idx.SA_6neg = -(6*to_rad+SA_tol) < tyre_data.SA & tyre_data.SA < -6*to_rad+SA_tol;
+    SA_0     = tyre_data( idx.SA_0, : );
+    SA_3neg  = tyre_data( idx.SA_3neg, : );
+    SA_6neg  = tyre_data( idx.SA_6neg, : );
+end

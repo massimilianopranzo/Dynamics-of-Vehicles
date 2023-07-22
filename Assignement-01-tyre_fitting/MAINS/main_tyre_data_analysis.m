@@ -84,15 +84,15 @@ ones_vec  = ones(size(TData0.SL));
 %--------------------------------------------------------------------------
 % Guess values for parameters to be optimised
 %    [pCx1 pDx1 pEx1 pEx4  pHx1  pKx1  pVx1]
-P1 = [  1,   2,   1,  0,   0,   1,   0]; 
+P1 = [  1,   2,   1,  0,   0,   1,   0];
 name1 = ["pCx1", "pDx1", "pEx1", "pEx4", "pHx1", "pKx1", "pVx1"];
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised
 % 1< pCx1 < 2 
 % 0< pEx1 < 1 
 %    [pCx1 pDx1 pEx1 pEx4  pHx1  pKx1  pVx1 
-lb1 = [1,  0.1,   0, 0, -10, 0, -10]; % lower bound
-ub1 = [2,    4,   1,    1,  10,  100,  10]; % upper bound
+lb1 = [1,   0.1,   0,   0,  -10,    0,   -10];
+ub1 = [2,    4,   1,   1,   10,   100,  10];
 
 KAPPA_vec = TData0.SL;  % slip ratio
 FX_vec    = TData0.FX;  % longitudianl force

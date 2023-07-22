@@ -15,7 +15,7 @@ warning('off', 'MATLAB:Figure:SetPosition')
 data_set_path = 'dataset/';
 data_set = 'Hoosier_B1464run30.mat';
 struct_name = 'Hoosier_B1464';  
-load_type = 'longitudinal';
+load_type = 'comb_longitudinal';
 
 initialization
 
@@ -38,7 +38,7 @@ sorting_data;
 % figure 2
 plot_sorted_data(tyre_data, idx, vec_samples, GAMMA_0, GAMMA_1, ...
   GAMMA_2, GAMMA_3, GAMMA_4, GAMMA_5, FZ_220, FZ_440, FZ_700, FZ_900, FZ_1120, ...
-  FZ_1550, load_type, SA_0, SA_3neg, SA_6neg, font_size_title, ...
+  FZ_1550, load_type, SA_0, SA_3pos, SA_6pos, font_size_title, ...
   'Sorted data combined longitudinal','sorted_data_combined_FX');
 
 if exist(['tyre_' struct_name,'.mat'], 'file')
@@ -69,16 +69,24 @@ end
 %% COMBINED LONGITUDINAL
 % rHx1, rBx1, rCx1 rBx2
 % -27.1725    5.5548   11.0463   -1.4499
-P1 = [-27 5.5 11 -1.5];
-lb1 = [-30 4 10 -2];
-ub1 = [-20 7 15 0];
+% P1 = [-27 5.5 11 -1.5];
+% lb1 = [-30 4 10 -2];
+% ub1 = [-20 7 15 0];
+TData_combx = tyre_data; %intersect_table_data(FZ_220, GAMMA_0);
+P1= [ 20 , -11 , 1 , 0 ];
+
+% Limits for parameters to be optimised
+lb1 = [ 0, -16.5, -0.5, 1e-4 ];
+ub1 = [ 20, 20, 10, 5];
+lb1 = [-inf,-inf, -inf, 1e-4]; ub1 = [30, 30, 30, 30];
+% ub1 = [];
 name1 = ["rHx1", "rBx1", "rCx1", "rBx2"];
 
-FX_vec = tyre_data.FX;
-KAPPA_vec = tyre_data.SL;
-ALPHA_vec = tyre_data.SA;
-GAMMA_vec = tyre_data.IA;
-FZ_vec = tyre_data.FZ;
+FX_vec = TData_combx.FX;
+KAPPA_vec = TData_combx.SL;
+ALPHA_vec = TData_combx.SA;
+GAMMA_vec = TData_combx.IA;
+FZ_vec = TData_combx.FZ;
 
 [P_min,res_Fx,exitflag] = fmincon(@(P)resid_long(P, FX_vec, KAPPA_vec, ALPHA_vec, GAMMA_vec, FZ_vec, tyre_coeffs),...
 P1,[],[],[],[],lb1,ub1);
@@ -92,7 +100,9 @@ tyre_coeffs.rHx1 = P_min(1);
 tyre_coeffs.rBx1 = P_min(2);
 tyre_coeffs.rCx1 = P_min(3);
 tyre_coeffs.rBx2 = P_min(4);      
+%%
 
+    
 FX_fit = cell(4, 1); % {FZ=220, FZ=700, FZ=900, FZ=1120}
 FX_raw = cell(4, 1); % {FZ=220, FZ=700, FZ=900, FZ=1120}
 
@@ -110,77 +120,78 @@ x_raw = {Data_220.SL, Data_700.SL, Data_900.SL, Data_1120.SL};
 
 
 data_label = ["FZ=220 [N]", "FZ=700 [N]", "FZ=900 [N]", "FZ=1120 [N]"];
-leg_angle = ["$\alpha$=0", "$\alpha=-3$", "$\alpha=-6$"];
+leg_angle = ["$\alpha$=0", "$\alpha=3$", "$\alpha=6$"];
 %%
 x_raw = cell(4, 1);
 x_raw{1}{1}(:) = intersect_table_data(Data_220, SA_0).SL; % fz220
-x_raw{1}{2}(:) = intersect_table_data(Data_220, SA_3neg).SL; % fz220
-x_raw{1}{3}(:) = intersect_table_data(Data_220, SA_6neg).SL; % fz220
+x_raw{1}{2}(:) = intersect_table_data(Data_220, SA_3pos).SL; % fz220
+x_raw{1}{3}(:) = intersect_table_data(Data_220, SA_6pos).SL; % fz220
 x_raw{2}{1}(:) = intersect_table_data(Data_700, SA_0).SL; % fz700
-x_raw{2}{2}(:) = intersect_table_data(Data_700, SA_3neg).SL; % fz700
-x_raw{2}{3}(:) = intersect_table_data(Data_700, SA_6neg).SL; % fz700
+x_raw{2}{2}(:) = intersect_table_data(Data_700, SA_3pos).SL; % fz700
+x_raw{2}{3}(:) = intersect_table_data(Data_700, SA_6pos).SL; % fz700
 x_raw{3}{1}(:) = intersect_table_data(Data_900, SA_0).SL; % fz900
-x_raw{3}{2}(:) = intersect_table_data(Data_900, SA_3neg).SL; % fz900
-x_raw{3}{3}(:) = intersect_table_data(Data_900, SA_6neg).SL; % fz900
+x_raw{3}{2}(:) = intersect_table_data(Data_900, SA_3pos).SL; % fz900
+x_raw{3}{3}(:) = intersect_table_data(Data_900, SA_6pos).SL; % fz900
 x_raw{4}{1}(:) = intersect_table_data(Data_1120, SA_0).SL; % fz1120
-x_raw{4}{2}(:) = intersect_table_data(Data_1120, SA_3neg).SL; % fz1120
-x_raw{4}{3}(:) = intersect_table_data(Data_1120, SA_6neg).SL; % fz1120
+x_raw{4}{2}(:) = intersect_table_data(Data_1120, SA_3pos).SL; % fz1120
+x_raw{4}{3}(:) = intersect_table_data(Data_1120, SA_6pos).SL; % fz1120
 
 FX_raw = cell(4,1);
 FX_raw{1}{1}(:) = intersect_table_data(Data_220, SA_0).FX; % fz220
-FX_raw{1}{2}(:) = intersect_table_data(Data_220, SA_3neg).FX; % fz220
-FX_raw{1}{3}(:) = intersect_table_data(Data_220, SA_6neg).FX; % fz220
+FX_raw{1}{2}(:) = intersect_table_data(Data_220, SA_3pos).FX; % fz220
+FX_raw{1}{3}(:) = intersect_table_data(Data_220, SA_6pos).FX; % fz220
 FX_raw{2}{1}(:) = intersect_table_data(Data_700, SA_0).FX; % fz700
-FX_raw{2}{2}(:) = intersect_table_data(Data_700, SA_3neg).FX; % fz700
-FX_raw{2}{3}(:) = intersect_table_data(Data_700, SA_6neg).FX; % fz700
+FX_raw{2}{2}(:) = intersect_table_data(Data_700, SA_3pos).FX; % fz700
+FX_raw{2}{3}(:) = intersect_table_data(Data_700, SA_6pos).FX; % fz700
 FX_raw{3}{1}(:) = intersect_table_data(Data_900, SA_0).FX; % fz900
-FX_raw{3}{2}(:) = intersect_table_data(Data_900, SA_3neg).FX; % fz900
-FX_raw{3}{3}(:) = intersect_table_data(Data_900, SA_6neg).FX; % fz900
+FX_raw{3}{2}(:) = intersect_table_data(Data_900, SA_3pos).FX; % fz900
+FX_raw{3}{3}(:) = intersect_table_data(Data_900, SA_6pos).FX; % fz900
 FX_raw{4}{1}(:) = intersect_table_data(Data_1120, SA_0).FX; % fz1120
-FX_raw{4}{2}(:) = intersect_table_data(Data_1120, SA_3neg).FX; % fz1120
-FX_raw{4}{3}(:) = intersect_table_data(Data_1120, SA_6neg).FX; % fz1120
+FX_raw{4}{2}(:) = intersect_table_data(Data_1120, SA_3pos).FX; % fz1120
+FX_raw{4}{3}(:) = intersect_table_data(Data_1120, SA_6pos).FX; % fz1120
 
 kappa_var = -0.25:0.001:0.25;
 ones_vec = ones(length(kappa_var), 1);
 FX_fit = cell(4,1);
 [FX_fit{1}{1}(:)] = MF96_FXcomb(kappa_var, 0*pi/180*ones_vec, 0*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
-[FX_fit{1}{2}(:)] = MF96_FXcomb(kappa_var, -3*pi/180*ones_vec, 0*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
-[FX_fit{1}{3}(:)] = MF96_FXcomb(kappa_var, -6*pi/180*ones_vec, 0*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
+[FX_fit{1}{2}(:)] = MF96_FXcomb(kappa_var, 3*pi/180*ones_vec, 0*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
+[FX_fit{1}{3}(:)] = MF96_FXcomb(kappa_var, 6*pi/180*ones_vec, 0*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
 [FX_fit{2}{1}(:)] = MF96_FXcomb(kappa_var, 0*pi/180*ones_vec, 0*ones_vec, mean(FZ_700.FZ)*ones_vec, tyre_coeffs);
-[FX_fit{2}{2}(:)] = MF96_FXcomb(kappa_var, -3*pi/180*ones_vec, 0*ones_vec, mean(FZ_700.FZ)*ones_vec, tyre_coeffs);
-[FX_fit{2}{3}(:)] = MF96_FXcomb(kappa_var, -6*pi/180*ones_vec, 0*ones_vec, mean(FZ_700.FZ)*ones_vec, tyre_coeffs);
+[FX_fit{2}{2}(:)] = MF96_FXcomb(kappa_var, 3*pi/180*ones_vec, 0*ones_vec, mean(FZ_700.FZ)*ones_vec, tyre_coeffs);
+[FX_fit{2}{3}(:)] = MF96_FXcomb(kappa_var, 6*pi/180*ones_vec, 0*ones_vec, mean(FZ_700.FZ)*ones_vec, tyre_coeffs);
 [FX_fit{3}{1}(:)] = MF96_FXcomb(kappa_var, 0*pi/180*ones_vec, 0*ones_vec, mean(FZ_900.FZ)*ones_vec, tyre_coeffs);
-[FX_fit{3}{2}(:)] = MF96_FXcomb(kappa_var, -3*pi/180*ones_vec, 0*ones_vec, mean(FZ_900.FZ)*ones_vec, tyre_coeffs);
-[FX_fit{3}{3}(:)] = MF96_FXcomb(kappa_var, -6*pi/180*ones_vec, 0*ones_vec, mean(FZ_900.FZ)*ones_vec, tyre_coeffs);
+[FX_fit{3}{2}(:)] = MF96_FXcomb(kappa_var, 3*pi/180*ones_vec, 0*ones_vec, mean(FZ_900.FZ)*ones_vec, tyre_coeffs);
+[FX_fit{3}{3}(:)] = MF96_FXcomb(kappa_var, 6*pi/180*ones_vec, 0*ones_vec, mean(FZ_900.FZ)*ones_vec, tyre_coeffs);
 [FX_fit{4}{1}(:)] = MF96_FXcomb(kappa_var, 0*pi/180*ones_vec, 0*ones_vec, mean(FZ_1120.FZ)*ones_vec, tyre_coeffs);
-[FX_fit{4}{2}(:)] = MF96_FXcomb(kappa_var, -3*pi/180*ones_vec, 0*ones_vec, mean(FZ_1120.FZ)*ones_vec, tyre_coeffs);
-[FX_fit{4}{3}(:)] = MF96_FXcomb(kappa_var, -6*pi/180*ones_vec, 0*ones_vec, mean(FZ_1120.FZ)*ones_vec, tyre_coeffs);
+[FX_fit{4}{2}(:)] = MF96_FXcomb(kappa_var, 3*pi/180*ones_vec, 0*ones_vec, mean(FZ_1120.FZ)*ones_vec, tyre_coeffs);
+[FX_fit{4}{3}(:)] = MF96_FXcomb(kappa_var, 6*pi/180*ones_vec, 0*ones_vec, mean(FZ_1120.FZ)*ones_vec, tyre_coeffs);
 
 %%
 legends_name = [];
 plot_fitted_data_struct_combined(x_raw, FX_raw, kappa_var, FX_fit, '$\kappa [-]$', '$F_{X}$ [N]', ...
 data_label, leg_angle, legends_name,'combined_longitudinal' , 'Combined longitudinal, $\gamma = 0 [deg]$', line_width, font_size_title, colors_vect)
+
 %%
 
 for i=1:length(kappa_var)
   [Gxa0(i), ~, ~] = MF96_FXFYCOMB_coeffs_eqns(kappa_var(i), 0, 0, 0, tyre_coeffs);
-  [Gxa3(i), ~, ~] = MF96_FXFYCOMB_coeffs_eqns(kappa_var(i), -3*pi/180, 0, 0, tyre_coeffs);
-  [Gxa6(i), ~, ~] = MF96_FXFYCOMB_coeffs_eqns(kappa_var(i), -6*pi/180, 0, 0, tyre_coeffs);
-  [Gxa8(i), ~, ~] = MF96_FXFYCOMB_coeffs_eqns(kappa_var(i), -8*pi/180, 0, 0, tyre_coeffs);
+  [Gxa3(i), ~, ~] = MF96_FXFYCOMB_coeffs_eqns(kappa_var(i), 3*pi/180, 0, 0, tyre_coeffs);
+  [Gxa6(i), ~, ~] = MF96_FXFYCOMB_coeffs_eqns(kappa_var(i), 6*pi/180, 0, 0, tyre_coeffs);
+%   [Gxa8(i), ~, ~] = MF96_FXFYCOMB_coeffs_eqns(kappa_var(i), 8*pi/180, 0, 0, tyre_coeffs);
 end
 
-fig_Gxa = figure('Color', 'w');
+fig_Gxa = figure('Color', 'w'); clf;
 plot(kappa_var, Gxa0, 'LineWidth', line_width);
 hold on
 plot(kappa_var, Gxa3, 'LineWidth', line_width);
 plot(kappa_var, Gxa6, 'LineWidth', line_width);
-plot(kappa_var, Gxa8, 'LineWidth', line_width);
+% plot(kappa_var, Gxa8, 'LineWidth', line_width);
 hold off
 grid on
 xlabel('$\kappa [-]$', 'Interpreter', 'latex', 'FontSize', font_size)
 ylabel('$G_{xa} [-]$', 'Interpreter', 'latex', 'FontSize', font_size)
 title('Weighting function','Interpreter', 'latex', 'FontSize', font_size_title)
-legend('$\alpha = 0 [deg]$', '$\alpha = -3 [deg]$', '$\alpha = -6 [deg]$', ...
+legend('$\alpha = 0 [deg]$', '$\alpha = 3 [deg]$', '$\alpha = 6 [deg]$', ...
 '$\alpha = -8 [deg]$','Interpreter', 'latex', 'FontSize', font_size, ...
 'location', 'southeast')
 export_fig(fig_Gxa, 'images\fig_Gxa.png')
@@ -190,31 +201,31 @@ export_fig(fig_Gxa, 'images\fig_Gxa.png')
 ones_vec = ones(length(kappa_var),1);
 sigma_x = kappa_var./(kappa_var + 1);
 sigma_y0 = 0./(kappa_var + 1);
-sigma_y3neg = -3*pi/180./(kappa_var + 1);
-sigma_y6neg = -6*pi/180./(kappa_var + 1);
+sigma_y3pos = 3*pi/180./(kappa_var + 1);
+sigma_y6pos = 6*pi/180./(kappa_var + 1);
 coeff0 = sigma_x./sqrt(sigma_x.^2 + sigma_y0.^2);
-coeff3neg = sigma_x./sqrt(sigma_x.^2 + sigma_y3neg.^2);
-coeff6neg = sigma_x./sqrt(sigma_x.^2 + sigma_y6neg.^2);
+coeff3pos = sigma_x./sqrt(sigma_x.^2 + sigma_y3pos.^2);
+coeff6pos = sigma_x./sqrt(sigma_x.^2 + sigma_y6pos.^2);
 
 Fx = cell(4, 1);
 Fx{1}{1}(:) = abs(coeff0).*MF96_FX0_vec(kappa_var, 0*ones_vec, 0*ones_vec, 220*ones_vec,  tyre_coeffs);
-Fx{1}{2}(:) = abs(coeff3neg).*MF96_FX0_vec(kappa_var, 0*ones_vec, 0*ones_vec, 220*ones_vec,  tyre_coeffs);
-Fx{1}{3}(:) = abs(coeff6neg).*MF96_FX0_vec(kappa_var, 0*ones_vec, 0*ones_vec, 220*ones_vec,  tyre_coeffs);
+Fx{1}{2}(:) = abs(coeff3pos).*MF96_FX0_vec(kappa_var, 0*ones_vec, 0*ones_vec, 220*ones_vec,  tyre_coeffs);
+Fx{1}{3}(:) = abs(coeff6pos).*MF96_FX0_vec(kappa_var, 0*ones_vec, 0*ones_vec, 220*ones_vec,  tyre_coeffs);
 Fx{2}{1}(:) = abs(coeff0).*MF96_FX0_vec(kappa_var, 0*ones_vec, 0*ones_vec, 700*ones_vec,  tyre_coeffs);
-Fx{2}{2}(:) = abs(coeff3neg).*MF96_FX0_vec(kappa_var, 0*ones_vec, 0*ones_vec, 700*ones_vec,  tyre_coeffs);
-Fx{2}{3}(:) = abs(coeff6neg).*MF96_FX0_vec(kappa_var, 0*ones_vec, 0*ones_vec, 700*ones_vec,  tyre_coeffs);
+Fx{2}{2}(:) = abs(coeff3pos).*MF96_FX0_vec(kappa_var, 0*ones_vec, 0*ones_vec, 700*ones_vec,  tyre_coeffs);
+Fx{2}{3}(:) = abs(coeff6pos).*MF96_FX0_vec(kappa_var, 0*ones_vec, 0*ones_vec, 700*ones_vec,  tyre_coeffs);
 Fx{3}{1}(:) = abs(coeff0).*MF96_FX0_vec(kappa_var, 0*ones_vec, 0*ones_vec, 900*ones_vec,  tyre_coeffs);
-Fx{3}{2}(:) = abs(coeff3neg).*MF96_FX0_vec(kappa_var, 0*ones_vec, 0*ones_vec, 900*ones_vec,  tyre_coeffs);
-Fx{3}{3}(:) = abs(coeff6neg).*MF96_FX0_vec(kappa_var, 0*ones_vec, 0*ones_vec, 900*ones_vec,  tyre_coeffs);
+Fx{3}{2}(:) = abs(coeff3pos).*MF96_FX0_vec(kappa_var, 0*ones_vec, 0*ones_vec, 900*ones_vec,  tyre_coeffs);
+Fx{3}{3}(:) = abs(coeff6pos).*MF96_FX0_vec(kappa_var, 0*ones_vec, 0*ones_vec, 900*ones_vec,  tyre_coeffs);
 Fx{4}{1}(:) = abs(coeff0).*MF96_FX0_vec(kappa_var, 0*ones_vec, 0*ones_vec, 1120*ones_vec, tyre_coeffs);
-Fx{4}{2}(:) = abs(coeff3neg).*MF96_FX0_vec(kappa_var, 0*ones_vec, 0*ones_vec, 1120*ones_vec, tyre_coeffs);
-Fx{4}{3}(:) = abs(coeff6neg).*MF96_FX0_vec(kappa_var, 0*ones_vec, 0*ones_vec, 1120*ones_vec, tyre_coeffs);
+Fx{4}{2}(:) = abs(coeff3pos).*MF96_FX0_vec(kappa_var, 0*ones_vec, 0*ones_vec, 1120*ones_vec, tyre_coeffs);
+Fx{4}{3}(:) = abs(coeff6pos).*MF96_FX0_vec(kappa_var, 0*ones_vec, 0*ones_vec, 1120*ones_vec, tyre_coeffs);
 %%
 % plot_fitted_data_struct_combined_sigma(x_raw, y_raw, x_fit, y_fit, x_fit_sig, y_fit_sig ...
 %   label_x, label_y, data_label, leg_angle, name, plot_title, line_width, ...
 %   font_size_title, colors_vector)
 legend_names = [];
-plot_fitted_data_struct_combined_sigma({}, {}, kappa_var, FX_fit, kappa_var, Fx, ...
+plot_fitted_data_struct_combined_sigma(x_raw, FX_raw, kappa_var, FX_fit, kappa_var, Fx, ...
 '$\kappa [-]$', '$F_{x}$ [N]', data_label,leg_angle, legend_names,'combined_longitudinal_sigma' , ...
 'Combined longitudinal, $\gamma =0$ [deg]', line_width, font_size_title, colors_vect)
 
@@ -261,25 +272,26 @@ tyre_coeffs.rBy2 = P_min(7);
 tyre_coeffs.rBy3 = P_min(8);
 tyre_coeffs.rCy1 = P_min(9);
 
+%%
 TDataNominal_SA0 = intersect_table_data(SA_0, FZ_220, GAMMA_0);
-TDataNominal_SA3neg = intersect_table_data(SA_3neg, FZ_220, GAMMA_0);
-TDataNominal_SA6neg = intersect_table_data(SA_6neg, FZ_220, GAMMA_0);
+TDataNominal_SA3pos = intersect_table_data(SA_3pos, FZ_220, GAMMA_0);
+TDataNominal_SA6pos = intersect_table_data(SA_6pos, FZ_220, GAMMA_0);
 
 KAPPA_vec = -0.25:0.001:0.25;
 len = length(KAPPA_vec);
 ones_vec = ones(len, 1);
 ALPHA_vec0 = 0*ones_vec;
-ALPHA_vec3neg = -3*pi/180*ones_vec;
-ALPHA_vec6neg = -6*pi/180*ones_vec;
+ALPHA_vec3pos = 3*pi/180*ones_vec;
+ALPHA_vec6pos = 6*pi/180*ones_vec;
 KAPPA_vec_struct = {KAPPA_vec, KAPPA_vec, KAPPA_vec};
 
 FY_fit = cell(3, 1);
 FY_fit{1} = MF96_FYcomb(KAPPA_vec, ALPHA_vec0, 0*ones_vec, mean(FZ_vec)*ones_vec, tyre_coeffs);
-FY_fit{2} = MF96_FYcomb(KAPPA_vec, ALPHA_vec3neg, 0*ones_vec, mean(FZ_vec)*ones_vec, tyre_coeffs);
-FY_fit{3} = MF96_FYcomb(KAPPA_vec, ALPHA_vec6neg, 0*ones_vec, mean(FZ_vec)*ones_vec, tyre_coeffs);
+FY_fit{2} = MF96_FYcomb(KAPPA_vec, ALPHA_vec3pos, 0*ones_vec, mean(FZ_vec)*ones_vec, tyre_coeffs);
+FY_fit{3} = MF96_FYcomb(KAPPA_vec, ALPHA_vec6pos, 0*ones_vec, mean(FZ_vec)*ones_vec, tyre_coeffs);
 
-x_raw = {TDataNominal_SA0.SL, TDataNominal_SA3neg.SL, TDataNominal_SA6neg.SL};
-y_raw = {TDataNominal_SA0.FY, TDataNominal_SA3neg.FY, TDataNominal_SA6neg.FY};
+x_raw = {TDataNominal_SA0.SL, TDataNominal_SA3pos.SL, TDataNominal_SA6pos.SL};
+y_raw = {TDataNominal_SA0.FY, TDataNominal_SA3pos.FY, TDataNominal_SA6pos.FY};
 
 plot_label = {'$\alpha = 0 [deg]$', '$\alpha = -3 [deg]$', '$\alpha = -6 [deg]$'};
 plot_fitted_data_struct(x_raw, y_raw, KAPPA_vec_struct, FY_fit, ...
@@ -313,24 +325,24 @@ R2_Fy_varFz = 1 - res_Fy_varFz*sum(FY_vec.^2)/sum((FY_vec - mean(FY_vec)).^2);
 tyre_coeffs.rVy2 = P_min(1);
 
 TDataFZ_SA0 = intersect_table_data(SA_0, FZ_220, GAMMA_0);
-TDataFZ_SA3neg = intersect_table_data(SA_3neg, FZ_220, GAMMA_0);
-TDataFZ_SA6neg = intersect_table_data(SA_6neg, FZ_220, GAMMA_0);
+TDataFZ_SA3pos = intersect_table_data(SA_3pos, FZ_220, GAMMA_0);
+TDataFZ_SA6pos = intersect_table_data(SA_6pos, FZ_220, GAMMA_0);
 
 KAPPA_vec = -0.25:0.001:0.25;
 len = length(KAPPA_vec);
 ones_vec = ones(len, 1);
 ALPHA_vec0 = 0*ones_vec;
-ALPHA_vec3neg = -3*pi/180*ones_vec;
-ALPHA_vec6neg = -6*pi/180*ones_vec;
+ALPHA_vec3pos = 3*pi/180*ones_vec;
+ALPHA_vec6pos = 6*pi/180*ones_vec;
 KAPPA_vec_struct = {KAPPA_vec, KAPPA_vec, KAPPA_vec};
 
 FY_fit = cell(3, 1);
 FY_fit{1} = MF96_FYcomb(KAPPA_vec, ALPHA_vec0, 0*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
-FY_fit{2} = MF96_FYcomb(KAPPA_vec, ALPHA_vec3neg, 0*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
-FY_fit{3} = MF96_FYcomb(KAPPA_vec, ALPHA_vec6neg, 0*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
+FY_fit{2} = MF96_FYcomb(KAPPA_vec, ALPHA_vec3pos, 0*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
+FY_fit{3} = MF96_FYcomb(KAPPA_vec, ALPHA_vec6pos, 0*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
 
-x_raw = {TDataFZ_SA0.SL, TDataFZ_SA3neg.SL, TDataFZ_SA6neg.SL};
-y_raw = {TDataFZ_SA0.FY, TDataFZ_SA3neg.FY, TDataFZ_SA6neg.FY};
+x_raw = {TDataFZ_SA0.SL, TDataFZ_SA3pos.SL, TDataFZ_SA6pos.SL};
+y_raw = {TDataFZ_SA0.FY, TDataFZ_SA3pos.FY, TDataFZ_SA6pos.FY};
 
 plot_label = {'$\alpha = 0 [deg]$', '$\alpha = -3 [deg]$', '$\alpha = -6 [deg]$'};
 plot_fitted_data_struct(x_raw, y_raw, KAPPA_vec_struct, FY_fit, ...
@@ -364,50 +376,50 @@ R2_Fy_varGamma = 1 - res_Fy_varGamma*sum(FY_vec.^2)/sum((FY_vec - mean(FY_vec)).
 tyre_coeffs.rVy3 = P_min(1);
 
 TDataFZ_SA0 = intersect_table_data(SA_0, FZ_220, GAMMA_0);
-TDataFZ_SA3neg = intersect_table_data(SA_3neg, FZ_220, GAMMA_0);
-TDataFZ_SA6neg = intersect_table_data(SA_6neg, FZ_220, GAMMA_0);
+TDataFZ_SA3pos = intersect_table_data(SA_3pos, FZ_220, GAMMA_0);
+TDataFZ_SA6pos = intersect_table_data(SA_6pos, FZ_220, GAMMA_0);
 
 kappa_var = -0.25:0.01:0.25;
 
 x_raw = cell(3, 1);
 x_raw{1}{1}(:) = intersect_table_data(SA_0, FZ_220, GAMMA_0).SL;
-x_raw{1}{2}(:) = intersect_table_data(SA_3neg, FZ_220, GAMMA_0).SL;
-x_raw{1}{3}(:) = intersect_table_data(SA_6neg, FZ_220, GAMMA_0).SL;
+x_raw{1}{2}(:) = intersect_table_data(SA_3pos, FZ_220, GAMMA_0).SL;
+x_raw{1}{3}(:) = intersect_table_data(SA_6pos, FZ_220, GAMMA_0).SL;
 x_raw{2}{1}(:) = intersect_table_data(SA_0, FZ_220, GAMMA_2).SL;
-x_raw{2}{2}(:) = intersect_table_data(SA_3neg, FZ_220, GAMMA_2).SL;
-x_raw{2}{3}(:) = intersect_table_data(SA_6neg, FZ_220, GAMMA_2).SL;
+x_raw{2}{2}(:) = intersect_table_data(SA_3pos, FZ_220, GAMMA_2).SL;
+x_raw{2}{3}(:) = intersect_table_data(SA_6pos, FZ_220, GAMMA_2).SL;
 x_raw{3}{1}(:) = intersect_table_data(SA_0, FZ_220, GAMMA_4).SL;
-x_raw{3}{2}(:) = intersect_table_data(SA_3neg, FZ_220, GAMMA_4).SL;
-x_raw{3}{3}(:) = intersect_table_data(SA_6neg, FZ_220, GAMMA_4).SL;
+x_raw{3}{2}(:) = intersect_table_data(SA_3pos, FZ_220, GAMMA_4).SL;
+x_raw{3}{3}(:) = intersect_table_data(SA_6pos, FZ_220, GAMMA_4).SL;
 
 
 y_raw = cell(3, 1);
 y_raw{1}{1}(:) = intersect_table_data(SA_0, FZ_220, GAMMA_0).FY;
-y_raw{1}{2}(:) = intersect_table_data(SA_3neg, FZ_220, GAMMA_0).FY;
-y_raw{1}{3}(:) = intersect_table_data(SA_6neg, FZ_220, GAMMA_0).FY;
+y_raw{1}{2}(:) = intersect_table_data(SA_3pos, FZ_220, GAMMA_0).FY;
+y_raw{1}{3}(:) = intersect_table_data(SA_6pos, FZ_220, GAMMA_0).FY;
 y_raw{2}{1}(:) = intersect_table_data(SA_0, FZ_220, GAMMA_2).FY;
-y_raw{2}{2}(:) = intersect_table_data(SA_3neg, FZ_220, GAMMA_2).FY;
-y_raw{2}{3}(:) = intersect_table_data(SA_6neg, FZ_220, GAMMA_2).FY;
+y_raw{2}{2}(:) = intersect_table_data(SA_3pos, FZ_220, GAMMA_2).FY;
+y_raw{2}{3}(:) = intersect_table_data(SA_6pos, FZ_220, GAMMA_2).FY;
 y_raw{3}{1}(:) = intersect_table_data(SA_0, FZ_220, GAMMA_4).FY;
-y_raw{3}{2}(:) = intersect_table_data(SA_3neg, FZ_220, GAMMA_4).FY;
-y_raw{3}{3}(:) = intersect_table_data(SA_6neg, FZ_220, GAMMA_4).FY;
+y_raw{3}{2}(:) = intersect_table_data(SA_3pos, FZ_220, GAMMA_4).FY;
+y_raw{3}{3}(:) = intersect_table_data(SA_6pos, FZ_220, GAMMA_4).FY;
 
 FY_fit = cell(4,1);
 [FY_fit{1}{1}(:)] = MF96_FYcomb(kappa_var, 0*pi/180*ones_vec, mean(GAMMA_0.IA)*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
-[FY_fit{1}{2}(:)] = MF96_FYcomb(kappa_var, -3*pi/180*ones_vec, mean(GAMMA_0.IA)*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
-[FY_fit{1}{3}(:)] = MF96_FYcomb(kappa_var, -6*pi/180*ones_vec, mean(GAMMA_0.IA)*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
+[FY_fit{1}{2}(:)] = MF96_FYcomb(kappa_var, 3*pi/180*ones_vec, mean(GAMMA_0.IA)*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
+[FY_fit{1}{3}(:)] = MF96_FYcomb(kappa_var, 6*pi/180*ones_vec, mean(GAMMA_0.IA)*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
 [FY_fit{2}{1}(:)] = MF96_FYcomb(kappa_var, 0*pi/180*ones_vec, mean(GAMMA_2.IA)*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
-[FY_fit{2}{2}(:)] = MF96_FYcomb(kappa_var, -3*pi/180*ones_vec, mean(GAMMA_2.IA)*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
-[FY_fit{2}{3}(:)] = MF96_FYcomb(kappa_var, -6*pi/180*ones_vec, mean(GAMMA_2.IA)*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
+[FY_fit{2}{2}(:)] = MF96_FYcomb(kappa_var, 3*pi/180*ones_vec, mean(GAMMA_2.IA)*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
+[FY_fit{2}{3}(:)] = MF96_FYcomb(kappa_var, 6*pi/180*ones_vec, mean(GAMMA_2.IA)*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
 [FY_fit{3}{1}(:)] = MF96_FYcomb(kappa_var, 0*pi/180*ones_vec, mean(GAMMA_4.IA)*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
-[FY_fit{3}{2}(:)] = MF96_FYcomb(kappa_var, -3*pi/180*ones_vec, mean(GAMMA_4.IA)*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
-[FY_fit{3}{3}(:)] = MF96_FYcomb(kappa_var, -6*pi/180*ones_vec, mean(GAMMA_4.IA)*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
+[FY_fit{3}{2}(:)] = MF96_FYcomb(kappa_var, 3*pi/180*ones_vec, mean(GAMMA_4.IA)*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
+[FY_fit{3}{3}(:)] = MF96_FYcomb(kappa_var, 6*pi/180*ones_vec, mean(GAMMA_4.IA)*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
 
 leg_angle = ["$\alpha$=0", "$\alpha=-3$", "$\alpha=-6$"];
 data_label = ["$\gamma = 0 [deg]$", "$\gamma = 2 [deg]$", "$\gamma = 4 [deg]$"];
 legends_name = ["Fit $\alpha = 0[deg]$", "Raw $\alpha$ = 0[deg]",...
-"Fit $\alpha$ = -3[deg]", "Raw $\alpha$ = -3[deg]",...
-"Fit $\alpha$ = -6[deg]", "Raw $\alpha$ = -6[deg]"];
+"Fit $\alpha$ = 3[deg]", "Raw $\alpha$ = 3[deg]",...
+"Fit $\alpha$ = 6[deg]", "Raw $\alpha$ = 6[deg]"];
 plot_fitted_data_struct_combined(x_raw, y_raw, kappa_var, FY_fit, '$\kappa [-]$', '$F_{y}$ [N]', ...
 data_label, leg_angle, legends_name,'combined_lateral' , 'Combined lateral, $FZ = 220 [N]$', line_width, font_size_title, colors_vect)
 
@@ -415,9 +427,9 @@ data_label, leg_angle, legends_name,'combined_lateral' , 'Combined lateral, $FZ 
 %% WEIGHTING FUNCTION
 for i=1:length(kappa_var)
   [~, Gyk0(i), ~] = MF96_FXFYCOMB_coeffs_eqns(kappa_var(i), 0, 0, 0, tyre_coeffs);
-  [~, Gyk3(i), ~] = MF96_FXFYCOMB_coeffs_eqns(kappa_var(i), -3*pi/180, 0, 0, tyre_coeffs);
-	[~, Gyk6(i), ~] = MF96_FXFYCOMB_coeffs_eqns(kappa_var(i), -6*pi/180, 0, 0, tyre_coeffs);
-  [~, Gyk8(i), ~] = MF96_FXFYCOMB_coeffs_eqns(kappa_var(i), -8*pi/180, 0, 0, tyre_coeffs);
+  [~, Gyk3(i), ~] = MF96_FXFYCOMB_coeffs_eqns(kappa_var(i), 3*pi/180, 0, 0, tyre_coeffs);
+	[~, Gyk6(i), ~] = MF96_FXFYCOMB_coeffs_eqns(kappa_var(i), 6*pi/180, 0, 0, tyre_coeffs);
+%   [~, Gyk8(i), ~] = MF96_FXFYCOMB_coeffs_eqns(kappa_var(i), 8*pi/180, 0, 0, tyre_coeffs);
 end
 
 fig_Gyk = figure('Color', 'w');
@@ -425,14 +437,14 @@ plot(kappa_var, Gyk0, 'LineWidth', line_width);
 hold on
 plot(kappa_var, Gyk3, 'LineWidth', line_width);
 plot(kappa_var, Gyk6, 'LineWidth', line_width);
-plot(kappa_var, Gyk8, 'LineWidth', line_width);
+% plot(kappa_var, Gyk8, 'LineWidth', line_width);
 hold off
 grid on
 xlabel('$\kappa [-]$', 'Interpreter', 'latex', 'FontSize', font_size)
 ylabel('$G_{yk} [-]$', 'Interpreter', 'latex', 'FontSize', font_size)
 title('Weighting function','Interpreter', 'latex', 'FontSize', font_size_title)
-legend('$\alpha = 0 [deg]$', '$\alpha = -3 [deg]$', '$\alpha = -6 [deg]$', ...
-'$\alpha = -8 [deg]$','Interpreter', 'latex', 'FontSize', font_size, ...
+legend('$\alpha = 0 [deg]$', '$\alpha = 3 [deg]$', '$\alpha = 6 [deg]$', ...
+'$\alpha = 8 [deg]$','Interpreter', 'latex', 'FontSize', font_size, ...
 'location', 'northeast')
 export_fig(fig_Gyk, 'images/fig_Gyk.png');
   
@@ -440,22 +452,22 @@ export_fig(fig_Gyk, 'images/fig_Gyk.png');
 ones_vec = ones(length(kappa_var),1);
 sigma_x = kappa_var./(kappa_var + 1);
 sigma_y0 = 0./(kappa_var + 1);
-sigma_y3neg = -(3*pi/180)./(kappa_var + 1);
-sigma_y6neg = -(6*pi/180)./(kappa_var + 1);
+sigma_y3pos = (3*pi/180)./(kappa_var + 1);
+sigma_y6pos = (6*pi/180)./(kappa_var + 1);
 coeff0 = sigma_y0./sqrt(sigma_x.^2 + sigma_y0.^2);
-coeff3neg = sigma_y3neg./sqrt(sigma_x.^2 + sigma_y3neg.^2);
-coeff6neg = sigma_y6neg./sqrt(sigma_x.^2 + sigma_y6neg.^2);
+coeff3pos = sigma_y3pos./sqrt(sigma_x.^2 + sigma_y3pos.^2);
+coeff6pos = sigma_y6pos./sqrt(sigma_x.^2 + sigma_y6pos.^2);
 
 Fy = cell(3, 1);
 Fy{1}{1}(:) = abs(coeff0').*MF96_FY0_vec(0*ones_vec, 0*ones_vec, 0*ones_vec, 220*ones_vec, tyre_coeffs);
-Fy{1}{2}(:) = abs(coeff3neg').*MF96_FY0_vec(0*ones_vec, -3*pi/180*ones_vec, 0*ones_vec, 220*ones_vec, tyre_coeffs);
-Fy{1}{3}(:) = abs(coeff6neg').*MF96_FY0_vec(0*ones_vec, -6*pi/180*ones_vec, 0*ones_vec, 220*ones_vec, tyre_coeffs);
+Fy{1}{2}(:) = abs(coeff3pos').*MF96_FY0_vec(0*ones_vec, 3*pi/180*ones_vec, 0*ones_vec, 220*ones_vec, tyre_coeffs);
+Fy{1}{3}(:) = abs(coeff6pos').*MF96_FY0_vec(0*ones_vec, 6*pi/180*ones_vec, 0*ones_vec, 220*ones_vec, tyre_coeffs);
 Fy{2}{1}(:) = abs(coeff0').*MF96_FY0_vec(0*ones_vec, 0*ones_vec, 2*pi/180*ones_vec, 220*ones_vec, tyre_coeffs);
-Fy{2}{2}(:) = abs(coeff3neg').*MF96_FY0_vec(0*ones_vec, -3*pi/180*ones_vec, 2*pi/180*ones_vec, 220*ones_vec, tyre_coeffs);
-Fy{2}{3}(:) = abs(coeff6neg').*MF96_FY0_vec(0*ones_vec, -6*pi/180*ones_vec, 2*pi/180*ones_vec, 220*ones_vec, tyre_coeffs);
+Fy{2}{2}(:) = abs(coeff3pos').*MF96_FY0_vec(0*ones_vec, 3*pi/180*ones_vec, 2*pi/180*ones_vec, 220*ones_vec, tyre_coeffs);
+Fy{2}{3}(:) = abs(coeff6pos').*MF96_FY0_vec(0*ones_vec, 6*pi/180*ones_vec, 2*pi/180*ones_vec, 220*ones_vec, tyre_coeffs);
 Fy{3}{1}(:) = abs(coeff0').*MF96_FY0_vec(0*ones_vec, 0*ones_vec, 4*pi/180*ones_vec, 220*ones_vec, tyre_coeffs);
-Fy{3}{2}(:) = abs(coeff3neg').*MF96_FY0_vec(0*ones_vec, -3*pi/180*ones_vec, 4*pi/180*ones_vec, 220*ones_vec, tyre_coeffs);
-Fy{3}{3}(:) = abs(coeff6neg').*MF96_FY0_vec(0*ones_vec, -6*pi/180*ones_vec, 4*pi/180*ones_vec, 220*ones_vec, tyre_coeffs);
+Fy{3}{2}(:) = abs(coeff3pos').*MF96_FY0_vec(0*ones_vec, 3*pi/180*ones_vec, 4*pi/180*ones_vec, 220*ones_vec, tyre_coeffs);
+Fy{3}{3}(:) = abs(coeff6pos').*MF96_FY0_vec(0*ones_vec, 6*pi/180*ones_vec, 4*pi/180*ones_vec, 220*ones_vec, tyre_coeffs);
 %%
 % plot_fitted_data_struct_combined_sigma(x_raw, y_raw, x_fit, y_fit, x_fit_sig, y_fit_sig ...
 %   label_x, label_y, data_label, leg_angle, name, plot_title, line_width, ...
