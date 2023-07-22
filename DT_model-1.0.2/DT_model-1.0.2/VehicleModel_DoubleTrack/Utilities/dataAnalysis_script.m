@@ -193,7 +193,7 @@ if enable_plot
   plot(time_sim,sqrt(u.^2 + v.^2),'LineWidth',2)
   xline(Tinit, '--r', 'LineWidth', 2);
   grid on; box on;
-  title('$V_G$ [rad/s]')
+  title('$V_G$ [m/s]')
   xlim([0 time_sim(end)]) 
   set(gca, 'FontSize',25); 
 if enable_export == 1;
@@ -683,31 +683,31 @@ clear ax
 % % -------------------------------
 % %% Plot vehicle path
 % % -------------------------------
-% N = length(time_sim);
-% fig_real_path = figure('Name','Real Vehicle Path','NumberTitle','off','Color','w'); clf
-% set(gca,'fontsize',25)
-% hold on
-% axis equal
-% xlabel('x-coord [m]')
-% ylabel('y-coord [m]')
-% title('Real Vehicle Path','FontSize',18)
-% plot(x_CoM,y_CoM,'Color',color('gold'),'LineWidth',2)
-% for i = 1:floor(N/20):N
-%     rot_mat = [cos(psi(i)) -sin(psi(i)) ; sin(psi(i)) cos(psi(i))];
-%     pos_rr = rot_mat*[-Lr -Wr/2]';
-%     pos_rl = rot_mat*[-Lr +Wr/2]';
-%     pos_fr = rot_mat*[+Lf -Wf/2]';
-%     pos_fl = rot_mat*[+Lf +Wf/2]';
-%     pos = [pos_rr pos_rl pos_fl pos_fr];
-%     p = patch(x_CoM(i) + pos(1,:),y_CoM(i) + pos(2,:),'blue');
-%     quiver(x_CoM(i), y_CoM(i), u(i)*cos(psi(i)), u(i)*sin(psi(i)), 'color', [1,0,0]);
-%     quiver(x_CoM(i), y_CoM(i), -v(i)*sin(psi(i)), v(i)*cos(psi(i)), 'color', [0.23,0.37,0.17]);
-% end
-% grid on; box on;
-% hold off
-% if enable_export == 1
-%   export_figure(fig_real_path, strcat('\fig_real_path', suffix, '.eps'), 'images\');
-% end
+N = length(time_sim);
+fig_real_path = figure('Name','Real Vehicle Path','NumberTitle','off','Color','w'); clf
+set(gca,'fontsize',25)
+hold on
+axis equal
+xlabel('x-coord [m]')
+ylabel('y-coord [m]')
+title('Real Vehicle Path','FontSize',18)
+plot(x_CoM,y_CoM,'Color',color('gold'),'LineWidth',2)
+for i = 1:floor(N/20):N
+    rot_mat = [cos(psi(i)) -sin(psi(i)) ; sin(psi(i)) cos(psi(i))];
+    pos_rr = rot_mat*[-Lr -Wr/2]';
+    pos_rl = rot_mat*[-Lr +Wr/2]';
+    pos_fr = rot_mat*[+Lf -Wf/2]';
+    pos_fl = rot_mat*[+Lf +Wf/2]';
+    pos = [pos_rr pos_rl pos_fl pos_fr];
+    p = patch(x_CoM(i) + pos(1,:),y_CoM(i) + pos(2,:),'blue');
+    quiver(x_CoM(i), y_CoM(i), u(i)*cos(psi(i)), u(i)*sin(psi(i)), 'color', [1,0,0]);
+    quiver(x_CoM(i), y_CoM(i), -v(i)*sin(psi(i)), v(i)*cos(psi(i)), 'color', [0.23,0.37,0.17]);
+end
+grid on; box on;
+hold off
+if enable_export == 1
+  export_figure(fig_real_path, strcat('\fig_real_path', suffix, '.eps'), 'images\');
+end
 
 
 % % ---
@@ -919,9 +919,9 @@ if sim_options.test_type == 1 % constant velocity
     K_US_theo2 = - diff(Delta_alpha) ./ diff(Ay_hand');
     K_US_theo3 = diff(delta(1:end-1))./diff(Ay_norm) - L./u(1:end-2).^2;
 elseif sim_options.test_type == 2 % constant curvature
-    K_US_theo = - m*g/L^2*(Lf./Ky_r - Lr./Ky_f);
-    K_US_theo2 = - 1/L*diff(Delta_alpha) ./ diff(Ay_hand');
-    K_US_theo3 = -g*diff(rho(1:end-1))./diff(Ay);
+    K_US_theo = - m*g/L^2*(Lf./Ky_r - Lr./Ky_f); % [1/m]
+    K_US_theo2 = - 1/L*diff(Delta_alpha) ./ diff(Ay_hand'); % [1/m]
+    K_US_theo3 = -g*diff(rho(1:end-1))./diff(Ay); % [1/m]
 end
 
 % Define two limits for the linearity 
@@ -949,7 +949,7 @@ handling_fit = handling(Ay_hand > ay_max_lin) - K_US * ay_fit'; % fi the nonline
 poly_deg = 3;
 A = ones(length(ay_fit), poly_deg);
 for i = 1:poly_deg - 1 
-A(:,i) = ay_fit.^(poly_deg - i + 1);
+  A(:,i) = ay_fit.^(poly_deg - i + 1);
 end
 p_tmp = inv(A' * A) * A'*handling_fit; % coefficients of the regression
 
@@ -976,11 +976,11 @@ u_slide = sqrt(1/abs(K_US/g));
 %% YAW RATE & BETA GAIN
 % ---------------------------------
 yaw_rate_gain = Omega ./ (delta); % [1/s]
-beta_gain = beta ./ (delta); % [-]
-yaw_rate_gain_theo = u / L ./ (1 + u.^2 * K_US/g ); % [1/s] theoretical yaw rate gain
+beta_gain = beta ./ (delta); % [-] 
+yaw_rate_gain_theo = u / L ./ (1 + u.^2 * K_US / (L * g)); % [1/s] theoretical yaw rate gain
 u_tmp = u(pos_Ay_remap);
 u_tmp = u_tmp(1:end-1);
-beta_gain_theo = Lr ./ L - m / L^3 * (Lf^2 ./ Ky_r + Lr^2 ./ Ky_f) .* u_tmp.^2 ./ (1 + K_US/g * u_tmp.^2); % [-] theoretical beta gain
+beta_gain_theo = (Lr ./ L - m / L^3 * (Lf^2 ./ Ky_r + Lr^2 ./ Ky_f) .* u_tmp.^2 ./ (1 + K_US/(g * L) * u_tmp.^2) ); % [-] theoretical beta gain
 
 if enable_plot
 % ---------------------------------
@@ -1134,8 +1134,8 @@ if enable_plot
   %plot(Ay_hand, -Delta_alpha, 'LineWidth',2)
   plot(ay_fit_lin, handling_fit_lin, '--', 'LineWidth',2.5, 'Displayname','Fit in linear range')
   plot(ay_fit_nonlin, handling_fit_nonlin, '--', 'LineWidth',2.5, 'Displayname','Fit in non-linear range')
-  plot(Ay/g, delta(1:end-1) - rho(1:end-1)*L)
- plot(Ay/g, delta_D(1:end-1)*3.14/180/tau_D - rho(1:end-1)*L)
+  % plot(Ay/g, delta(1:end-1) - rho(1:end-1)*L)
+%  plot(Ay/g, delta_D(1:end-1)*3.14/180/tau_D - rho(1:end-1)*L)
   title('Handling diagram')
   xlabel('$a_{y}/g$ [-]')
   ylabel('$\delta_{D}\tau_{H} - \rho L \ [rad]$')
@@ -1166,7 +1166,11 @@ if enable_plot
   title('Normalized understeering gradient')
   legend('location', 'southwest')
   xlim("padded")
-  ylabel('g$K_{US}$')
+  if sim_options.test_type == 1
+    ylabel('g$K_{US}$')
+  else
+    ylabel('g$K_{US} [1/m]$')
+  end
   xlabel('ay/g [-]')
   set(gca, 'FontSize',45); 
   if enable_export == 1;
@@ -1181,7 +1185,7 @@ if enable_plot
   hold on 
   grid on; box on;
   plot(u*3.6, yaw_rate_gain, 'LineWidth',2, 'DisplayName','$\frac{\Omega}{\delta}$')
-  plot(u*3.6, yaw_rate_gain_theo, 'LineWidth',2, 'DisplayName','$\frac{u}{L(1+K_{US}u^2)}$')
+  plot(u*3.6, yaw_rate_gain_theo, 'LineWidth',2, 'DisplayName','$\frac{u \tau_H}{L(1+K_{US}u^2)}$')
   xline(u_lin_lim*3.6, '--r', 'LineWidth',2, 'DisplayName','$K_{US}$ lin limit')
   title('Yaw rate gain')
   xlabel('u [km/h]')
