@@ -26,7 +26,7 @@ time_sim = model_sim.states.u.time;
 dt = time_sim(2)-time_sim(1);
 
 if sim_options.test_type == 2
-  Tinit = 2;
+  Tinit = 2.5;
 end
 [~, start_time] = min(abs(time_sim - Tinit)); % time when ss starts
 
@@ -592,7 +592,7 @@ plot(time_sim(2:end),dot_u_filt,'-.r','LineWidth',1)
 xline(Tinit, '--r', 'LineWidth', 2);
 grid on; box on;
 title('$a_{x}$ $[m/s^2]$')
-legend('$\dot{u}-\Omega v$','$\dot{u}$','filt $\dot{u}-\Omega v$','filt $\dot{u}$','Location','north', 'NumColumns', 2)
+legend('$\dot{u}-\Omega v$','$\dot{u}$','filt $\dot{u}-\Omega v$','filt $\dot{u}$','Location','best', 'NumColumns', 2)
 xlim([0 time_sim(end)])
 set(gca, 'FontSize',25);
 % --- ay --- %
@@ -879,7 +879,7 @@ Fz_f0 = m * g * Lr / L;
 
 % Handling diagram
 minmax_norm_axle_char = min(max(mu_r), max(mu_f)); % min between the maximum norm axle char
-maxmin_norm_axle_char = max(min(mu_r), min(mu_f))+2e-3; % max between the minimum norm axle char
+maxmin_norm_axle_char = 0.04; %max(min(mu_r), min(mu_f))+2e-3; % max between the minimum norm axle char
 Ay_hand = maxmin_norm_axle_char:0.005:minmax_norm_axle_char; % nomralized acc
 pos_mu_r_remap = zeros(length(Ay_hand), 1);
 pos_mu_f_remap = zeros(length(Ay_hand), 1);
@@ -921,6 +921,8 @@ if sim_options.test_type == 1 % constant velocity
 elseif sim_options.test_type == 2 % constant curvature
     K_US_theo = - m*g/L^2*(Lf./Ky_r - Lr./Ky_f); % [1/m]
     K_US_theo2 = - 1/L*diff(Delta_alpha) ./ diff(Ay_hand'); % [1/m]
+    % d_alpha = alpha_r - alpha_f;
+    % K_US_theo2 = - 1/L*diff(d_alpha(1:end-1))./diff(Ay/g);
     K_US_theo3 = -g*diff(rho(1:end-1))./diff(Ay); % [1/m]
 end
 
@@ -942,6 +944,7 @@ ay_fit_lin = [maxmin_norm_axle_char:1e-6:ay_max_lin]; % acc for which lin. does 
 handling_fit = handling(Ay_hand < ay_max_lin);  % value of the linear handling 
 p_lin = polyfit(ay_fit,handling_fit,1);         % fit the linear part
 K_US = p_lin(1);                                % fitted understeering gradient
+fprintf('Fitted understeering gradient: %.10f\n', K_US);
 handling_fit_lin = polyval(p_lin, ay_fit_lin);  % value of the fitted handling diagram
 % fitting the nonlinear part 
 ay_fit = Ay_hand(Ay_hand > ay_max_lin);
@@ -964,6 +967,10 @@ else
   handling_fit_nonlin = 0;
   ay_fit_nonlin = 0;
 end
+fprintf('\%\%\%')
+fprintf('Coefficients of the non linear fitting');
+p_nl
+fprintf('\%\%\%')
 
 %----------------------------------
 %% CRITICAL SPEED
@@ -1159,11 +1166,12 @@ if enable_plot
   elseif sim_options.test_type == 2
     plot(Ay_hand(1:end-1), K_US_theo, 'LineWidth',2, 'DisplayName','$-\frac{mg}{L^2}(\frac{L_f}{K_{yr}} - \frac{Lr}{K_{yf}})$')
     plot(Ay_hand(1:end-1), K_US_theo2, '--', 'LineWidth',2, 'DisplayName','$- \frac{1}{L}\frac{d\Delta \alpha}{d a_y / g}$')
-    plot(Ay(20000:end-1)/g, K_US_theo3(20000:end), '.-', 'LineWidth',2, 'DisplayName','$-\frac{d\rho}{da_y/g}$')
+    % plot(Ay(1:end-1)/g, K_US_theo2, '--', 'LineWidth',2, 'DisplayName','$- \frac{1}{L}\frac{d\Delta \alpha}{d a_y / g}$')
+    % plot(Ay(20000:end-1)/g, K_US_theo3(20000:end), '.-', 'LineWidth',2, 'DisplayName','$-\frac{d\rho}{da_y/g}$')
     plot(ay_fit_lin, K_US*ones(length(ay_fit_lin), 1)/L, '--r', 'LineWidth',2, 'DisplayName', 'Linear $K_{US}$');
   end
   %plot(Ay_norm(1:end-1), K_US_theo3, 'LineWidth',2, 'DisplayName','Formula 2')
-  title('Normalized understeering gradient')
+  title('Norm. understeering gradient')
   legend('location', 'southwest')
   xlim("padded")
   if sim_options.test_type == 1

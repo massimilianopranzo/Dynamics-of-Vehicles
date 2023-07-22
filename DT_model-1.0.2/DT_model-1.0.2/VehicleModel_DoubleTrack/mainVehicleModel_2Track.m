@@ -34,7 +34,7 @@ initialize_environment;
 %% Simulation parameters
 % ----------------------------
 sim_options.slope = 1.5; %  [deg/s]
-sim_options.test_type = 2; % 1 for constant u, 2 for constant steering angle
+sim_options.test_type = 1; % 1 for constant u, 2 for constant steering angle
 enable_export = 0; % 1 to export the data to a .mat file
 enable_plot = 1; % 1 to plot the results
 

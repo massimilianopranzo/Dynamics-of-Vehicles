@@ -26,7 +26,7 @@ plot(sn20_t0_c0.Ay_hand, sn20_t0_c0.handling, '--', 'LineWidth',2, 'DisplayName'
 % legend('location','southwest')
 title('Var. front stiffness, $\delta=0[^\circ]$, $\gamma=0 [^\circ]$')
 %xlabel('ay/g [-]')
-ylabel('$\delta_{D}\tau_{H} - \rho L \ [rad]$')
+%ylabel('$\delta_{D}\tau_{H} - \rho L \ [rad]$')
 
 subplot(323)
 hold on; grid on; box on;
@@ -36,7 +36,7 @@ plot(s0_t0_cp2.Ay_hand, s0_t0_cp2.handling, '--', 'LineWidth',2, 'DisplayName','
 plot(s0_t0_cn1.Ay_hand, s0_t0_cn1.handling, '--', 'LineWidth',2, 'DisplayName','$\gamma = -1 [^\circ]$')
 plot(s0_t0_cn2.Ay_hand, s0_t0_cn2.handling, '--', 'LineWidth',2, 'DisplayName','$\gamma = -2 [^\circ]$')
 % legend('location','northwest', 'NumColumns',3)
-title('Var. front camber, $\delta=0$ [$^\circ$]')
+title('Variable $\gamma_f$, $\delta=0$ [$^\circ$]')
 %xlabel('ay/g [-]')
 ylabel('$\delta_{D}\tau_{H} - \rho L \ [rad]$')
 
@@ -48,9 +48,9 @@ plot(s0_tp2_c0.Ay_hand, s0_tp2_c0.handling, '--', 'LineWidth',2, 'DisplayName','
 plot(s0_tn1_c0.Ay_hand, s0_tn1_c0.handling, '--', 'LineWidth',2, 'DisplayName','$\delta = -1 [^\circ]$')
 plot(s0_tn2_c0.Ay_hand, s0_tn2_c0.handling, '--', 'LineWidth',2, 'DisplayName','$\delta = -2 [^\circ]$')
 % legend('location','southwest', 'NumColumns',2)
-title('Var. front toe, $\gamma = 0$ [$^\circ$]')
+title('Variable $\delta_f$, $\gamma = 0$ [$^\circ$]')
 xlabel('ay/g [-]')
-ylabel('$\delta_{D}\tau_{H} - \rho L \ [rad]$')
+%ylabel('$\delta_{D}\tau_{H} - \rho L \ [rad]$')
 % if enable_export == 1
 %     export_figure(fig_handling_variable, '\fig_handling_variable.eps', 'images\');
 % end
@@ -67,7 +67,7 @@ plot(sn20_t0_c0.Ay_hand(1:end-1), sn20_t0_c0.K_US_theo2, '--', 'LineWidth',2, 'D
 legend('location','eastoutside', 'FontSize', 18)
 title('Var. front stiffness, $\delta=0$ [$^\circ$], $\gamma=0$ [$^\circ$]')
 %xlabel('ay/g [-]')
-ylabel('$K_{US}$')
+%ylabel('$K_{US}$')
 
 subplot(324);
 hold on; grid on; box on;
@@ -77,7 +77,7 @@ plot(s0_t0_cp2.Ay_hand(1:end-1), s0_t0_cp2.K_US_theo2, '--', 'LineWidth',2, 'Dis
 plot(s0_t0_cn1.Ay_hand(1:end-1), s0_t0_cn1.K_US_theo2, '--', 'LineWidth',2, 'DisplayName','$-1$ [$^\circ$]')
 plot(s0_t0_cn2.Ay_hand(1:end-1), s0_t0_cn2.K_US_theo2, '--', 'LineWidth',2, 'DisplayName','$-2$ [$^\circ$]')
 legend('location','eastoutside', 'FontSize', 18)
-title('Var. front camber, $\delta=0$ [$^\circ$]')
+title('Variable $\gamma_f$, $\delta=0$ [$^\circ$]')
 %xlabel('ay/g [-]')
 ylabel('$K_{US}$')
 
@@ -89,9 +89,9 @@ plot(s0_tp2_c0.Ay_hand(1:end-1), s0_tp2_c0.K_US_theo2, '--', 'LineWidth',2, 'Dis
 plot(s0_tn1_c0.Ay_hand(1:end-1), s0_tn1_c0.K_US_theo2, '--', 'LineWidth',2, 'DisplayName','$-1$ [$^\circ$]')
 plot(s0_tn2_c0.Ay_hand(1:end-1), s0_tn2_c0.K_US_theo2, '--', 'LineWidth',2, 'DisplayName','$-2$ [$^\circ$]')
 legend('location','eastoutside', 'FontSize', 18)
-title('Var. front toe, $\gamma=0$ [$^\circ$]')
+title('Variable $\delta_f$, $\gamma=0$ [$^\circ$]')
 xlabel('ay/g [-]')
-ylabel('$K_{US}$')
+%ylabel('$K_{US}$')
 if enable_export == 1
     export_figure(fig_all_variable, '\fig_all_variable.eps', 'images\');
 end
