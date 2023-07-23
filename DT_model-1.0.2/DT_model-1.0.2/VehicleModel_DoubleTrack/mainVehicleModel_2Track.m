@@ -7,7 +7,7 @@
 %  rev 1.0:    13/10/2020
 %  rev 2.0:    16/05/2022
 %  rev 2.1:    08/07/2022 (Biral)
-%       - added Fz saturation. Correceted error in Fx
+%       - added Fz saturation. Cormoreceted error in Fx
 %       - initial condition is now parametric in initial speed
 %       - changed the braking torque parameters to adapt to a GP2 model
 % ----------------------------------------------------------------
@@ -34,7 +34,7 @@ initialize_environment;
 %% Simulation parameters
 % ----------------------------
 sim_options.slope = 1.5; %  [deg/s]
-sim_options.test_type = 1; % 1 for constant u, 2 for constant steering angle
+sim_options.test_type = 2; % 1 for constant u, 2 for constant steering angle
 enable_export = 0; % 1 to export the data to a .mat file
 enable_plot = 1; % 1 to plot the results
 

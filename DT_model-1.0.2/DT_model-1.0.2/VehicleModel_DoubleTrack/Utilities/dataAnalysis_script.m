@@ -846,8 +846,8 @@ DFx_r = (Fx_rr - Fx_rl) / 2;
 
 % -----------------
 % Lateral
-DFy_f = (Fy_fr + Fy_fl) / 2;
-DFy_r = (Fy_rr + Fy_rl) / 2;
+DFy_f = (Fy_fr - Fy_fl) / 2;
+DFy_r = (Fy_rr - Fy_rl) / 2;
 
 % -----------------
 % Vertical
