@@ -969,7 +969,7 @@ else
 end
 fprintf('\%\%\%')
 fprintf('Coefficients of the non linear fitting');
-p_nl
+% p_nl
 fprintf('\%\%\%')
 
 %----------------------------------
@@ -1193,7 +1193,7 @@ if enable_plot
   hold on 
   grid on; box on;
   plot(u*3.6, yaw_rate_gain, 'LineWidth',2, 'DisplayName','$\frac{\Omega}{\delta}$')
-  plot(u*3.6, yaw_rate_gain_theo, 'LineWidth',2, 'DisplayName','$\frac{u \tau_H}{L(1+K_{US}u^2)}$')
+  plot(u*3.6, yaw_rate_gain_theo, 'LineWidth',2, 'DisplayName','$\frac{u \tau_H}{L(1+K_{US}u^2/L)}$')
   xline(u_lin_lim*3.6, '--r', 'LineWidth',2, 'DisplayName','$K_{US}$ lin limit')
   title('Yaw rate gain')
   xlabel('u [km/h]')
@@ -1233,8 +1233,8 @@ if enable_export == 1;
   % grid on; box on;
 end
 %% SAVE DATA ON FILE
-data.Ay_hand = Ay_hand;
-data.handling = handling;
-data.K_US_theo2 = K_US_theo2;
-save(strcat("saved_test\", name_output), 'data');
+% data.Ay_hand = Ay_hand;
+% data.handling = handling;
+% data.K_US_theo2 = K_US_theo2;
+% save(strcat("saved_test\", name_output), 'data');
 
