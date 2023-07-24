@@ -104,7 +104,8 @@ ones_vec  = ones(size(TData0.SA));
 %--------------------------------------------------------------------------
 % Guess values for parameters to be optimised
 %    [qHz1, qBz1, qCz1, qDz1, qEz1, qEz4, qBz9, qDz6, qBz10]
-P1 = -0.75*ones(1, 9);
+P1 = [-0.01 13.16 -1.25 0.07 3e-3 49.24 -0.75 -9e-3 -0.64];
+% P1 = [6 0 0.7 1 0 0 -1 -0.5 0];
 name1 = ["qHz1", "qBz1", "qCz1", "qDz1", "qEz1", "qEz4", "qBz9", "qDz6", "qBz10"];
 
 % NOTE: many local minima => limits on parameters are fundamentals
@@ -112,6 +113,9 @@ name1 = ["qHz1", "qBz1", "qCz1", "qDz1", "qEz1", "qEz4", "qBz9", "qDz6", "qBz10"
 %    [qHz1, qBz1, qCz1, qDz1, qEz1, qEz4, qBz9, qDz6, qBz10]
 lb1 = []; % lower bound
 ub1 = []; % upper bound
+% lb1 = -10 * ones(1, length(P1));
+% ub1 = 10 * ones(1, length(P1));
+
 
 ALPHA_vec = TData0.SA;  % lateral slip angle
 MZ_vec    = TData0.MZ;  % aligning moment
@@ -167,11 +171,15 @@ ones_vec  = ones(size(TDataDFz.SA));
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised
 %    [ qHz2, qBz2, qBz3, qDz2, qEz2, qEz3, qDz7]
-P2 = 0*ones(7,1); % [0, 0, 0, 0, 0, 0, 0];
+P2 = [-5.4e-4 0.86 8.5e-3 -0.01 -1.2e-3 6.4e-5 4.3e-3];
+P2 = [0 0 0 0 0 0 0];
 name2 = ["qHz2", "qBz2", "qBz3", "qDz2", "qEz2", "qEz3", "qDz7"];
 
-lb2 = []; %[0, 0, 0, 0, 0, 0, 0];
-ub2 = []; %[10, 10, 10, 10, 10, 10, 10];
+lb2 = [-4 -4 -5 -5 -2 -1 -5]; %[0, 0, 0, 0, 0, 0, 0];
+ub2 = [4 4 5 5 2 1 5]; %[0, 0, 0, 0, 0, 0, 0];
+lb2 = [];
+ub2 = [];
+ %[10, 10, 10, 10, 10, 10, 10];
 
 ALPHA_vec = TDataDFz.SA;
 MZ_vec    = TDataDFz.MZ;
@@ -241,25 +249,25 @@ plot_fitted_data_struct(SA_cell, MZ_cell, x_fit_cell, y_fit_cell, '$\alpha$ [-]'
   'Fitting with variable load', line_width, font_size_title, colors_vect);
 
 %% Stiffness
-[alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr] = MF96_MZ0_coeffs(0, 0, mean(FZ_220.FZ), tyre_coeffs);
-[~, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, 0, 0, mean(FZ_220.FZ), tyre_coeffs);
-Calfa_vec1_0 = magic_formula_stiffness_MZ(0, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, By, Cy, Dy, Ey, SVy, mean(FZ_220.FZ), tyre_coeffs);
-
-[alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr] = MF96_MZ0_coeffs(0, 0, mean(FZ_440.FZ), tyre_coeffs);
-[~, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, 0, 0, mean(FZ_440.FZ), tyre_coeffs);
-Calfa_vec2_0 = magic_formula_stiffness_MZ(0, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, By, Cy, Dy, Ey, SVy, mean(FZ_440.FZ), tyre_coeffs);
-
-[alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr] = MF96_MZ0_coeffs(0, 0, mean(FZ_700.FZ), tyre_coeffs);
-[~, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, 0, 0, mean(FZ_700.FZ), tyre_coeffs);
-Calfa_vec3_0 = magic_formula_stiffness_MZ(0, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, By, Cy, Dy, Ey, SVy, mean(FZ_700.FZ), tyre_coeffs);
-
-[alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr] = MF96_MZ0_coeffs(0, 0, mean(FZ_900.FZ), tyre_coeffs);
-[~, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, 0, 0, mean(FZ_900.FZ), tyre_coeffs);
-Calfa_vec4_0 = magic_formula_stiffness_MZ(0, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, By, Cy, Dy, Ey, SVy, mean(FZ_900.FZ), tyre_coeffs);
-
-[alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr] = MF96_MZ0_coeffs(0, 0, mean(FZ_1120.FZ), tyre_coeffs);
-[~, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, 0, 0, mean(FZ_1120.FZ), tyre_coeffs);
-Calfa_vec5_0 = magic_formula_stiffness_MZ(0, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, By, Cy, Dy, Ey, SVy, mean(FZ_1120.FZ), tyre_coeffs);
+% [alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr] = MF96_MZ0_coeffs(0, 0, mean(FZ_220.FZ), tyre_coeffs);
+% [~, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, 0, 0, mean(FZ_220.FZ), tyre_coeffs);
+% Calfa_vec1_0 = magic_formula_stiffness_MZ(0, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, By, Cy, Dy, Ey, SVy, mean(FZ_220.FZ), tyre_coeffs);
+% 
+% [alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr] = MF96_MZ0_coeffs(0, 0, mean(FZ_440.FZ), tyre_coeffs);
+% [~, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, 0, 0, mean(FZ_440.FZ), tyre_coeffs);
+% Calfa_vec2_0 = magic_formula_stiffness_MZ(0, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, By, Cy, Dy, Ey, SVy, mean(FZ_440.FZ), tyre_coeffs);
+% 
+% [alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr] = MF96_MZ0_coeffs(0, 0, mean(FZ_700.FZ), tyre_coeffs);
+% [~, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, 0, 0, mean(FZ_700.FZ), tyre_coeffs);
+% Calfa_vec3_0 = magic_formula_stiffness_MZ(0, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, By, Cy, Dy, Ey, SVy, mean(FZ_700.FZ), tyre_coeffs);
+% 
+% [alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr] = MF96_MZ0_coeffs(0, 0, mean(FZ_900.FZ), tyre_coeffs);
+% [~, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, 0, 0, mean(FZ_900.FZ), tyre_coeffs);
+% Calfa_vec4_0 = magic_formula_stiffness_MZ(0, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, By, Cy, Dy, Ey, SVy, mean(FZ_900.FZ), tyre_coeffs);
+% 
+% [alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr] = MF96_MZ0_coeffs(0, 0, mean(FZ_1120.FZ), tyre_coeffs);
+% [~, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, 0, 0, mean(FZ_1120.FZ), tyre_coeffs);
+% Calfa_vec5_0 = magic_formula_stiffness_MZ(0, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, By, Cy, Dy, Ey, SVy, mean(FZ_1120.FZ), tyre_coeffs);
 
 
 
@@ -274,14 +282,14 @@ Calfa_vec5_0 = magic_formula_stiffness_MZ(0, alpha__t, alpha__r, Bt, Ct, Dt, Et,
 % [alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr] = MF96_MZ0_coeffs(0, 0, mean(FZ_1120.FZ), tyre_coeffs);
 % Calfa_vec5_0 = magic_formula_stiffness_MZ(0, alpha__t, alpha__r, Bt, Ct, Dt, Et, Br, Dr, mean(FZ_1120.FZ), tyre_coeffs);
 
-Calfa_vec1 = MF96_CorneringStiffness_MZ(SA_vec, tmp_zeros, mean(FZ_220.FZ)  * tmp_ones, tyre_coeffs);
-Calfa_vec2 = MF96_CorneringStiffness_MZ(SA_vec, tmp_zeros, mean(FZ_440.FZ)  * tmp_ones, tyre_coeffs);
-Calfa_vec3 = MF96_CorneringStiffness_MZ(SA_vec, tmp_zeros, mean(FZ_700.FZ)  * tmp_ones, tyre_coeffs);
-Calfa_vec4 = MF96_CorneringStiffness_MZ(SA_vec, tmp_zeros, mean(FZ_900.FZ)  * tmp_ones, tyre_coeffs);
-Calfa_vec5 = MF96_CorneringStiffness_MZ(SA_vec, tmp_zeros, mean(FZ_1120.FZ) * tmp_ones, tyre_coeffs);
+% Calfa_vec1 = MF96_CorneringStiffness_MZ(SA_vec, tmp_zeros, mean(FZ_220.FZ)  * tmp_ones, tyre_coeffs);
+% Calfa_vec2 = MF96_CorneringStiffness_MZ(SA_vec, tmp_zeros, mean(FZ_440.FZ)  * tmp_ones, tyre_coeffs);
+% Calfa_vec3 = MF96_CorneringStiffness_MZ(SA_vec, tmp_zeros, mean(FZ_700.FZ)  * tmp_ones, tyre_coeffs);
+% Calfa_vec4 = MF96_CorneringStiffness_MZ(SA_vec, tmp_zeros, mean(FZ_900.FZ)  * tmp_ones, tyre_coeffs);
+% Calfa_vec5 = MF96_CorneringStiffness_MZ(SA_vec, tmp_zeros, mean(FZ_1120.FZ) * tmp_ones, tyre_coeffs);
 
 %% figure 7
-plot_stiffness_MZ; 
+% plot_stiffness_MZ; 
 % plot_stiffness_FY(SA_vec,FZ_220, FZ_700, FZ_900, FZ_1120, FZ_1550, ...
 %   Calfa_vec1_0,Calfa_vec2_0, Calfa_vec3_0, Calfa_vec4_0, Calfa_vec5_0, ...
 %   Calfa_vec1, Calfa_vec2, Calfa_vec3, Calfa_vec4, Calfa_vec5, ...
@@ -294,7 +302,8 @@ plot_stiffness_MZ;
 
 % Guess values for parameters to be optimised
 %    [qHz3, qBz4, qBz5, qDz3, qDz4, qEz5, qDz8, qHz4, qDz9]
-P3 = 1*ones(1, 9); %[1, 1, 1, 1, 1, 1, 1, 1, 1]; 
+P3 = [0.38 37.95 37.35 1.44 -29.11 16.38 -1.49 1 1]; %[1, 1, 1, 1, 1, 1, 1, 1, 1]; 
+P3 = [0 0 0 -1 0 0.6 0.2 0 0];
 name3 = ["qHz3", "qBz4", "qBz5", "qDz3", "qDz4", "qEz5", "qDz8", "qHz4", "qDz9"];
 
 % NOTE: many local minima => limits on parameters are fundamentals

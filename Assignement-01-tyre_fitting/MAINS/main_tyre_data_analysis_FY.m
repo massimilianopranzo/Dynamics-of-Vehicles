@@ -56,7 +56,7 @@ plot_sorted_data(tyre_data, idx, vec_samples, GAMMA_0, GAMMA_1, ...
 [TData0, ~] = intersect_table_data(GAMMA_0, FZ_220);
 
 % figure 3
-plot_selected_data(TData0, font_size_title);
+% plot_selected_data(TData0, font_size_title);
 if exist(['tyre_', struct_name,'.mat'], 'file')
   load(['tyre_', struct_name,'.mat']);
   tyre_coeffs.pHy1 = 0;
@@ -91,15 +91,15 @@ ones_vec  = ones(size(TData0.SA));
 % Guess values for parameters to be optimised
 %    [pCy1 pDy1 pEy1  pHy1  pKy1  pKy2, pVy1]
 % P1 = [  0.7,   3.1,   -0.4,     0,   -110,     -3.2,  0]; % parametri stefano
-P1 = [  1,   2,   0,     0,   -115,     -1,  0]; 
+P1 = [  1,   2,   0,     0,   115,     1,  0]; 
 % P0 = [1 1 1 1 1 1 1]; 
 name1 = ["pCy1", "pDy1", "pEy1", "pHy1", "pKy1", "pKy2", "pVy1"];
 
 % NOTE: many local minima => limits on parameters are fundamentals
 % Limits for parameters to be optimised
 %    [pCy1 pDy1 pEy1  pHy1  pKy1  pKy2, pVy1]
-lb1 = [1   -inf -inf -inf -inf -inf -inf]; % lower bound -inf*ones(1, 7);
-ub1 = [inf  inf  1    inf  inf  inf  inf];%[2 inf inf inf inf inf inf]; % upper bound % inf*ones(1, 7);
+lb1 = [1   -inf -inf -inf 0 0 -inf]; % lower bound -inf*ones(1, 7);
+ub1 = [inf  inf  1    inf  170 6  inf];%[2 inf inf inf inf inf inf]; % upper bound % inf*ones(1, 7);
 
 ALPHA_vec = TData0.SA;  % side slip angle
 FY_vec    = TData0.FY;  % lateral force
@@ -199,7 +199,7 @@ plot_stiffness_FY(SA_vec,FZ_220, FZ_440, FZ_700, FZ_900, FZ_1120, ...
 %% ------------------------------------------------------------------------
 % FIT COEFFICIENTS WITH VARIABLE CAMBER
 %--------------------------------------------------------------------------
-% extract data with variable load
+% extract data with variable camber
 [TDataGamma, ~] = FZ_220; % intersect_table_data(SA_0, FZ_220);
 
 % Guess values for parameters to be optimised
@@ -268,10 +268,10 @@ TDataGamma2 = intersect_table_data(GAMMA_2, FZ_220);
 TDataGamma3 = intersect_table_data(GAMMA_3, FZ_220);
 TDataGamma4 = intersect_table_data(GAMMA_4, FZ_220);
 FY0_Gamma0 = MF96_FY0_vec(zeros_vec, alpha_vec, 0*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
-FY0_Gamma1 = MF96_FY0_vec(zeros_vec, alpha_vec, -1*pi/180*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
-FY0_Gamma2 = MF96_FY0_vec(zeros_vec, alpha_vec, -2*pi/180*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
-FY0_Gamma3 = MF96_FY0_vec(zeros_vec, alpha_vec, -3*pi/180*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
-FY0_Gamma4 = MF96_FY0_vec(zeros_vec, alpha_vec, -4*pi/180*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
+FY0_Gamma1 = MF96_FY0_vec(zeros_vec, alpha_vec, 1*pi/180*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
+FY0_Gamma2 = MF96_FY0_vec(zeros_vec, alpha_vec, 2*pi/180*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
+FY0_Gamma3 = MF96_FY0_vec(zeros_vec, alpha_vec, 3*pi/180*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
+FY0_Gamma4 = MF96_FY0_vec(zeros_vec, alpha_vec, 4*pi/180*ones_vec, mean(FZ_220.FZ)*ones_vec, tyre_coeffs);
 %%
 plot_y = cell(5,1);
 plot_x = cell(5,1);
@@ -295,6 +295,7 @@ plot_fitted_data_struct(plot_x, plot_y, x_fit, plot_fit, ...
 [alpha__y, By, Cy, Dy, Ey, SVy] = MF96_FY0_coeffs(0, 0, GAMMA_vec(3), tyre_coeffs.FZ0, tyre_coeffs);
 fprintf('By      = %6.3f\n', By);
 fprintf('Cy      = %6.3f\n', Cy);
+fprintf('Dy      = %6.3f\n', Dy);
 fprintf('muy     = %6.3f\n', Dy/tyre_coeffs.FZ0);
 fprintf('Ey      = %6.3f\n', Ey);
 fprintf('SVy     = %6.3f\n', SVy);

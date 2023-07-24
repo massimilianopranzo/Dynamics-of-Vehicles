@@ -26,7 +26,7 @@ function [] = plot_fitted_data_struct_combined_sigma(x_raw, y_raw, x_fit, y_fit,
       		plot(x_fit(:), y_fit{i}{j}(:),'-', 'DisplayName', leg_angle(j) , 'LineWidth', line_width, 'Color', colors_vector(j,:))
       		plot(x_fit_sig(:), y_fit_sig{i}{j}(:),'--', 'DisplayName', leg_angle(j) , 'LineWidth', line_width, 'Color', colors_vector(j,:))
 			if ~isempty(x_raw) && ~isempty(y_raw)
-			    plot(x_raw{i}{j}(:), y_raw{i}{j}(:), markers(j), 'DisplayName','Raw', 'LineWidth', .2 * line_width, 'Color', 'k') %  colors_vector(j,:)
+			    plot(x_raw{i}{j}(:), y_raw{i}{j}(:), markers(j), 'DisplayName','Raw', 'LineWidth', .2 * line_width, 'Color', colors_vector(j,:)) %  colors_vector(j,:)
 			end
 
 		end
