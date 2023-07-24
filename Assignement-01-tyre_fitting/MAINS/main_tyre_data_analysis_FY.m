@@ -325,12 +325,12 @@ name = {name1 name2 name3};
 table_P0("pure_lateral", name, P0, lb, ub)
 
 %% Save tyre data structure to mat file
-name = ["resFyzero", "resFyzerovarFz", "resFyzerovarGamma", "RtwoFyzero",...
-  "RtwoFyzerovarFz", "RtwoFyzerovarGamma", "RMSFyzero", "RMSFyzerovarFz", "RMSFyzerovarGamma"];
-data = [res_Fy0, res_Fy0_varFz, res_Fy0_varGamma, R2_Fy0, R2_Fy0_varFz, R2_Fy0_varGamma, RMS_Fy0, RMS_Fy0_varFz, RMS_Fy0_varGamma];
-write_latex_macro('results_to_lates_FY0.tex', name, data, 'w');
+% name = ["resFyzero", "resFyzerovarFz", "resFyzerovarGamma", "RtwoFyzero",...
+%   "RtwoFyzerovarFz", "RtwoFyzerovarGamma", "RMSFyzero", "RMSFyzerovarFz", "RMSFyzerovarGamma"];
+% data = [res_Fy0, res_Fy0_varFz, res_Fy0_varGamma, R2_Fy0, R2_Fy0_varFz, R2_Fy0_varGamma, RMS_Fy0, RMS_Fy0_varFz, RMS_Fy0_varGamma];
+% write_latex_macro('results_to_lates_FY0.tex', name, data, 'w');
 
-save(['tyre_' struct_name,'.mat'],'tyre_coeffs');
+% save(['tyre_' struct_name,'.mat'],'tyre_coeffs');
 
 
 

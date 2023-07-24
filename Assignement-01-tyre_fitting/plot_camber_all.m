@@ -34,7 +34,7 @@ elseif strcmp(act, "lat")
     plot(TDataGamma4.SA, TDataGamma4.FY, '.', 'Color', colors_vect(5, :), 'HandleVisibility', 'off', 'MarkerSize',10);
     plot(alpha_vec, FY0_Gamma4, '-', 'Color', colors_vect(5, :)  , 'LineWidth', line_width, 'DisplayName', '$\gamma = 4 [deg]$' );
     hold off
-    legend('location', 'northeast')
+    legend('location', 'southeast')
     xlabel('$\alpha$')
     ylabel('$F_{y0}$ [N]')
     title('Fitting with variable camber $F_{Z}$ = 220[N]', 'FontSize',font_size_title)
